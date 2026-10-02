@@ -1,0 +1,45 @@
+// ==========================================================================
+// Hamburger Menu Button
+// Clean flex item in header navbar next to brand
+// ==========================================================================
+
+.hamburger-menu {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: var(--bs-secondary-color);
+  transition: background-color 0.15s ease-in-out;
+  border-radius: 6px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+
+  &:hover {
+    color: var(--bs-emphasis-color);
+    background-color: rgba(var(--bs-secondary-rgb), 0.08);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  i {
+    font-size: 1.25rem;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  // Rotate icon when sidebar is collapsed (desktop)
+  &.is-active i {
+    transform: rotate(180deg);
+  }
+}

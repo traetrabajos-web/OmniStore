@@ -1,0 +1,68 @@
+// ==========================================================================
+// Header Layout Styles — OmniStore Tech Theme
+// ==========================================================================
+
+.admin-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: $zindex-fixed;
+  height: var(--header-height);
+
+  .navbar {
+    height: 100%;
+    border-bottom: 1px solid var(--bs-border-color);
+    border-top: 2px solid #ff5722; // OmniStore brand top accent
+    backdrop-filter: blur(8px);
+    background-color: var(--surface-panel);
+  }
+
+  // OmniStore Brand Logo in Admin Header
+  .navbar-brand {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #ff5722, #ff9800);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(255, 87, 34, 0.35);
+      font-size: 0.95rem;
+    }
+
+    .brand-text {
+      background: linear-gradient(135deg, #ff4500, #ff8c00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .admin-pill {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      background-color: rgba(255, 87, 34, 0.12);
+      color: #ff5722;
+      font-weight: 700;
+      border: 1px solid rgba(255, 87, 34, 0.25);
+    }
+  }
+
+  // Force header dropdowns to always overlay (not inline).
+  .navbar-nav .dropdown-menu {
+    position: absolute;
+  }
+} 

@@ -1,0 +1,12 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OmniStore Favicon">
+  <defs>
+    <linearGradient id="omniGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ff6b35"/>
+      <stop offset="100%" stop-color="#ff3d00"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="url(#omniGrad)"/>
+  <path d="M11 11V9C11 6.23858 13.2386 4 16 4C18.7614 4 21 6.23858 21 9V11" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <path d="M7 10H25L23.5 25C23.5 26.1046 22.6046 27 21.5 27H10.5C9.39543 27 8.5 26.1046 8.5 25L7 10Z" fill="white" fill-opacity="0.25" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M13 18.5L15 20.5L19.5 15.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

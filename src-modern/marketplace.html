@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+    <!-- Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="description" content="OmniStore - Tu tienda online con las mejores ofertas, envíos rápidos y protección al comprador estilo AliExpress, Temu y Mercado Libre.">
+    <meta name="keywords" content="omnistore, compras online, ofertas, marketplace, tecnologia, moda, electronica, envio gratis, temu, aliexpress, mercado libre">
+    <meta name="author" content="OmniStore">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="OmniStore - Super Ofertas y Envíos Rápidos">
+    <meta property="og:description" content="Descubre miles de productos con hasta 80% de descuento y entrega garantizada en OmniStore.">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+   
+    
+    <!-- Title -->
+    <title>OmniStore - Ofertas Relámpago, Envíos Gratis y Más</title>
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#ff5722">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+</head>
+
+<body data-page="marketplace" class="marketplace-body" x-data="marketplaceApp">
+    <a href="#market-main" class="skip-link">Saltar al contenido principal</a>
+
+    <!-- Top Announcement & Ticker Bar -->
+    <div class="market-top-bar">
+        <div class="container-fluid px-lg-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="ticker-badge"><i class="bi bi-fire text-warning me-1"></i> SUPER PROMO CARTAGENA</span>
+                    <span>¡Hasta <strong>80% de descuento</strong> en Tecnología & Gamer + Envíos Rápidos en Bocagrande, Manga, Crespo y toda Cartagena!</span>
+                </div>
+                <div class="d-none d-md-flex align-items-center gap-3">
+                    <span class="badge bg-danger text-white py-1 px-2 border border-danger-subtle">
+                        <i class="bi bi-geo-alt-fill me-1"></i> Cartagena de Indias | COP ($)
+                    </span>
+                    <span class="opacity-50">|</span>
+                    <span class="text-white small opacity-90"><i class="bi bi-shield-check me-1 text-warning"></i> Compras 100% Seguras</span>
+                    <span class="opacity-50">|</span>
+                    <span class="text-white small opacity-90"><i class="bi bi-truck me-1 text-warning"></i> Envíos en toda Cartagena</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Sticky Marketplace Header -->
+    <header class="market-header py-2">
+        <div class="container-fluid px-lg-4">
+            <div class="row align-items-center g-2">
+                <!-- Brand Logo -->
+                <div class="col-6 col-lg-2 d-flex align-items-center">
+                    <a href="./marketplace.html" class="brand-logo text-decoration-none">
+                        <div class="brand-icon">
+                            <i class="bi bi-bag-check-fill"></i>
+                        </div>
+                        <span class="brand-text">OmniStore</span>
+                    </a>
+                </div>
+
+                <!-- Delivery Selector (Mercado Libre style for Cartagena) -->
+                <div class="col-lg-2 d-none d-xl-block">
+                    <div class="delivery-selector d-flex align-items-center gap-2" @click="changeDeliveryLocation()" title="Cambiar ubicación de entrega en Cartagena">
+                        <i class="bi bi-geo-alt-fill text-danger fs-5"></i>
+                        <div>
+                            <span class="delivery-label">Enviar en Cartagena</span>
+                            <span class="delivery-val text-truncate d-block" style="max-width: 140px;" x-text="deliveryAddress">Bocagrande, Cra 3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Central Search Bar (AliExpress & Temu style) -->
+                <div class="col-12 col-lg-5 col-xl-5 order-3 order-lg-2">
+                    <div class="market-search-box">
+                        <div class="search-input-group">
+                            <select class="category-select d-none d-sm-block" x-model="selectedCategory" aria-label="Filtrar por categoría">
+                                <option value="all">Todo</option>
+                                <option value="electronics">Electrónica</option>
+                                <option value="audio">Audio & Sonido</option>
+                                <option value="gaming">Gamer & PC</option>
+                                <option value="home">Hogar & Cocina</option>
+                                <option value="shoes">Calzado</option>
+                                <option value="clothing">Moda & Ropa</option>
+                                <option value="beauty">Belleza</option>
+                                <option value="tools">Herramientas</option>
+                            </select>
+                            <input type="text" 
+                                   class="search-input" 
+                                   placeholder="Buscar entre +500,000 productos con entrega en Cartagena..." 
+                                   x-model="searchQuery"
+                                   aria-label="Buscar productos">
+                            <button type="button" class="search-btn" aria-label="Buscar">
+                                <i class="bi bi-search"></i>
+                                <span class="d-none d-md-inline">Buscar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions: Theme Switch, Wishlist, Mis Pedidos, User, Cart Drawer -->
+                <div class="col-6 col-lg-5 col-xl-3 order-2 order-lg-3 d-flex align-items-center justify-content-end gap-2">
+                    <!-- Theme Toggle -->
+                    <div x-data="themeSwitch">
+                        <button class="btn btn-outline-secondary border-0" 
+                                type="button" 
+                                @click="toggle()" 
+                                data-bs-toggle="tooltip" 
+                                title="Cambiar modo Claro / Oscuro"
+                                aria-label="Cambiar tema">
+                            <i class="bi bi-sun-fill" x-show="currentTheme === 'light'"></i>
+                            <i class="bi bi-moon-fill" x-show="currentTheme === 'dark'"></i>
+                        </button>
+                    </div>
+
+                    <!-- Mis Pedidos Button -->
+                    <a href="#" class="nav-action-btn d-none d-lg-flex" @click.prevent="openCustomerOrdersModal()" title="Consultar Mis Pedidos y Envíos">
+                        <i class="bi bi-box-seam fs-5 text-danger"></i>
+                        <span class="d-none d-xxl-inline small fw-semibold">Mis Pedidos</span>
+                    </a>
+
+                    <!-- Wishlist Button -->
+                    <a href="#catalog-section" class="nav-action-btn" title="Lista de Deseos">
+                        <i class="bi bi-heart fs-5"></i>
+                        <span class="icon-badge" x-show="wishlist.length > 0" x-text="wishlist.length"></span>
+                        <span class="d-none d-xxl-inline small fw-semibold">Favoritos</span>
+                    </a>
+
+                    <!-- User Account Dropdown -->
+                    <div class="dropdown">
+                        <a href="#" class="nav-action-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle fs-5 text-primary" x-show="!currentUser"></i>
+                            <img :src="currentUser?.avatar || './assets/images/avatar-placeholder.svg'" width="26" height="26" class="rounded-circle border" x-show="currentUser" x-cloak alt="Avatar">
+                            <div class="d-none d-md-block text-start lh-1">
+                                <small class="text-muted d-block" style="font-size: 0.65rem;" x-text="currentUser ? '¡Hola, ' + (currentUser?.name ? currentUser.name.split(' ')[0] : 'Cliente') + '!' : '¡Hola! Inicia sesión'"></small>
+                                <span class="fw-bold small" x-text="currentUser ? (currentUser?.role === 'admin' ? 'SuperAdmin' : (currentUser?.role === 'vendor' ? 'Vendedor' : 'Cliente')) : 'Mi Cuenta'"></span>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-2" style="min-width: 230px;">
+                            <!-- State: Not logged in -->
+                            <template x-if="!currentUser">
+                                <div>
+                                    <li class="px-3 py-2 bg-light rounded-2 mb-2 text-center">
+                                        <a href="./login.html?redirect=marketplace.html" class="btn btn-primary btn-sm w-100 fw-bold mb-1">Iniciar Sesión</a>
+                                        <small class="text-muted">¿Nuevo cliente? <a href="./register.html?redirect=marketplace.html" class="text-primary fw-semibold">Regístrate</a></small>
+                                    </li>
+                                    <li><a class="dropdown-item py-2" href="#" @click.prevent="openCustomerOrdersModal()"><i class="bi bi-box-seam me-2 text-primary"></i> Mis Pedidos & Envíos</a></li>
+                                    <li><a class="dropdown-item py-2" href="#coupons-section"><i class="bi bi-ticket-perforated me-2 text-warning"></i> Mis Cupones</a></li>
+                                </div>
+                            </template>
+
+                            <!-- State: Logged in -->
+                            <template x-if="currentUser">
+                                <div>
+                                    <li class="px-3 py-2 bg-body-tertiary rounded-2 mb-2">
+                                        <div class="fw-bold text-dark text-truncate" x-text="currentUser?.name || currentUser?.email"></div>
+                                        <div class="d-flex align-items-center justify-content-between mt-1">
+                                            <span class="badge" :class="currentUser?.role === 'admin' ? 'bg-primary' : (currentUser?.role === 'vendor' ? 'bg-info' : 'bg-success')" x-text="currentUser?.role === 'admin' ? 'SuperAdmin' : (currentUser?.role === 'vendor' ? 'Vendedor' : 'Cliente')"></span>
+                                            <small class="text-muted" style="font-size: 0.7rem;">Cartagena</small>
+                                        </div>
+                                    </li>
+                                    <li><a class="dropdown-item py-2" href="#" @click.prevent="openCustomerOrdersModal()"><i class="bi bi-box-seam me-2 text-primary"></i> Mis Pedidos & Envíos</a></li>
+                                    <li><a class="dropdown-item py-2" href="#coupons-section"><i class="bi bi-ticket-perforated me-2 text-warning"></i> Mis Cupones</a></li>
+                                    <template x-if="currentUser?.role === 'admin' || currentUser?.role === 'vendor'">
+                                        <li><a class="dropdown-item py-2 text-primary fw-semibold" href="./index.html"><i class="bi bi-speedometer2 me-2"></i> Ir al Panel Admin</a></li>
+                                    </template>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><button type="button" class="dropdown-item py-2 text-danger" @click="logout()"><i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión</button></li>
+                                </div>
+                            </template>
+                        </ul>
+                    </div>
+
+                    <!-- Cart Drawer Button (Offcanvas Trigger) -->
+                    <button type="button" class="btn btn-outline-danger position-relative d-flex align-items-center gap-2 fw-bold px-3 py-2 rounded-3" @click="openCartDrawer()" aria-label="Ver carrito de compras">
+                        <i class="bi bi-cart3 fs-5"></i>
+                        <span class="d-none d-sm-inline" x-text="formatPrice(cartTotal)">$0.00</span>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" x-text="cartItemsCount">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sub-Navbar: Categories & Quick Links -->
+    <nav class="market-sub-nav py-1">
+        <div class="container-fluid px-lg-4">
+            <div class="d-flex align-items-center justify-content-between overflow-x-auto">
+                <div class="d-flex align-items-center gap-1">
+                    <div class="dropdown">
+                        <button class="nav-item-link all-categories-btn border-0 dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-grid-fill"></i> Todas las Categorías
+                        </button>
+                        <ul class="dropdown-menu shadow-lg border-0 mt-1">
+                            <li><a class="dropdown-item" href="#catalog-section" @click="selectedCategory = 'all'"><i class="bi bi-stars me-2 text-warning"></i> Todo el Catálogo</a></li>
+                            <li><a class="dropdown-item" href="#catalog-section" @click="selectedCategory = 'electronics'"><i class="bi bi-cpu me-2 text-primary"></i> Electrónica & Gadgets</a></li>
+                            <li><a class="dropdown-item" href="#catalog-section" @click="selectedCategory = 'audio'"><i class="bi bi-headphones me-2 text-info"></i> Audio & Auriculares</a></li>
+                            <li><a class="dropdown-item" href="#catalog-section" @click="selectedCategory = 'gaming'"><i class="bi bi-controller me-2 text-danger"></i> Gamer & Computación</a></li>
+                            <li><a class="dropdown-item" href="#catalog-section" @click="selectedCategory = 'home'"><i class="bi bi-house-door me-2 text-success"></i> Hogar & Cocina</a></li>
+                            <li><a class="dropdown-item" href="#catalog-section" @click="selectedCategory = 'shoes'"><i class="bi bi-tag-fill me-2 text-primary"></i> Calzado & Zapatillas</a></li>
+                            <li><a class="dropdown-item" href="#catalog-section" @click="selectedCategory = 'clothing'"><i class="bi bi-bag me-2 text-warning"></i> Moda & Ropa</a></li>
+                            <li><a class="dropdown-item" href="#catalog-section" @click="selectedCategory = 'beauty'"><i class="bi bi-gem me-2 text-danger"></i> Belleza & Cuidado</a></li>
+                            <li><a class="dropdown-item" href="#catalog-section" @click="selectedCategory = 'tools'"><i class="bi bi-tools me-2 text-secondary"></i> Herramientas & Bricolaje</a></li>
+                        </ul>
+                    </div>
+                    <a href="#flash-deals" class="nav-item-link highlight">
+                        <i class="bi bi-lightning-charge-fill text-danger"></i> Ofertas Flash
+                        <span class="badge-fire">-80%</span>
+                    </a>
+                    <a href="#catalog-section" class="nav-item-link" @click="sortBy = 'sales'"><i class="bi bi-trophy text-warning"></i> Más Vendidos</a>
+                    <a href="#catalog-section" class="nav-item-link" @click="freeShippingOnly = true"><i class="bi bi-truck text-success"></i> Envío FULL Gratis</a>
+                    <a href="#coupons-section" class="nav-item-link"><i class="bi bi-ticket-perforated text-primary"></i> Centro de Cupones</a>
+                    <a href="#" class="nav-item-link" @click.prevent="openCustomerOrdersModal()"><i class="bi bi-box-seam text-danger"></i> Mis Pedidos</a>
+                    <a href="#catalog-section" class="nav-item-link" @click="selectedCategory = 'gaming'"><i class="bi bi-controller"></i> Zona Gamer</a>
+                    <a href="#official-brands" class="nav-item-link"><i class="bi bi-award"></i> Tiendas Oficiales</a>
+                </div>
+                <div class="d-none d-lg-block">
+                    <span class="text-success small fw-bold"><i class="bi bi-shield-check me-1"></i> Entregas en Cartagena de Indias</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Body Container -->
+    <main id="market-main" class="container-fluid px-lg-4 my-3">
+        <!-- Hero Section: Main Banner & Promotional Side Cards -->
+        <section class="market-hero-section mb-4">
+            <div class="row g-3">
+                <!-- Large Interactive Hero Banner -->
+                <div class="col-lg-8 col-xl-9">
+                    <div class="hero-slider-card">
+                        <div class="hero-content">
+                            <div class="hero-badge">
+                                <i class="bi bi-lightning-fill"></i> MEGA LIQUIDACIÓN DE TEMPORADA
+                            </div>
+                            <h1 class="hero-title">
+                                Tecnología, Moda & Hogar con hasta <span>80% OFF</span>
+                            </h1>
+                            <p class="hero-subtitle">
+                                Millones de artículos con envío gratis a tu puerta, garantía de reembolso total y cuotas sin interés.
+                            </p>
+                            <div class="d-flex flex-wrap gap-3">
+                                <a href="#flash-deals" class="btn btn-warning btn-lg fw-bold px-4 py-2 shadow">
+                                    <i class="bi bi-fire me-1"></i> Explorar Ofertas Flash
+                                </a>
+                                <a href="#catalog-section" class="btn btn-outline-light btn-lg fw-semibold px-4 py-2">
+                                    Ver Catálogo Completo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Side Cards (Coupons & Daily Highlight) -->
+                <div class="col-lg-4 col-xl-3">
+                    <div class="d-flex flex-column gap-3 h-100">
+                        <!-- Welcome Coupon Card -->
+                        <div class="hero-side-card coupon-card" id="coupons-section">
+                            <div>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="badge bg-danger text-white fw-bold">NUEVO USUARIO</span>
+                                    <i class="bi bi-gift-fill fs-4 text-danger"></i>
+                                </div>
+                                <h5 class="fw-bold mb-1">Bono de Bienvenida $10 USD</h5>
+                                <p class="small mb-2 opacity-75">Aplica en tu primera compra con el cupón <strong>BIENVENIDO10</strong>.</p>
+                            </div>
+                            <button type="button" class="btn btn-danger btn-sm w-100 fw-bold shadow-sm" @click="claimBannerCoupon('BIENVENIDO10')">
+                                <i class="bi bi-ticket-detailed me-1"></i> Reclamar Cupón
+                            </button>
+                        </div>
+
+                        <!-- Special Merchant Guarantee Card -->
+                        <div class="hero-side-card bg-primary text-white border-0">
+                            <div>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="badge bg-white text-primary fw-bold">GARANTÍA FULL</span>
+                                    <i class="bi bi-truck fs-3 text-warning"></i>
+                                </div>
+                                <h5 class="fw-bold mb-1">Entregas Ultra Rápidas</h5>
+                                <p class="small mb-2 text-white-50">Despacho garantizado en 24h para productos etiquetados FULL.</p>
+                            </div>
+                            <a href="#catalog-section" @click="freeShippingOnly = true" class="btn btn-light btn-sm text-primary fw-bold w-100">
+                                Ver Productos FULL
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Pillars Bar (Mercado Libre & Temu Guarantee) -->
+        <section class="trust-pillars-bar mb-4 shadow-sm">
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <div class="trust-item">
+                        <div class="trust-icon orange"><i class="bi bi-truck"></i></div>
+                        <div>
+                            <div class="trust-title">Envío Gratis Nacional</div>
+                            <div class="trust-desc">En pedidos mayores a $ 150.000 COP</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="trust-item">
+                        <div class="trust-icon green"><i class="bi bi-shield-check"></i></div>
+                        <div>
+                            <div class="trust-title">Compra 100% Segura</div>
+                            <div class="trust-desc">Protección y garantía en Colombia</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="trust-item">
+                        <div class="trust-icon blue"><i class="bi bi-credit-card"></i></div>
+                        <div>
+                            <div class="trust-title">Pagos Flexibles</div>
+                            <div class="trust-desc">Tarjetas, PSE, Nequi y Daviplata</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="trust-item">
+                        <div class="trust-icon purple"><i class="bi bi-headset"></i></div>
+                        <div>
+                            <div class="trust-title">Soporte 24/7</div>
+                            <div class="trust-desc">Atención al cliente en español</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Category Bubbles (Circular Cards) -->
+        <section class="mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h4 class="fw-bold mb-0"><i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i> Categorías Tecnológicas Populares</h4>
+                <a href="#catalog-section" @click="selectedCategory = 'all'" class="text-primary fw-semibold small text-decoration-none">Ver todas <i class="bi bi-chevron-right"></i></a>
+            </div>
+            <div class="row g-3 text-center">
+                <div class="col-4 col-sm-4 col-md-2">
+                    <a href="#catalog-section" @click="selectedCategory = 'electronics'; searchQuery = 'iphone'" class="category-bubble-card">
+                        <div class="bubble-icon"><i class="bi bi-phone"></i></div>
+                        <span class="bubble-title">Smartphones</span>
+                    </a>
+                </div>
+                <div class="col-4 col-sm-4 col-md-2">
+                    <a href="#catalog-section" @click="selectedCategory = 'electronics'; searchQuery = 'macbook'" class="category-bubble-card">
+                        <div class="bubble-icon"><i class="bi bi-laptop"></i></div>
+                        <span class="bubble-title">Portátiles</span>
+                    </a>
+                </div>
+                <div class="col-4 col-sm-4 col-md-2">
+                    <a href="#catalog-section" @click="selectedCategory = 'audio'" class="category-bubble-card">
+                        <div class="bubble-icon"><i class="bi bi-headphones"></i></div>
+                        <span class="bubble-title">Audio & HiFi</span>
+                    </a>
+                </div>
+                <div class="col-4 col-sm-4 col-md-2">
+                    <a href="#catalog-section" @click="selectedCategory = 'gaming'" class="category-bubble-card">
+                        <div class="bubble-icon"><i class="bi bi-controller"></i></div>
+                        <span class="bubble-title">Consolas & Gamer</span>
+                    </a>
+                </div>
+                <div class="col-4 col-sm-4 col-md-2">
+                    <a href="#catalog-section" @click="selectedCategory = 'electronics'; searchQuery = 'watch'" class="category-bubble-card">
+                        <div class="bubble-icon"><i class="bi bi-smartwatch"></i></div>
+                        <span class="bubble-title">Smartwatches</span>
+                    </a>
+                </div>
+                <div class="col-4 col-sm-4 col-md-2">
+                    <a href="#catalog-section" @click="selectedCategory = 'electronics'; searchQuery = 'dji'" class="category-bubble-card">
+                        <div class="bubble-icon"><i class="bi bi-camera"></i></div>
+                        <span class="bubble-title">Drones & Cámaras</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FLASH DEALS SECTION with Live Countdown (AliExpress / Temu Style) -->
+        <section id="flash-deals" class="mb-5">
+            <div class="card border-0 shadow-sm overflow-hidden">
+                <div class="flash-deals-header">
+                    <div class="flash-title">
+                        <i class="bi bi-lightning-charge-fill text-warning"></i>
+                        <span>OFERTAS RELÁMPAGO DE HOY</span>
+                        <span class="badge bg-warning text-dark fs-6 ms-2">Hasta 70% OFF</span>
+                    </div>
+                    <div class="countdown-box">
+                        <span class="small me-1 text-white-50">Termina en:</span>
+                        <span class="countdown-unit" x-text="flashCountdown.hours">08</span>
+                        <span class="colon">:</span>
+                        <span class="countdown-unit" x-text="flashCountdown.minutes">34</span>
+                        <span class="colon">:</span>
+                        <span class="countdown-unit" x-text="flashCountdown.seconds">52</span>
+                    </div>
+                </div>
+                <div class="card-body p-3 bg-body-tertiary">
+                    <div class="row g-3">
+                        <template x-for="item in flashDealsList.slice(0, 4)" :key="'flash-' + item.id">
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="market-product-card h-100">
+                                    <div class="card-img-wrapper">
+                                        <span class="badge-discount" x-text="'-' + item.discountPercent + '%'">-60%</span>
+                                        <span class="badge-full" x-show="item.isFullShipping"><i class="bi bi-lightning-fill"></i> FULL</span>
+                                        <button type="button" 
+                                                class="favorite-btn" 
+                                                :class="{ 'active': isInWishlist(item.id) }" 
+                                                @click="toggleWishlist(item)"
+                                                aria-label="Añadir a favoritos">
+                                            <i class="bi" :class="isInWishlist(item.id) ? 'bi-heart-fill text-danger' : 'bi-heart'"></i>
+                                        </button>
+                                        <img :src="item.image || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80'" :alt="item.name" class="product-img" loading="lazy" @error="$event.target.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80'">
+                                        <button type="button" class="quick-view-btn" @click="openQuickView(item)">
+                                            <i class="bi bi-eye me-1"></i> Vista Rápida
+                                        </button>
+                                    </div>
+                                    <div class="card-body-content">
+                                        <div class="product-category-tag" x-text="item.categoryLabel"></div>
+                                        <a href="#" class="product-title text-decoration-none" @click.prevent="openQuickView(item)" x-text="item.name"></a>
+                                        <div class="product-rating">
+                                            <span class="stars"><i class="bi bi-star-fill"></i> <span x-text="item.rating"></span></span>
+                                            <span class="review-count" x-text="'(' + item.reviewsCount + ')'"></span>
+                                            <span class="badge bg-success-subtle text-success ms-auto" x-text="item.salesCount + '+ vendidos'"></span>
+                                        </div>
+                                        <div class="price-wrapper">
+                                            <span class="current-price" x-text="formatPrice(item.price)"></span>
+                                            <span class="old-price" x-text="formatPrice(item.originalPrice)"></span>
+                                            <span class="installments-text">12x de <span x-text="formatPrice(item.price / 12)"></span> sin interés</span>
+                                        </div>
+                                        <!-- Stock bar -->
+                                        <div class="stock-progress-box">
+                                            <div class="progress">
+                                                <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" 
+                                                     role="progressbar" 
+                                                     :style="'width: ' + ((item.stockTotal - item.stockLeft) / item.stockTotal * 100) + '%'">
+                                                </div>
+                                            </div>
+                                            <div class="stock-label">
+                                                <span><i class="bi bi-fire text-danger"></i> ¡Solo quedan <strong x-text="item.stockLeft"></strong>!</span>
+                                                <span class="text-muted" x-text="Math.round((item.stockTotal - item.stockLeft) / item.stockTotal * 100) + '% vendido'"></span>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="add-cart-btn" @click="addToCart(item)">
+                                            <i class="bi bi-cart-plus me-1"></i> Añadir al Carrito
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MAIN MARKETPLACE CATALOG WITH LIVE FILTERS (Mercado Libre & AliExpress Layout) -->
+        <section id="catalog-section" class="mb-5">
+            <div class="row g-4">
+                <!-- Sidebar Filters -->
+                <div class="col-lg-3">
+                    <div class="card border shadow-sm p-3 sticky-top" style="top: 80px; z-index: 10;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-sliders me-2 text-primary"></i> Filtros</h5>
+                            <button type="button" class="btn btn-link btn-sm text-decoration-none p-0 text-danger" 
+                                    @click="selectedCategory = 'all'; priceFilter = 'all'; freeShippingOnly = false; onSaleOnly = false; minRating = 0; searchQuery = ''">
+                                Limpiar todo
+                            </button>
+                        </div>
+
+                        <!-- Categories Filter List -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Categoría</label>
+                            <div class="list-group list-group-flush border-0">
+                                <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 px-1 border-0"
+                                        :class="{ 'fw-bold text-primary': selectedCategory === 'all' }"
+                                        @click="selectedCategory = 'all'">
+                                    <span>Todas las categorías</span>
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill" x-text="products.length"></span>
+                                </button>
+                                <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 px-1 border-0"
+                                        :class="{ 'fw-bold text-primary': selectedCategory === 'electronics' }"
+                                        @click="selectedCategory = 'electronics'">
+                                    <span>Electrónica & Gadgets</span>
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill">3</span>
+                                </button>
+                                <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 px-1 border-0"
+                                        :class="{ 'fw-bold text-primary': selectedCategory === 'audio' }"
+                                        @click="selectedCategory = 'audio'">
+                                    <span>Audio & Auriculares</span>
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill">1</span>
+                                </button>
+                                <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 px-1 border-0"
+                                        :class="{ 'fw-bold text-primary': selectedCategory === 'gaming' }"
+                                        @click="selectedCategory = 'gaming'">
+                                    <span>Gamer & Computación</span>
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill">2</span>
+                                </button>
+                                <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 px-1 border-0"
+                                        :class="{ 'fw-bold text-primary': selectedCategory === 'home' }"
+                                        @click="selectedCategory = 'home'">
+                                    <span>Hogar & Cocina</span>
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill">2</span>
+                                </button>
+                                <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 px-1 border-0"
+                                        :class="{ 'fw-bold text-primary': selectedCategory === 'shoes' }"
+                                        @click="selectedCategory = 'shoes'">
+                                    <span>Calzado & Deportes</span>
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill">1</span>
+                                </button>
+                                <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 px-1 border-0"
+                                        :class="{ 'fw-bold text-primary': selectedCategory === 'beauty' }"
+                                        @click="selectedCategory = 'beauty'">
+                                    <span>Belleza</span>
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill">1</span>
+                                </button>
+                                <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 px-1 border-0"
+                                        :class="{ 'fw-bold text-primary': selectedCategory === 'tools' }"
+                                        @click="selectedCategory = 'tools'">
+                                    <span>Herramientas</span>
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill">1</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Price Range Filter (COP) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Rango de Precio (COP)</label>
+                            <div class="d-flex flex-column gap-1">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="priceRange" id="pr-all" value="all" x-model="priceFilter">
+                                    <label class="form-check-label small" for="pr-all">Cualquier precio</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="priceRange" id="pr-500k" value="under500k" x-model="priceFilter">
+                                    <label class="form-check-label small" for="pr-500k">Menos de $ 500.000 COP</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="priceRange" id="pr-2m" value="500kto2m" x-model="priceFilter">
+                                    <label class="form-check-label small" for="pr-2m">$ 500.000 a $ 2.000.000 COP</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="priceRange" id="pr-5m" value="2mto5m" x-model="priceFilter">
+                                    <label class="form-check-label small" for="pr-5m">$ 2.000.000 a $ 5.000.000 COP</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="priceRange" id="pr-over5m" value="over5m" x-model="priceFilter">
+                                    <label class="form-check-label small" for="pr-over5m">Más de $ 5.000.000 COP</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shipping & Deals Toggles -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Beneficios</label>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="freeShipSwitch" x-model="freeShippingOnly">
+                                <label class="form-check-label small fw-semibold text-success" for="freeShipSwitch">
+                                    <i class="bi bi-truck me-1"></i> Envío Gratis Solamente
+                                </label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="onSaleSwitch" x-model="onSaleOnly">
+                                <label class="form-check-label small fw-semibold text-danger" for="onSaleSwitch">
+                                    <i class="bi bi-percent me-1"></i> En Super Oferta (+40% OFF)
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Rating Filter -->
+                        <div>
+                            <label class="form-label fw-bold small text-uppercase text-muted">Calificación Mínima</label>
+                            <div class="d-flex flex-column gap-1">
+                                <button type="button" class="btn btn-sm text-start py-1 px-2" 
+                                        :class="minRating === 4.8 ? 'btn-primary' : 'btn-outline-secondary'"
+                                        @click="minRating = minRating === 4.8 ? 0 : 4.8">
+                                    <span class="text-warning">★★★★★</span> 4.8 o más
+                                </button>
+                                <button type="button" class="btn btn-sm text-start py-1 px-2" 
+                                        :class="minRating === 4.5 ? 'btn-primary' : 'btn-outline-secondary'"
+                                        @click="minRating = minRating === 4.5 ? 0 : 4.5">
+                                    <span class="text-warning">★★★★☆</span> 4.5 o más
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Grid & Sort Header -->
+                <div class="col-lg-9">
+                    <!-- Control Bar: Results count & Sorting -->
+                    <div class="card border shadow-sm p-3 mb-3 bg-body-tertiary">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div>
+                                <h5 class="fw-bold mb-0">
+                                    Explorar Productos
+                                    <span class="badge bg-primary-subtle text-primary fs-6 ms-1" x-text="filteredProducts.length + ' resultados'"></span>
+                                </h5>
+                                <small class="text-muted" x-show="searchQuery" x-text="'Búsqueda: ' + searchQuery"></small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="sortSelect" class="small fw-semibold text-muted text-nowrap">Ordenar por:</label>
+                                <select id="sortSelect" class="form-select form-select-sm" style="min-width: 170px;" x-model="sortBy">
+                                    <option value="featured">Recomendados</option>
+                                    <option value="price-low">Menor Precio</option>
+                                    <option value="price-high">Mayor Precio</option>
+                                    <option value="discount">Mayor Descuento</option>
+                                    <option value="sales">Más Vendidos</option>
+                                    <option value="rating">Mejor Calificación</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div class="row g-3">
+                        <!-- Empty State -->
+                        <div class="col-12 text-center py-5" x-show="filteredProducts.length === 0">
+                            <i class="bi bi-search fs-1 text-muted d-block mb-3"></i>
+                            <h4 class="fw-bold">No se encontraron productos</h4>
+                            <p class="text-muted">Intenta ajustando los filtros o cambiando tu término de búsqueda.</p>
+                            <button type="button" class="btn btn-primary" @click="selectedCategory = 'all'; priceFilter = 'all'; freeShippingOnly = false; onSaleOnly = false; minRating = 0; searchQuery = ''">
+                                Restablecer Filtros
+                            </button>
+                        </div>
+
+                        <!-- Product Cards Template -->
+                        <template x-for="item in filteredProducts" :key="item.id">
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <div class="market-product-card h-100">
+                                    <div class="card-img-wrapper">
+                                        <span class="badge-discount" x-text="'-' + item.discountPercent + '%'">-50%</span>
+                                        <span class="badge-full" x-show="item.isFullShipping"><i class="bi bi-lightning-fill"></i> FULL</span>
+                                        <button type="button" 
+                                                class="favorite-btn" 
+                                                :class="{ 'active': isInWishlist(item.id) }" 
+                                                @click="toggleWishlist(item)"
+                                                aria-label="Guardar en favoritos">
+                                            <i class="bi" :class="isInWishlist(item.id) ? 'bi-heart-fill text-danger' : 'bi-heart'"></i>
+                                        </button>
+                                        <img :src="item.image || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80'" :alt="item.name" class="product-img" loading="lazy" @error="$event.target.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80'">
+                                        <button type="button" class="quick-view-btn" @click="openQuickView(item)">
+                                            <i class="bi bi-eye me-1"></i> Vista Rápida
+                                        </button>
+                                    </div>
+                                    <div class="card-body-content">
+                                        <div class="product-category-tag" x-text="item.categoryLabel"></div>
+                                        <a href="#" class="product-title text-decoration-none" @click.prevent="openQuickView(item)" x-text="item.name"></a>
+                                        
+                                        <div class="product-rating">
+                                            <span class="stars"><i class="bi bi-star-fill"></i> <span x-text="item.rating"></span></span>
+                                            <a href="#" class="review-count text-decoration-none" @click.prevent.stop="openReviewsModal(item)" x-text="'(' + item.reviewsCount + ' reseñas)'" title="Ver opiniones"></a>
+                                            <span class="badge bg-secondary-subtle text-secondary ms-auto" x-text="item.salesCount + '+ vendidos'"></span>
+                                        </div>
+
+                                        <div class="price-wrapper">
+                                            <span class="current-price" x-text="formatPrice(item.price)"></span>
+                                            <span class="old-price" x-text="formatPrice(item.originalPrice)"></span>
+                                            <span class="installments-text">12x de <span x-text="formatPrice(item.price / 12)"></span> sin interés</span>
+                                            <span class="badge bg-success-subtle text-success small mt-1 d-inline-block" x-show="item.hasFreeShipping">
+                                                <i class="bi bi-truck me-1"></i> Envío Gratis
+                                            </span>
+                                        </div>
+
+                                        <button type="button" class="add-cart-btn mt-2" @click="addToCart(item)">
+                                            <i class="bi bi-cart-plus me-1"></i> Añadir al Carrito
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Official Brands / Verified Stores (Mercado Libre style) -->
+        <section id="official-brands" class="mb-5">
+            <div class="card border-0 shadow-sm p-4 bg-body-tertiary">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fw-bold mb-1"><i class="bi bi-award-fill text-warning me-2"></i> Tiendas Oficiales & Marcas Destacadas</h4>
+                        <p class="text-muted small mb-0">Productos 100% originales directos del fabricante con garantía de fábrica.</p>
+                    </div>
+                    <a href="#catalog-section" class="btn btn-outline-primary btn-sm fw-semibold">Ver Todas las Marcas</a>
+                </div>
+                <div class="row g-3 text-center">
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <div class="p-3 bg-body rounded-3 border shadow-sm h-100 d-flex flex-column align-items-center justify-content-center">
+                            <i class="bi bi-apple fs-1 text-secondary mb-2"></i>
+                            <span class="fw-bold small">Apple Store</span>
+                            <span class="badge bg-primary-subtle text-primary mt-1" style="font-size: 0.65rem;">Oficial</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <div class="p-3 bg-body rounded-3 border shadow-sm h-100 d-flex flex-column align-items-center justify-content-center">
+                            <i class="bi bi-laptop fs-1 text-primary mb-2"></i>
+                            <span class="fw-bold small">Samsung Tech</span>
+                            <span class="badge bg-primary-subtle text-primary mt-1" style="font-size: 0.65rem;">Oficial</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <div class="p-3 bg-body rounded-3 border shadow-sm h-100 d-flex flex-column align-items-center justify-content-center">
+                            <i class="bi bi-controller fs-1 text-danger mb-2"></i>
+                            <span class="fw-bold small">Sony PlayStation</span>
+                            <span class="badge bg-primary-subtle text-primary mt-1" style="font-size: 0.65rem;">Oficial</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <div class="p-3 bg-body rounded-3 border shadow-sm h-100 d-flex flex-column align-items-center justify-content-center">
+                            <i class="bi bi-smartwatch fs-1 text-success mb-2"></i>
+                            <span class="fw-bold small">Xiaomi Store</span>
+                            <span class="badge bg-primary-subtle text-primary mt-1" style="font-size: 0.65rem;">Oficial</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <div class="p-3 bg-body rounded-3 border shadow-sm h-100 d-flex flex-column align-items-center justify-content-center">
+                            <i class="bi bi-tag-fill fs-1 text-warning mb-2"></i>
+                            <span class="fw-bold small">Nike Sport</span>
+                            <span class="badge bg-primary-subtle text-primary mt-1" style="font-size: 0.65rem;">Oficial</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <div class="p-3 bg-body rounded-3 border shadow-sm h-100 d-flex flex-column align-items-center justify-content-center">
+                            <i class="bi bi-tools fs-1 text-info mb-2"></i>
+                            <span class="fw-bold small">Bosch Tools</span>
+                            <span class="badge bg-primary-subtle text-primary mt-1" style="font-size: 0.65rem;">Oficial</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- App Download & Big Promotion Banner (Temu style) -->
+        <section id="app-download" class="mb-5">
+            <div class="card border-0 text-white overflow-hidden shadow-lg" style="background: linear-gradient(135deg, #e65100 0%, #ff5722 50%, #ff8a65 100%);">
+                <div class="card-body p-4 p-md-5 position-relative">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <span class="badge bg-white text-danger fw-bold mb-3 px-3 py-2 fs-6">APP EXCLUSIVA</span>
+                            <h2 class="display-6 fw-bold mb-3">¡Descarga la App de OmniStore y obtén $15 USD extra de descuento!</h2>
+                            <p class="lead mb-4 text-white-75">Escanea el código QR o descarga desde tu tienda de aplicaciones favorita para recibir ofertas relámpago antes que nadie y seguimiento de envíos en tiempo real.</p>
+                            <div class="d-flex flex-wrap gap-3">
+                                <button type="button" class="btn btn-dark btn-lg d-flex align-items-center gap-2 fw-semibold px-4 py-2" @click="claimBannerCoupon('OMNI10')">
+                                    <i class="bi bi-google-play fs-4"></i> Google Play
+                                </button>
+                                <button type="button" class="btn btn-dark btn-lg d-flex align-items-center gap-2 fw-semibold px-4 py-2" @click="claimBannerCoupon('OMNI10')">
+                                    <i class="bi bi-apple fs-4"></i> App Store
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                            <div class="p-4 bg-white text-dark rounded-4 shadow d-inline-block">
+                                <i class="bi bi-qr-code fs-1 d-block mb-2 text-primary" style="font-size: 5rem !important;"></i>
+                                <span class="fw-bold small d-block">Escanear para Descargar</span>
+                                <small class="text-muted">iOS & Android</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer of the Marketplace -->
+    <footer class="bg-dark text-light pt-5 pb-4 mt-5">
+        <div class="container-fluid px-lg-4">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="brand-icon" style="width: 32px; height: 32px; background: #ff5722; color: #fff; border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-bag-check-fill"></i>
+                        </div>
+                        <h4 class="fw-bold text-white mb-0">OmniStore</h4>
+                    </div>
+                    <p class="text-secondary small mb-3">
+                        La plataforma de compras en línea líder con miles de productos en tecnología, moda, hogar y más. Compra segura garantizada y envíos directos a tu puerta.
+                    </p>
+                    <div class="d-flex gap-2">
+                        <a href="./index.html" class="btn btn-outline-warning btn-sm fw-semibold">
+                            <i class="bi bi-speedometer2 me-1"></i> Administrar Tienda (Panel Admin)
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-2">
+                    <h6 class="fw-bold text-white mb-3">Comprar</h6>
+                    <ul class="list-unstyled small text-secondary d-flex flex-column gap-2">
+                        <li><a href="#flash-deals" class="text-secondary text-decoration-none">Ofertas Flash</a></li>
+                        <li><a href="#catalog-section" class="text-secondary text-decoration-none">Más Vendidos</a></li>
+                        <li><a href="#catalog-section" class="text-secondary text-decoration-none">Envío Full</a></li>
+                        <li><a href="#coupons-section" class="text-secondary text-decoration-none">Cupones</a></li>
+                        <li><a href="#official-brands" class="text-secondary text-decoration-none">Tiendas Oficiales</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-6 col-lg-2">
+                    <h6 class="fw-bold text-white mb-3">Atención al Cliente</h6>
+                    <ul class="list-unstyled small text-secondary d-flex flex-column gap-2">
+                        <li><a href="./help.html" class="text-secondary text-decoration-none">Centro de Ayuda</a></li>
+                        <li><a href="./orders.html" class="text-secondary text-decoration-none">Rastrear Pedido</a></li>
+                        <li><a href="./help.html" class="text-secondary text-decoration-none">Garantía y Devolución</a></li>
+                        <li><a href="./help.html" class="text-secondary text-decoration-none">Reportar un Problema</a></li>
+                        <li><a href="./messages.html" class="text-secondary text-decoration-none">Chat con Soporte</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-6 col-lg-2">
+                    <h6 class="fw-bold text-white mb-3">Vender con Nosotros</h6>
+                    <ul class="list-unstyled small text-secondary d-flex flex-column gap-2">
+                        <li><a href="./register.html" class="text-secondary text-decoration-none">Registrarse como Vendedor</a></li>
+                        <li><a href="./products.html" class="text-secondary text-decoration-none">Gestión de Catálogo</a></li>
+                        <li><a href="./analytics.html" class="text-secondary text-decoration-none">Métricas de Venta</a></li>
+                        <li><a href="./reports.html" class="text-secondary text-decoration-none">Facturación</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-6 col-lg-2">
+                    <h6 class="fw-bold text-white mb-3">Métodos de Pago</h6>
+                    <div class="d-flex flex-wrap gap-2 text-secondary fs-4">
+                        <i class="bi bi-credit-card" title="Tarjetas"></i>
+                        <i class="bi bi-paypal" title="PayPal"></i>
+                        <i class="bi bi-cash-coin" title="Efectivo / Transferencia"></i>
+                        <i class="bi bi-shield-lock" title="SSL Seguro"></i>
+                    </div>
+                    <small class="text-secondary d-block mt-2">Pagos encriptados con seguridad bancaria de 256 bits.</small>
+                </div>
+            </div>
+
+            <hr class="border-secondary opacity-25">
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center small text-secondary gap-2">
+                <div>© 2026 OmniStore Marketplace. Todos los derechos reservados.</div>
+                <div class="d-flex gap-3">
+                    <a href="#" class="text-secondary text-decoration-none">Términos y Condiciones</a>
+                    <a href="#" class="text-secondary text-decoration-none">Privacidad</a>
+                    <a href="#" class="text-secondary text-decoration-none">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Sticky Bottom Navigation -->
+    <div class="market-mobile-nav">
+        <a href="#market-main" class="mobile-nav-item active">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="#catalog-section" class="mobile-nav-item" @click="selectedCategory = 'all'">
+            <i class="bi bi-grid-fill"></i>
+            <span>Categorías</span>
+        </a>
+        <a href="#flash-deals" class="mobile-nav-item">
+            <i class="bi bi-lightning-charge-fill text-danger"></i>
+            <span>Ofertas</span>
+        </a>
+        <a href="#catalog-section" class="mobile-nav-item">
+            <i class="bi bi-heart"></i>
+            <span class="badge-mobile" x-show="wishlist.length > 0" x-text="wishlist.length"></span>
+            <span>Favoritos</span>
+        </a>
+        <a href="#" class="mobile-nav-item" @click.prevent="openCartDrawer()">
+            <i class="bi bi-cart3 text-primary"></i>
+            <span class="badge-mobile" x-show="cartItemsCount > 0" x-text="cartItemsCount"></span>
+            <span>Carrito</span>
+        </a>
+    </div>
+
+    <!-- OFFCANVAS SHOPPING CART DRAWER -->
+    <div class="offcanvas offcanvas-end market-cart-drawer" tabindex="-1" id="marketCartDrawer" aria-labelledby="cartDrawerLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title fw-bold" id="cartDrawerLabel">
+                <i class="bi bi-cart3 text-danger me-2"></i> Mi Carrito de Compras 
+                <span class="badge bg-danger rounded-pill fs-6 ms-1" x-text="cartItemsCount">0</span>
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column justify-content-between p-3">
+            <!-- Free Shipping Progress Bar -->
+            <div class="free-shipping-progress" x-show="cart.length > 0">
+                <div class="d-flex justify-content-between align-items-center fs-text">
+                    <span x-show="amountToFreeShipping > 0">
+                        <i class="bi bi-truck text-primary me-1"></i> Agrega <strong><span x-text="formatPrice(amountToFreeShipping)"></span></strong> más para <strong>Envío Gratis</strong>
+                    </span>
+                    <span class="text-success fw-bold" x-show="amountToFreeShipping <= 0">
+                        <i class="bi bi-check-circle-fill me-1"></i> ¡Tienes Envío Gratis asegurado!
+                    </span>
+                    <span class="small text-muted" x-text="freeShippingProgressPercent + '%'"></span>
+                </div>
+                <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-success progress-bar-striped" role="progressbar" :style="'width: ' + freeShippingProgressPercent + '%'"></div>
+                </div>
+            </div>
+
+            <!-- Cart Items List -->
+            <div class="flex-grow-1 overflow-y-auto mb-3">
+                <div class="text-center py-5 text-muted" x-show="cart.length === 0">
+                    <i class="bi bi-cart-x fs-1 d-block mb-3 text-secondary"></i>
+                    <h5 class="fw-bold">Tu carrito está vacío</h5>
+                    <p class="small">Explora nuestras increíbles ofertas y añade productos para comenzar.</p>
+                    <button type="button" class="btn btn-danger btn-sm fw-bold" data-bs-dismiss="offcanvas">
+                        Ver Ofertas Ahora
+                    </button>
+                </div>
+
+                <template x-for="(item, index) in cart" :key="'cart-item-' + index">
+                    <div class="cart-item-row">
+                        <img :src="item.image || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80'" :alt="item.name" class="cart-item-img" @error="$event.target.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80'">
+                        <div class="cart-item-info">
+                            <div class="cart-item-title text-truncate" x-text="item.name"></div>
+                            <div class="small text-muted mb-1" x-show="item.selectedColor">
+                                Variante: <span x-text="item.selectedColor"></span> <span x-show="item.selectedSize" x-text="'/ ' + item.selectedSize"></span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span class="cart-item-price" x-text="formatPrice(item.price)"></span>
+                                <div class="qty-control">
+                                    <button type="button" @click="updateCartQty(index, -1)" aria-label="Disminuir"><i class="bi bi-dash"></i></button>
+                                    <input type="text" readonly :value="item.quantity" aria-label="Cantidad">
+                                    <button type="button" @click="updateCartQty(index, 1)" aria-label="Aumentar"><i class="bi bi-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-link text-danger p-0 align-self-start" @click="removeFromCart(index)" title="Eliminar producto" aria-label="Eliminar producto">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Cart Footer: Coupon, Totals & Checkout Button -->
+            <div class="border-top pt-3" x-show="cart.length > 0">
+                <!-- Promo Coupon Input -->
+                <div class="input-group input-group-sm mb-3" x-show="!appliedCoupon">
+                    <input type="text" class="form-control" placeholder="Código de cupón (Ej: OMNI10)" x-model="couponInput" aria-label="Cupón de descuento">
+                    <button class="btn btn-outline-danger" type="button" @click="applyCouponCode()">Aplicar</button>
+                </div>
+                <div class="alert alert-success py-1 px-2 d-flex justify-content-between align-items-center small mb-3" x-show="appliedCoupon">
+                    <span><i class="bi bi-tag-fill me-1"></i> <strong x-text="appliedCoupon ? appliedCoupon.code : ''"></strong>: <span x-text="appliedCoupon ? appliedCoupon.label : ''"></span></span>
+                    <button type="button" class="btn-close btn-close-sm" @click="removeCoupon()" aria-label="Quitar cupón"></button>
+                </div>
+
+                <!-- Price Breakdown -->
+                <div class="d-flex justify-content-between small text-muted mb-1">
+                    <span>Subtotal:</span>
+                    <span x-text="formatPrice(cartSubtotal)"></span>
+                </div>
+                <div class="d-flex justify-content-between small text-success mb-1" x-show="calculatedDiscount > 0">
+                    <span>Descuento Aplicado:</span>
+                    <span x-text="'- ' + formatPrice(calculatedDiscount)"></span>
+                </div>
+                <div class="d-flex justify-content-between small text-muted mb-2">
+                    <span>Envío:</span>
+                    <span class="text-success fw-bold" x-show="shippingCost === 0">GRATIS</span>
+                    <span x-show="shippingCost > 0" x-text="formatPrice(shippingCost)"></span>
+                </div>
+                <div class="d-flex justify-content-between fs-5 fw-bold mb-3 border-top pt-2">
+                    <span>Total Estimado:</span>
+                    <span class="text-danger" x-text="formatPrice(cartTotal)"></span>
+                </div>
+
+                <button type="button" class="btn btn-danger btn-lg w-100 fw-bold shadow" @click="openCheckout()">
+                    <i class="bi bi-lock-fill me-1"></i> Proceder al Pago Seguro
+                </button>
+                <div class="text-center text-muted small mt-2">
+                    <i class="bi bi-shield-check text-success"></i> Pago protegido con cifrado SSL de 256 bits.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK VIEW MODAL -->
+    <div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" x-show="quickViewProduct">
+                <div class="modal-header border-0 pb-0">
+                    <span class="badge bg-danger" x-text="quickViewProduct ? quickViewProduct.badgeText : ''"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4" x-show="quickViewProduct">
+                    <div class="row g-4">
+                        <div class="col-md-6 text-center">
+                            <div class="p-3 bg-body-tertiary rounded-3 border mb-2">
+                                <img :src="(quickViewProduct ? quickViewProduct.image : '') || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80'" :alt="quickViewProduct ? quickViewProduct.name : ''" class="img-fluid" style="max-height: 280px; object-fit: contain;" @error="$event.target.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80'">
+                            </div>
+                            <div class="d-flex justify-content-center gap-2">
+                                <span class="badge bg-success-subtle text-success p-2"><i class="bi bi-shield-check"></i> Garantía 2 Años</span>
+                                <span class="badge bg-info-subtle text-info p-2"><i class="bi bi-arrow-repeat"></i> Devolución Gratis</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted text-uppercase fw-semibold" x-text="quickViewProduct ? quickViewProduct.categoryLabel : ''"></small>
+                            <h4 class="fw-bold my-2" x-text="quickViewProduct ? quickViewProduct.name : ''"></h4>
+                            
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <span class="text-warning"><i class="bi bi-star-fill"></i> <strong x-text="quickViewProduct ? quickViewProduct.rating : ''"></strong></span>
+                                <a href="#" class="text-primary small fw-semibold text-decoration-none" @click.prevent="openReviewsModal(quickViewProduct)" x-text="quickViewProduct ? '(' + quickViewProduct.reviewsCount + ' reseñas / Calificar)' : ''"></a>
+                                <span class="badge bg-secondary-subtle text-secondary" x-text="quickViewProduct ? quickViewProduct.salesCount + ' vendidos' : ''"></span>
+                            </div>
+
+                            <div class="mb-3 p-2 bg-danger-subtle rounded-2">
+                                <div class="d-flex align-items-baseline gap-2">
+                                    <span class="fs-3 fw-bold text-danger" x-text="quickViewProduct ? formatPrice(quickViewProduct.price) : ''"></span>
+                                    <span class="text-muted text-decoration-line-through" x-text="quickViewProduct ? formatPrice(quickViewProduct.originalPrice) : ''"></span>
+                                    <span class="badge bg-danger text-white" x-text="quickViewProduct ? '-' + quickViewProduct.discountPercent + '%' : ''"></span>
+                                </div>
+                                <small class="text-danger fw-semibold d-block mt-1"><i class="bi bi-lightning-fill"></i> ¡Ahorras <span x-text="quickViewProduct ? formatPrice(quickViewProduct.originalPrice - quickViewProduct.price) : ''"></span> en esta compra!</small>
+                            </div>
+
+                            <p class="small text-muted mb-3" x-text="quickViewProduct ? quickViewProduct.description : ''"></p>
+
+                            <!-- Color selector -->
+                            <div class="mb-3" x-show="quickViewProduct && quickViewProduct.colors && quickViewProduct.colors.length > 0">
+                                <label class="form-label small fw-bold mb-1">Color / Modelo:</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <template x-for="col in (quickViewProduct ? quickViewProduct.colors : [])" :key="col">
+                                        <button type="button" class="btn btn-sm" 
+                                                :class="selectedColor === col ? 'btn-danger' : 'btn-outline-secondary'"
+                                                @click="selectedColor = col"
+                                                x-text="col"></button>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Size selector -->
+                            <div class="mb-3" x-show="quickViewProduct && quickViewProduct.sizes && quickViewProduct.sizes.length > 0">
+                                <label class="form-label small fw-bold mb-1">Talla / Versión:</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <template x-for="sz in (quickViewProduct ? quickViewProduct.sizes : [])" :key="sz">
+                                        <button type="button" class="btn btn-sm" 
+                                                :class="selectedSize === sz ? 'btn-danger' : 'btn-outline-secondary'"
+                                                @click="selectedSize = sz"
+                                                x-text="sz"></button>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Quantity & Action Buttons -->
+                            <div class="d-flex align-items-center gap-3 mt-4">
+                                <div class="input-group" style="width: 120px;">
+                                    <button class="btn btn-outline-secondary" type="button" @click="if (quickViewQty > 1) quickViewQty--"><i class="bi bi-dash"></i></button>
+                                    <input type="text" class="form-control text-center fw-bold" :value="quickViewQty" readonly>
+                                    <button class="btn btn-outline-secondary" type="button" @click="quickViewQty++"><i class="bi bi-plus"></i></button>
+                                </div>
+                                <button type="button" class="btn btn-outline-danger flex-grow-1 fw-bold py-2" @click="addQuickViewToCartAndClose(false)">
+                                    <i class="bi bi-cart-plus me-1"></i> Añadir al Carrito
+                                </button>
+                                <button type="button" class="btn btn-danger flex-grow-1 fw-bold py-2 shadow" @click="addQuickViewToCartAndClose(true)">
+                                    <i class="bi bi-bag-check-fill me-1"></i> Comprar Ahora
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHECKOUT MODAL (Fast Payment Gateway for Cartagena) -->
+    <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold" id="checkoutModalLabel">
+                        <i class="bi bi-shield-lock-fill me-2"></i> Finalizar Compra Segura en Cartagena
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-4">
+                        <!-- Left Column: Shipping & Payment form -->
+                        <div class="col-lg-7">
+                            <h6 class="fw-bold mb-3"><i class="bi bi-geo-alt-fill text-danger me-1"></i> 1. Datos de Entrega en Cartagena de Indias</h6>
+                            <div class="row g-2 mb-4">
+                                <div class="col-12">
+                                    <label class="form-label small fw-semibold">Nombre y Apellidos</label>
+                                    <input type="text" class="form-control form-control-sm" placeholder="Ej: Santiago Rodríguez Gómez" x-model="checkoutForm.name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Correo Electrónico</label>
+                                    <input type="email" class="form-control form-control-sm" placeholder="santiago@ejemplo.com" x-model="checkoutForm.email" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Teléfono Celular / WhatsApp</label>
+                                    <input type="tel" class="form-control form-control-sm" placeholder="+57 312 456 7890" x-model="checkoutForm.phone">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Sector / Barrio en Cartagena</label>
+                                    <select class="form-select form-select-sm" x-model="checkoutForm.neighborhood">
+                                        <option value="Bocagrande">Bocagrande</option>
+                                        <option value="Castillogrande">Castillogrande</option>
+                                        <option value="El Laguito">El Laguito</option>
+                                        <option value="Manga">Manga</option>
+                                        <option value="Centro Histórico">Centro Histórico</option>
+                                        <option value="Getsemaní">Getsemaní</option>
+                                        <option value="Crespo">Crespo</option>
+                                        <option value="Marbella">Marbella</option>
+                                        <option value="El Cabrero">El Cabrero</option>
+                                        <option value="Pie de la Popa">Pie de la Popa</option>
+                                        <option value="El Bosque">El Bosque</option>
+                                        <option value="Los Alpes">Los Alpes</option>
+                                        <option value="La Castellana">La Castellana</option>
+                                        <option value="Providencia">Providencia</option>
+                                        <option value="Santa Lucía">Santa Lucía</option>
+                                        <option value="Turbaco">Turbaco (Zona Conurbada)</option>
+                                        <option value="Mamonal">Mamonal (Zona Industrial)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Ciudad / Departamento</label>
+                                    <input type="text" class="form-control form-control-sm" value="Cartagena de Indias (Bolívar)" readonly>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-semibold">Dirección de Entrega Exacta</label>
+                                    <input type="text" class="form-control form-control-sm" placeholder="Ej: Cra 3 # 7-15, Edificio Bahía, Apto 502" x-model="checkoutForm.address" required>
+                                </div>
+                            </div>
+
+                            <h6 class="fw-bold mb-3"><i class="bi bi-credit-card-fill text-primary me-1"></i> 2. Método de Pago Seguro</h6>
+                            <div class="d-flex flex-column gap-2 mb-3">
+                                <label class="p-2 border rounded-3 d-flex align-items-center gap-2 cursor-pointer" :class="{ 'border-danger bg-danger-subtle': checkoutForm.paymentMethod === 'card' }">
+                                    <input type="radio" name="payMethod" value="card" x-model="checkoutForm.paymentMethod">
+                                    <i class="bi bi-credit-card fs-5 text-primary"></i>
+                                    <span class="small fw-bold">Tarjeta de Crédito / Débito (Visa, Mastercard, Diners)</span>
+                                </label>
+                                <label class="p-2 border rounded-3 d-flex align-items-center gap-2 cursor-pointer" :class="{ 'border-danger bg-danger-subtle': checkoutForm.paymentMethod === 'pse' }">
+                                    <input type="radio" name="payMethod" value="pse" x-model="checkoutForm.paymentMethod">
+                                    <i class="bi bi-bank fs-5 text-primary"></i>
+                                    <span class="small fw-bold">PSE / Cuentas Bancolombia, Davivienda, etc.</span>
+                                </label>
+                                <label class="p-2 border rounded-3 d-flex align-items-center gap-2 cursor-pointer" :class="{ 'border-danger bg-danger-subtle': checkoutForm.paymentMethod === 'nequi' }">
+                                    <input type="radio" name="payMethod" value="nequi" x-model="checkoutForm.paymentMethod">
+                                    <i class="bi bi-phone-fill fs-5 text-purple" style="color: #8b5cf6;"></i>
+                                    <span class="small fw-bold">Nequi / Daviplata / Billeteras Digitales</span>
+                                </label>
+                                <label class="p-2 border rounded-3 d-flex align-items-center gap-2 cursor-pointer" :class="{ 'border-danger bg-danger-subtle': checkoutForm.paymentMethod === 'mercadopago' }">
+                                    <input type="radio" name="payMethod" value="mercadopago" x-model="checkoutForm.paymentMethod">
+                                    <i class="bi bi-cash-stack fs-5 text-success"></i>
+                                    <span class="small fw-bold">Efecty / Pago Contraentrega en Cartagena</span>
+                                </label>
+                            </div>
+
+                            <!-- Mock Card Fields -->
+                            <div class="p-3 bg-body-tertiary rounded-3 border mb-3" x-show="checkoutForm.paymentMethod === 'card'">
+                                <div class="mb-2">
+                                    <label class="form-label small fw-semibold">Número de Tarjeta</label>
+                                    <input type="text" class="form-control form-control-sm" placeholder="4532 •••• •••• 8892" x-model="checkoutForm.cardNumber">
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <label class="form-label small fw-semibold">Vencimiento (MM/AA)</label>
+                                        <input type="text" class="form-control form-control-sm" placeholder="12/28" x-model="checkoutForm.cardExp">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small fw-semibold">CVC / CVV</label>
+                                        <input type="text" class="form-control form-control-sm" placeholder="892" x-model="checkoutForm.cardCvc">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Order Summary -->
+                        <div class="col-lg-5">
+                            <div class="card bg-body-tertiary border p-3">
+                                <h6 class="fw-bold mb-3 border-bottom pb-2">Resumen del Pedido (<span x-text="cartItemsCount"></span>)</h6>
+                                <div class="overflow-y-auto mb-3" style="max-height: 180px;">
+                                    <template x-for="it in cart" :key="'summary-' + it.id">
+                                        <div class="d-flex justify-content-between align-items-center small py-1 border-bottom">
+                                            <span class="text-truncate" style="max-width: 150px;" x-text="it.name"></span>
+                                            <span class="fw-semibold text-nowrap" x-text="it.quantity + 'x ' + formatPrice(it.price)"></span>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="d-flex justify-content-between small text-muted mb-1">
+                                    <span>Subtotal:</span>
+                                    <span x-text="formatPrice(cartSubtotal)"></span>
+                                </div>
+                                <div class="d-flex justify-content-between small text-success mb-1" x-show="calculatedDiscount > 0">
+                                    <span>Descuento (<span x-text="appliedCoupon ? appliedCoupon.code : ''"></span>):</span>
+                                    <span x-text="'- ' + formatPrice(calculatedDiscount)"></span>
+                                </div>
+                                <div class="d-flex justify-content-between small text-muted mb-2">
+                                    <span>Envío Cartagena:</span>
+                                    <span class="text-success fw-bold" x-show="shippingCost === 0">GRATIS</span>
+                                    <span x-show="shippingCost > 0" x-text="formatPrice(shippingCost)"></span>
+                                </div>
+                                <div class="d-flex justify-content-between fs-5 fw-bold border-top pt-2 mb-3">
+                                    <span>Total a Pagar:</span>
+                                    <span class="text-danger" x-text="formatPrice(cartTotal)"></span>
+                                </div>
+
+                                <button type="button" class="btn btn-danger w-100 fw-bold py-2 shadow" :disabled="isProcessingPayment" @click="processCheckoutOrder()">
+                                    <span x-show="!isProcessingPayment"><i class="bi bi-check-circle-fill me-1"></i> Pagar y Confirmar Pedido</span>
+                                    <span x-show="isProcessingPayment" class="spinner-border spinner-border-sm me-2"></span>
+                                    <span x-show="isProcessingPayment">Procesando pago seguro...</span>
+                                </button>
+                                <small class="text-muted text-center mt-2 d-block" style="font-size: 0.7rem;">
+                                    Factura electrónica DIAN emitida automáticamente con entrega en Cartagena.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOMER ORDERS MODAL ("Mis Pedidos") -->
+    <div class="modal fade" id="customerOrdersModal" tabindex="-1" aria-labelledby="customerOrdersModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-box-seam-fill text-warning fs-4"></i>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="customerOrdersModalLabel">Mis Pedidos & Envíos</h5>
+                            <small class="text-white-50">Consulta tus compras y rastrea tus despachos en Cartagena</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- State: No Orders -->
+                    <div class="text-center py-5" x-show="customerOrders.length === 0">
+                        <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
+                        <h5 class="fw-bold">Aún no tienes pedidos registrados</h5>
+                        <p class="text-muted small">Explora el catálogo y realiza tu primera compra con entrega en Cartagena.</p>
+                        <button type="button" class="btn btn-danger btn-sm fw-bold" data-bs-dismiss="modal">
+                            Ver Catálogo
+                        </button>
+                    </div>
+
+                    <!-- Orders List -->
+                    <div class="d-flex flex-column gap-3" x-show="customerOrders.length > 0">
+                        <template x-for="order in customerOrders" :key="order.id">
+                            <div class="card border shadow-sm p-3">
+                                <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom pb-2 mb-2 gap-2">
+                                    <div>
+                                        <span class="badge bg-primary fs-6 fw-bold" x-text="order.orderNumber"></span>
+                                        <small class="text-muted ms-2" x-text="'Fecha: ' + order.orderDate"></small>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge" 
+                                              :class="order.status === 'delivered' ? 'bg-success' : (order.status === 'shipped' ? 'bg-info' : 'bg-warning')"
+                                              x-text="order.status === 'delivered' ? 'Entregado' : (order.status === 'shipped' ? 'En Ruta' : 'En Preparación')"></span>
+                                        <button type="button" class="btn btn-outline-primary btn-sm py-1 px-2" @click="viewOrderDetail(order)">
+                                            <i class="bi bi-eye me-1"></i>Detalles
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row g-2 align-items-center">
+                                    <div class="col-md-7">
+                                        <div class="small text-muted mb-1">
+                                            <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                                            <span x-text="order.shippingAddress || 'Cartagena de Indias'"></span>
+                                        </div>
+                                        <div class="small text-muted">
+                                            <i class="bi bi-credit-card me-1"></i>
+                                            <span x-text="order.paymentMethod"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 text-md-end">
+                                        <small class="text-muted d-block" x-text="order.itemCount + ' artículo(s)'"></small>
+                                        <strong class="fs-5 text-danger" x-text="formatPrice(order.total)"></strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCT REVIEWS & RATINGS MODAL -->
+    <div class="modal fade" id="productReviewsModal" tabindex="-1" aria-labelledby="productReviewsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-danger text-white">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-star-fill text-warning fs-4"></i>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="productReviewsModalLabel">Opiniones y Calificaciones</h5>
+                            <small class="text-white-75" x-text="reviewProduct ? reviewProduct.name : 'Producto OmniStore'"></small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Rating Summary Card -->
+                    <div class="p-3 bg-body-tertiary rounded-3 border mb-4 d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="display-5 fw-bold text-danger" x-text="reviewProduct ? reviewProduct.rating : '5.0'"></div>
+                            <div>
+                                <div class="text-warning fs-5">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-half"></i>
+                                </div>
+                                <small class="text-muted" x-text="(reviewProduct ? reviewProduct.reviewsCount : productReviewsList.length) + ' calificaciones verificadas en Cartagena'"></small>
+                            </div>
+                        </div>
+                        <span class="badge bg-success-subtle text-success p-2">
+                            <i class="bi bi-patch-check-fill me-1"></i> Compradores 100% Satisfechos
+                        </span>
+                    </div>
+
+                    <!-- Add New Review Form -->
+                    <div class="card border-primary-subtle shadow-sm mb-4">
+                        <div class="card-header bg-primary-subtle py-2">
+                            <h6 class="fw-bold mb-0 text-primary">
+                                <i class="bi bi-pencil-square me-1"></i> Deja tu Calificación y Opinión
+                            </h6>
+                        </div>
+                        <div class="card-body p-3">
+                            <!-- If not authenticated -->
+                            <div class="alert alert-info py-2 px-3 small mb-2" x-show="!currentUser">
+                                <i class="bi bi-info-circle-fill me-1"></i> 
+                                Debes <a href="./login.html?redirect=marketplace.html" class="fw-bold text-primary">iniciar sesión</a> o <a href="./register.html?redirect=marketplace.html" class="fw-bold text-primary">registrarte</a> para publicar una reseña.
+                            </div>
+
+                            <!-- Star Rating Selector -->
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold mb-1">Tu Puntuación:</label>
+                                <div class="d-flex gap-2 text-warning fs-4 cursor-pointer">
+                                    <template x-for="star in [1, 2, 3, 4, 5]" :key="'star-' + star">
+                                        <i class="bi" 
+                                           :class="star <= newReviewRating ? 'bi-star-fill' : 'bi-star'" 
+                                           @click="newReviewRating = star"
+                                           :title="star + ' estrellas'"></i>
+                                    </template>
+                                    <span class="small text-muted ms-2 align-self-center" x-text="newReviewRating + ' de 5 estrellas'"></span>
+                                </div>
+                            </div>
+
+                            <!-- Comment Input -->
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold mb-1">Tu Comentario / Reseña:</label>
+                                <textarea class="form-control" rows="3" 
+                                          placeholder="Cuéntanos qué te pareció el producto, su calidad y los tiempos de entrega en Cartagena..." 
+                                          x-model="newReviewComment" 
+                                          :disabled="!currentUser"></textarea>
+                            </div>
+
+                            <button type="button" class="btn btn-primary btn-sm fw-bold px-4" 
+                                    :disabled="!currentUser || isSubmittingReview" 
+                                    @click="submitProductReview()">
+                                <span x-show="!isSubmittingReview"><i class="bi bi-send-fill me-1"></i> Publicar Reseña</span>
+                                <span x-show="isSubmittingReview" class="spinner-border spinner-border-sm me-1"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Reviews List -->
+                    <h6 class="fw-bold mb-3">Opiniones de Clientes en Cartagena (<span x-text="productReviewsList.length"></span>)</h6>
+                    <div class="d-flex flex-column gap-3">
+                        <template x-for="rev in productReviewsList" :key="rev.id">
+                            <div class="p-3 border rounded-3 bg-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <strong class="text-dark" x-text="rev.author"></strong>
+                                        <span class="badge bg-success-subtle text-success ms-2" style="font-size: 0.65rem;"><i class="bi bi-check2"></i> Compra Verificada</span>
+                                        <small class="text-muted d-block" style="font-size: 0.75rem;" x-text="rev.city || 'Cartagena de Indias'"></small>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="text-warning small">
+                                            <template x-for="s in (rev.rating || 5)" :key="'r-star-' + s">
+                                                <i class="bi bi-star-fill"></i>
+                                            </template>
+                                        </div>
+                                        <small class="text-muted" style="font-size: 0.7rem;" x-text="rev.date"></small>
+                                    </div>
+                                </div>
+                                <p class="small text-secondary mb-0" x-text="rev.comment"></p>
+                            </div>
+                        </template>
+
+                        <div class="text-center py-4 text-muted small" x-show="productReviewsList.length === 0">
+                            <i class="bi bi-chat-left-dots fs-3 d-block mb-1"></i>
+                            Sé el primero en dejar una opinión sobre este producto en Cartagena.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase Connection Modal -->
+    <div class="modal fade" id="supabaseModal" tabindex="-1" aria-labelledby="supabaseModalLabel" aria-hidden="true" x-data="supabaseConnection">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-dark text-white">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-database-fill-gear text-success fs-4"></i>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="supabaseModalLabel">Conexión Supabase PostgreSQL</h5>
+                            <small class="text-white-50">Base de datos en la nube con sincronización Realtime</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Current Status Alert -->
+                    <div class="d-flex align-items-center justify-content-between p-3 rounded-3 mb-4 border"
+                         :class="isConnected ? 'bg-success-subtle border-success text-success-emphasis' : 'bg-warning-subtle border-warning text-warning-emphasis'">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi fs-2" :class="isConnected ? 'bi-check-circle-fill text-success' : 'bi-exclamation-triangle-fill text-warning'"></i>
+                            <div>
+                                <strong class="d-block" x-text="isConnected ? 'Conectado a PostgreSQL (Supabase Cloud)' : 'Operando en Modo Local (LocalStorage)'"></strong>
+                                <small x-text="isConnected ? 'Los cambios en productos y ventas se sincronizan en tu base de datos PostgreSQL en tiempo real.' : 'Para conectar tu base de datos PostgreSQL, ingresa tus credenciales de supabase.com abajo.'"></small>
+                            </div>
+                        </div>
+                        <template x-if="isConnected">
+                            <span class="badge bg-success">En Línea</span>
+                        </template>
+                    </div>
+
+                    <!-- Connection Form -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Supabase Project URL <span class="text-danger">*</span></label>
+                            <input type="url" 
+                                   class="form-control font-monospace" 
+                                   placeholder="https://xyzabcdefg.supabase.co" 
+                                   x-model="url" 
+                                   required>
+                            <div class="form-text">Disponible en: Supabase Dashboard &gt; Project Settings &gt; API &gt; Project URL</div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Supabase Anon Key (Public Key) <span class="text-danger">*</span></label>
+                            <textarea class="form-control font-monospace" 
+                                      rows="2" 
+                                      placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." 
+                                      x-model="anonKey" 
+                                      required></textarea>
+                            <div class="form-text">Disponible en: Supabase Dashboard &gt; Project Settings &gt; API &gt; anon public key</div>
+                        </div>
+                    </div>
+
+                    <!-- Test Result Box -->
+                    <template x-if="testResult">
+                        <div class="alert mb-4 d-flex align-items-start gap-2" :class="testResult.success ? 'alert-success' : 'alert-danger'">
+                            <i class="bi fs-5 mt-n1" :class="testResult.success ? 'bi-check-circle-fill' : 'bi-x-circle-fill'"></i>
+                            <div x-text="testResult.message"></div>
+                        </div>
+                    </template>
+
+                    <!-- Instructions Accordion / Card -->
+                    <div class="card bg-light border p-3">
+                        <h6 class="fw-bold mb-2"><i class="bi bi-info-circle me-1 text-primary"></i> Guía rápida de configuración en Supabase:</h6>
+                        <ol class="small text-muted mb-0 ps-3">
+                            <li class="mb-1">Crea un proyecto en <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" class="fw-bold">supabase.com</a>.</li>
+                            <li class="mb-1">Abre el menú <strong>SQL Editor</strong> en Supabase, copia y pega el contenido del archivo <code>supabase-schema.sql</code> del proyecto y haz clic en <strong>RUN</strong>.</li>
+                            <li class="mb-1">Ve a <strong>Project Settings &gt; API</strong>, copia tu <strong>Project URL</strong> y tu <strong>anon public key</strong>, y pégalas arriba.</li>
+                            <li>Haz clic en <strong>"Probar Conexión"</strong> y luego en <strong>"Guardar y Conectar"</strong>.</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light d-flex justify-content-between">
+                    <div>
+                        <template x-if="isConnected">
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-outline-danger btn-sm" @click="disconnectDb()">
+                                    <i class="bi bi-power me-1"></i>Desconectar
+                                </button>
+                                <button type="button" class="btn btn-outline-primary btn-sm" @click="uploadLocalData()" :disabled="isSyncing">
+                                    <i class="bi bi-cloud-arrow-up me-1"></i><span x-text="isSyncing ? 'Subiendo...' : 'Subir Catálogo a Supabase'"></span>
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-outline-secondary" @click="testConnection()" :disabled="isTesting">
+                            <span x-show="isTesting" class="spinner-border spinner-border-sm me-1" role="status"></span>
+                            <i x-show="!isTesting" class="bi bi-plug me-1"></i>Probar Conexión
+                        </button>
+                        <button type="button" class="btn btn-primary px-4" @click="saveAndConnect()" :disabled="isTesting">
+                            <i class="bi bi-check-lg me-1"></i>Guardar y Conectar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Script -->
+    <script type="module" src="./scripts/main.js"></script>
+</body>
+</html>

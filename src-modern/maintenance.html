@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="description" content="Mantenimiento programado en OmniStore Colombia.">
+    <meta name="robots" content="noindex">
+
+    <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg">
+    
+
+    <title>Mantenimiento Programado &middot; OmniStore</title>
+
+    <meta name="theme-color" content="#ff5722">
+    <link rel="manifest" href="./manifest.json">
+</head>
+
+<body data-page="maintenance">
+    <div class="error-layout">
+        <header class="error-topbar d-flex align-items-center justify-content-between">
+            <a class="auth-brand" href="./marketplace.html">
+                <img src="./assets/images/logo.svg" alt="OmniStore Logo">
+                <span>OmniStore</span>
+            </a>
+            <button type="button" class="btn btn-sm btn-outline-secondary" data-theme-toggle aria-label="Cambiar tema">
+                <i class="bi bi-sun-fill theme-icon-light"></i>
+                <i class="bi bi-moon-fill theme-icon-dark d-none"></i>
+            </button>
+        </header>
+
+        <main class="error-body">
+            <div class="error-inner">
+                <p class="error-status"><i class="bi bi-tools text-warning"></i> Mantenimiento Programado</p>
+                <p class="error-code"><i class="bi bi-hourglass-split text-warning"></i></p>
+                <h1 class="error-title">Volvemos en unos minutos</h1>
+                <p class="error-text">
+                    Estamos realizando una actualización en nuestra infraestructura PostgreSQL en Supabase. Tus datos y pedidos están 100% a salvo.
+                </p>
+                <div class="error-actions">
+                    <button type="button" class="btn btn-danger" data-reload>
+                        <i class="bi bi-arrow-clockwise me-1"></i> Verificar de nuevo
+                    </button>
+                    <a href="./marketplace.html" class="btn btn-outline-secondary"><i class="bi bi-shop me-1"></i> Ir al Marketplace</a>
+                </div>
+                <p class="error-meta"><i class="bi bi-clock"></i> Hora Colombia &middot; Finalización estimada en breve</p>
+            </div>
+        </main>
+
+        <footer class="error-footer">OmniStore Colombia &copy; 2026. Todos los derechos reservados.</footer>
+    </div>
+
+    <script type="module" src="./scripts/auth.js"></script>
+</body>
+</html>

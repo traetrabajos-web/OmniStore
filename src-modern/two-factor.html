@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="description" content="Verificación en dos pasos (2FA) en OmniStore.">
+    <meta name="robots" content="noindex">
+
+    <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg">
+
+    <title>Verificación en Dos Pasos &middot; OmniStore</title>
+
+    <meta name="theme-color" content="#ff5722">
+    <link rel="manifest" href="./manifest.json">
+</head>
+
+<body data-page="two-factor">
+    <div class="auth-layout">
+        <main class="auth-main">
+            <div class="auth-topbar">
+                <a class="auth-brand" href="./marketplace.html">
+                    <img src="./assets/images/logo.svg" alt="OmniStore Logo">
+                    <span>OmniStore</span>
+                </a>
+                <div class="d-flex align-items-center gap-2">
+                    <a class="btn btn-sm btn-link text-decoration-none" href="./login.html"><i class="bi bi-arrow-left me-1"></i>Volver a iniciar sesión</a>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-theme-toggle aria-label="Cambiar tema">
+                        <i class="bi bi-sun-fill theme-icon-light"></i>
+                        <i class="bi bi-moon-fill theme-icon-dark d-none"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="auth-body" x-data="twoFactorForm()">
+                <div class="auth-heading">
+                    <h1>Verificación en dos pasos</h1>
+                    <p>Ingresa el código de 6 dígitos de tu aplicación autenticadora o SMS.</p>
+                </div>
+
+                <form class="auth-form" @submit.prevent="submit" novalidate>
+                    <fieldset class="mb-3">
+                        <legend class="form-label">Código de verificación</legend>
+                        <div class="auth-code" @paste="onPaste">
+                            <input type="text" inputmode="numeric" maxlength="1" class="form-control"
+                                   x-ref="digit0" aria-label="Dígito 1" autocomplete="one-time-code"
+                                   :value="digits[0]" @input="onInput(0, $event)" @keydown="onKeydown(0, $event)">
+                            <input type="text" inputmode="numeric" maxlength="1" class="form-control"
+                                   x-ref="digit1" aria-label="Dígito 2" autocomplete="off"
+                                   :value="digits[1]" @input="onInput(1, $event)" @keydown="onKeydown(1, $event)">
+                            <input type="text" inputmode="numeric" maxlength="1" class="form-control"
+                                   x-ref="digit2" aria-label="Dígito 3" autocomplete="off"
+                                   :value="digits[2]" @input="onInput(2, $event)" @keydown="onKeydown(2, $event)">
+                            <input type="text" inputmode="numeric" maxlength="1" class="form-control"
+                                   x-ref="digit3" aria-label="Dígito 4" autocomplete="off"
+                                   :value="digits[3]" @input="onInput(3, $event)" @keydown="onKeydown(3, $event)">
+                            <input type="text" inputmode="numeric" maxlength="1" class="form-control"
+                                   x-ref="digit4" aria-label="Dígito 5" autocomplete="off"
+                                   :value="digits[4]" @input="onInput(4, $event)" @keydown="onKeydown(4, $event)">
+                            <input type="text" inputmode="numeric" maxlength="1" class="form-control"
+                                   x-ref="digit5" aria-label="Dígito 6" autocomplete="off"
+                                   :value="digits[5]" @input="onInput(5, $event)" @keydown="onKeydown(5, $event)">
+                        </div>
+                        <div class="form-text text-danger" x-show="error" x-cloak x-text="error" aria-live="polite"></div>
+                    </fieldset>
+
+                    <button type="submit" class="btn btn-primary w-100 mb-3" :disabled="submitting || !complete">
+                        <span class="spinner-border spinner-border-sm me-2" x-show="submitting" x-cloak aria-hidden="true"></span>
+                        <span x-text="submitting ? 'Verificando\u2026' : 'Verificar y Acceder'">Verificar y Acceder</span>
+                    </button>
+
+                    <button type="button" class="btn btn-link w-100 text-decoration-none" @click="resend" :disabled="cooldown > 0">
+                        <span x-show="cooldown > 0" x-cloak>Reenviar código en <span x-text="cooldown"></span>s</span>
+                        <span x-show="cooldown <= 0">Reenviar código</span>
+                    </button>
+                </form>
+
+                <p class="auth-footnote">¿Perdiste tu dispositivo? <a href="#" class="text-primary">Usa un código de respaldo</a></p>
+            </div>
+
+            <p class="auth-legal">OmniStore eCommerce Colombia &copy; 2026. Conectado a Supabase PostgreSQL.</p>
+        </main>
+
+        <aside class="auth-aside">
+            <div class="auth-aside-inner">
+                <span class="badge bg-warning text-dark mb-3 fw-bold"><i class="bi bi-shield-lock-fill"></i> Seguridad 2FA</span>
+                <p class="auth-quote">Un segundo factor de autenticación protege tu tienda contra accesos no autorizados.</p>
+                <ul class="auth-points">
+                    <li><i class="bi bi-check2-circle text-primary"></i><span>Códigos TOTP temporales que rotan cada 30 segundos.</span></li>
+                    <li><i class="bi bi-check2-circle text-primary"></i><span>Compatible con Google Authenticator, Authy y SMS Colombia.</span></li>
+                    <li><i class="bi bi-check2-circle text-primary"></i><span>Registro de auditoría de cada intento de acceso.</span></li>
+                </ul>
+                <dl class="auth-stats">
+                    <div><dt>30s</dt><dd>Rotación</dd></div>
+                    <div><dt>6</dt><dd>Dígitos</dd></div>
+                    <div><dt>2FA</dt><dd>Activo</dd></div>
+                </dl>
+            </div>
+        </aside>
+    </div>
+
+    <script type="module" src="./scripts/auth.js"></script>
+</body>
+</html>

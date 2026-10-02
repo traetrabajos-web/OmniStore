@@ -1,0 +1,881 @@
+// ==========================================================================
+// Marketplace / E-Commerce Landing Page Styles (AliExpress / Temu / Mercado Libre style)
+// ==========================================================================
+
+.marketplace-body {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  font-family: var(--bs-body-font-family);
+  overflow-x: hidden;
+}
+
+// Top Announcement Ticker Bar
+.market-top-bar {
+  background: linear-gradient(90deg, #ff4747 0%, #ff6b35 50%, #f7971e 100%);
+  color: #ffffff;
+  font-size: 0.8125rem;
+  padding: 0.4rem 0;
+  font-weight: 500;
+
+  a {
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+
+  .ticker-badge {
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+}
+
+// Main Marketplace Header
+.market-header {
+  background-color: var(--bs-body-bg);
+  border-bottom: 1px solid var(--bs-border-color);
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+
+  .brand-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #ff5722, #ff9800);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(255, 87, 34, 0.35);
+    }
+    .brand-text {
+      background: linear-gradient(135deg, #ff4500, #ff8c00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  .delivery-selector {
+    border: 1px solid var(--bs-border-color);
+    border-radius: 8px;
+    padding: 0.35rem 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bs-tertiary-bg);
+
+    &:hover {
+      border-color: #ff5722;
+      background: var(--bs-secondary-bg);
+    }
+
+    .delivery-label {
+      font-size: 0.7rem;
+      color: var(--bs-secondary-color);
+      display: block;
+      line-height: 1;
+    }
+    .delivery-val {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--bs-body-color);
+    }
+  }
+
+  // Large search bar
+  .market-search-box {
+    position: relative;
+    width: 100%;
+
+    .search-input-group {
+      display: flex;
+      border: 2px solid #ff5722;
+      border-radius: 9999px;
+      overflow: hidden;
+      background: var(--bs-body-bg);
+      box-shadow: 0 2px 8px rgba(255, 87, 34, 0.15);
+      transition: all 0.2s ease;
+
+      &:focus-within {
+        box-shadow: 0 4px 15px rgba(255, 87, 34, 0.3);
+      }
+
+      .category-select {
+        border: none;
+        background-color: var(--bs-tertiary-bg);
+        border-right: 1px solid var(--bs-border-color);
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        max-width: 160px;
+        outline: none;
+      }
+
+      .search-input {
+        border: none;
+        padding: 0.6rem 1.25rem;
+        font-size: 0.925rem;
+        flex-grow: 1;
+        outline: none;
+        background: transparent;
+        color: var(--bs-body-color);
+      }
+
+      .search-btn {
+        background: linear-gradient(135deg, #ff5722, #ff7043);
+        color: #fff;
+        border: none;
+        padding: 0 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+
+        &:hover {
+          background: linear-gradient(135deg, #e64a19, #f4511e);
+        }
+      }
+    }
+
+    .search-suggestions {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: var(--bs-body-bg);
+      border: 1px solid var(--bs-border-color);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      z-index: 1050;
+      padding: 0.75rem 0;
+      overflow: hidden;
+    }
+  }
+
+  .nav-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 8px;
+    color: var(--bs-body-color);
+    text-decoration: none;
+    transition: all 0.2s;
+    position: relative;
+
+    &:hover {
+      background: var(--bs-secondary-bg);
+      color: #ff5722;
+    }
+
+    .icon-badge {
+      position: absolute;
+      top: -2px;
+      right: 4px;
+      background: #ff5722;
+      color: white;
+      font-size: 0.6875rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 999px;
+      font-weight: 700;
+      line-height: 1;
+    }
+  }
+}
+
+// Category Sub-Navigation Bar
+.market-sub-nav {
+  background-color: var(--bs-tertiary-bg);
+  border-bottom: 1px solid var(--bs-border-color);
+  font-size: 0.875rem;
+
+  .nav-item-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.9rem;
+    color: var(--bs-body-color);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s;
+    white-space: nowrap;
+
+    &:hover, &.active {
+      color: #ff5722;
+      font-weight: 600;
+    }
+
+    &.highlight {
+      color: #e53935;
+      font-weight: 700;
+      .badge-fire {
+        background-color: #ffebee;
+        color: #d32f2f;
+        font-size: 0.7rem;
+        padding: 0.15rem 0.4rem;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .all-categories-btn {
+    background: linear-gradient(135deg, #ff5722, #ff8a65);
+    color: white !important;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 0.4rem 1rem;
+    margin: 0.3rem 0;
+  }
+}
+
+// Hero Marketplace Banner
+.market-hero-section {
+  padding: 1.25rem 0;
+
+  .hero-slider-card {
+    background: linear-gradient(135deg, #1e1e24 0%, #2a2a38 100%);
+    border-radius: 16px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    min-height: 380px;
+    display: flex;
+    align-items: center;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255, 87, 34, 0.3) 0%, rgba(255, 152, 0, 0) 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 2.5rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255, 87, 34, 0.25);
+      border: 1px solid rgba(255, 87, 34, 0.5);
+      color: #ff8a65;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+      span {
+        color: #ff9800;
+      }
+    }
+
+    .hero-subtitle {
+      color: #e0e0e0;
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  .hero-side-card {
+    background: var(--bs-card-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 16px;
+    padding: 1.25rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    &.coupon-card {
+      background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+      border: 1px dashed #ff9800;
+      color: #e65100;
+      [data-bs-theme="dark"] & {
+        background: linear-gradient(135deg, #3e2723, #4e342e);
+        color: #ffb74d;
+        border-color: #ffb74d;
+      }
+    }
+  }
+}
+
+// Trust Pillars Bar
+.trust-pillars-bar {
+  background: var(--bs-card-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+
+    .trust-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--bs-primary-bg-subtle);
+      color: var(--bs-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      flex-shrink: 0;
+
+      &.orange {
+        background: rgba(255, 87, 34, 0.12);
+        color: #ff5722;
+      }
+      &.green {
+        background: rgba(46, 125, 50, 0.12);
+        color: #2e7d32;
+      }
+      &.blue {
+        background: rgba(21, 101, 192, 0.12);
+        color: #1565c0;
+      }
+      &.purple {
+        background: rgba(106, 27, 154, 0.12);
+        color: #6a1b9a;
+      }
+    }
+
+    .trust-title {
+      font-weight: 700;
+      font-size: 0.875rem;
+      margin-bottom: 0.15rem;
+    }
+    .trust-desc {
+      font-size: 0.75rem;
+      color: var(--bs-secondary-color);
+      margin: 0;
+    }
+  }
+}
+
+// Flash Deals Section
+.flash-deals-header {
+  background: linear-gradient(90deg, #d32f2f, #f44336, #ff9800);
+  color: white;
+  border-radius: 12px 12px 0 0;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .flash-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .countdown-box {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 700;
+
+    .countdown-unit {
+      background: #000;
+      color: #fff;
+      padding: 0.3rem 0.5rem;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 1rem;
+      min-width: 32px;
+      text-align: center;
+    }
+    .colon {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+// Product Cards (Marketplace Grid)
+.market-product-card {
+  background: var(--bs-card-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+    border-color: #ff5722;
+
+    .quick-view-btn {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .product-img {
+      transform: scale(1.04);
+    }
+  }
+
+  .card-img-wrapper {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background: var(--bs-tertiary-bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .product-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 0.75rem;
+      transition: transform 0.35s ease;
+    }
+
+    .badge-discount {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #e53935;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.25rem 0.55rem;
+      border-radius: 6px;
+      z-index: 2;
+    }
+
+    .badge-full {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: #00a650;
+      color: #fff;
+      font-size: 0.6875rem;
+      font-weight: 800;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      z-index: 2;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .favorite-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #757575;
+      cursor: pointer;
+      z-index: 2;
+      transition: all 0.2s;
+
+      [data-bs-theme="dark"] & {
+        background: rgba(30, 30, 40, 0.9);
+        color: #bbb;
+      }
+
+      &:hover, &.active {
+        color: #e53935;
+        background: #fff;
+        transform: scale(1.1);
+        [data-bs-theme="dark"] & {
+          background: #2a2a38;
+        }
+      }
+    }
+
+    .quick-view-btn {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      border: none;
+      opacity: 0;
+      transition: all 0.2s ease;
+      z-index: 3;
+      white-space: nowrap;
+
+      &:hover {
+        background: #ff5722;
+      }
+    }
+  }
+
+  .card-body-content {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    .product-category-tag {
+      font-size: 0.725rem;
+      color: var(--bs-secondary-color);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+
+    .product-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1.35;
+      margin-bottom: 0.5rem;
+      color: var(--bs-body-color);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-height: 2.4rem;
+    }
+
+    .product-rating {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      margin-bottom: 0.5rem;
+
+      .stars {
+        color: #ffb300;
+      }
+      .review-count {
+        color: var(--bs-secondary-color);
+      }
+    }
+
+    .price-wrapper {
+      margin-top: auto;
+      margin-bottom: 0.75rem;
+
+      .current-price {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #e53935;
+        line-height: 1;
+      }
+      .old-price {
+        font-size: 0.8rem;
+        color: var(--bs-secondary-color);
+        text-decoration: line-through;
+        margin-left: 0.35rem;
+      }
+      .installments-text {
+        font-size: 0.725rem;
+        color: #00a650;
+        font-weight: 600;
+        display: block;
+        margin-top: 0.2rem;
+      }
+    }
+
+    .stock-progress-box {
+      margin-bottom: 0.75rem;
+      .progress {
+        height: 6px;
+        border-radius: 999px;
+        background-color: var(--bs-tertiary-bg);
+      }
+      .stock-label {
+        font-size: 0.7rem;
+        color: var(--bs-secondary-color);
+        display: flex;
+        justify-content: space-between;
+        margin-top: 0.25rem;
+      }
+    }
+
+    .add-cart-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #ff5722, #ff7043);
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.5rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+
+      &:hover {
+        background: linear-gradient(135deg, #e64a19, #f4511e);
+        box-shadow: 0 4px 12px rgba(255, 87, 34, 0.35);
+      }
+    }
+  }
+}
+
+// Category Circular Cards (Aliexpress / Temu Grid)
+.category-bubble-card {
+  text-align: center;
+  text-decoration: none;
+  color: var(--bs-body-color);
+  display: block;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-4px);
+    .bubble-icon {
+      background: linear-gradient(135deg, #ff5722, #ff9800);
+      color: white;
+      box-shadow: 0 8px 20px rgba(255, 87, 34, 0.35);
+    }
+    .bubble-title {
+      color: #ff5722;
+      font-weight: 700;
+    }
+  }
+
+  .bubble-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--bs-tertiary-bg);
+    border: 2px solid var(--bs-border-color);
+    margin: 0 auto 0.5rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    color: var(--bs-primary);
+    transition: all 0.2s ease;
+  }
+
+  .bubble-title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.2;
+    transition: color 0.2s;
+  }
+}
+
+// Offcanvas Cart Drawer Styles
+.market-cart-drawer {
+  width: 420px !important;
+  max-width: 90vw;
+
+  .free-shipping-progress {
+    background: var(--bs-secondary-bg);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--bs-border-color);
+
+    .fs-text {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+  }
+
+  .cart-item-row {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--bs-border-color);
+
+    .cart-item-img {
+      width: 68px;
+      height: 68px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: var(--bs-tertiary-bg);
+      border: 1px solid var(--bs-border-color);
+      flex-shrink: 0;
+    }
+
+    .cart-item-info {
+      flex-grow: 1;
+      .cart-item-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+        line-height: 1.25;
+      }
+      .cart-item-price {
+        font-size: 0.925rem;
+        font-weight: 700;
+        color: #e53935;
+      }
+    }
+
+    .qty-control {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--bs-border-color);
+      border-radius: 6px;
+      overflow: hidden;
+      height: 28px;
+
+      button {
+        border: none;
+        background: var(--bs-tertiary-bg);
+        width: 26px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--bs-body-color);
+        &:hover {
+          background: var(--bs-secondary-bg);
+        }
+      }
+      input {
+        width: 32px;
+        text-align: center;
+        border: none;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        background: transparent;
+        color: var(--bs-body-color);
+      }
+    }
+  }
+}
+
+// Floating Mobile Bottom Navigation (Temu & AliExpress app style)
+.market-mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bs-body-bg);
+  border-top: 1px solid var(--bs-border-color);
+  z-index: 1030;
+  padding: 0.4rem 0.5rem;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+
+  @media (max-width: 768px) {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--bs-secondary-color);
+    text-decoration: none;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    position: relative;
+
+    i {
+      font-size: 1.25rem;
+      margin-bottom: 0.15rem;
+    }
+
+    &.active {
+      color: #ff5722;
+      font-weight: 700;
+    }
+
+    .badge-mobile {
+      position: absolute;
+      top: -2px;
+      right: 6px;
+      background: #ff5722;
+      color: white;
+      font-size: 0.6rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+  }
+}
+
+// Interactive Coupon Box
+.coupon-claim-box {
+  border: 2px dashed #ff9800;
+  background: rgba(255, 152, 0, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  .coupon-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    .coupon-icon {
+      font-size: 2rem;
+      color: #ff5722;
+    }
+  }
+}

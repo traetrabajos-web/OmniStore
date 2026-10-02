@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="description" content="Crear cuenta en OmniStore Colombia - Marketplace y Panel de Gestión.">
+    <meta name="robots" content="noindex">
+
+    <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg">
+   
+
+    <title>Crear Cuenta &middot; OmniStore Colombia</title>
+
+    <meta name="theme-color" content="#ff5722">
+    <link rel="manifest" href="./manifest.json">
+</head>
+
+<body data-page="register">
+    <div class="auth-layout">
+        <main class="auth-main">
+            <div class="auth-topbar">
+                <a class="auth-brand" href="./marketplace.html">
+                    <img src="./assets/images/logo.svg" alt="OmniStore Logo">
+                    <span>OmniStore</span>
+                </a>
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-theme-toggle aria-label="Cambiar tema">
+                    <i class="bi bi-sun-fill theme-icon-light"></i>
+                    <i class="bi bi-moon-fill theme-icon-dark d-none"></i>
+                </button>
+            </div>
+
+            <div class="auth-body" x-data="registerForm()">
+                <div class="auth-heading">
+                    <h1>Crea tu cuenta</h1>
+                    <p>Únete a OmniStore Colombia y disfruta de los mejores precios y envíos rápidos.</p>
+                </div>
+
+                <form class="auth-form" @submit.prevent="submit" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label" for="register-name">Nombre completo</label>
+                        <input type="text" class="form-control" id="register-name" autocomplete="name"
+                               x-model="form.name" :class="fieldClass('name')" placeholder="Ej: Juan Camilo Pérez" required>
+                        <div class="invalid-feedback" x-text="errors.name"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="register-email">Correo electrónico</label>
+                        <input type="email" class="form-control" id="register-email" autocomplete="username"
+                               x-model="form.email" :class="fieldClass('email')" placeholder="usuario@correo.com" required>
+                        <div class="invalid-feedback" x-text="errors.email"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="register-password">Contraseña</label>
+                        <div class="auth-password">
+                            <input :type="showPassword ? 'text' : 'password'" class="form-control" id="register-password"
+                                   autocomplete="new-password" x-model="form.password"
+                                   :class="fieldClass('password')" placeholder="Mínimo 8 caracteres" required>
+                            <button type="button" class="auth-password-toggle" @click="togglePassword"
+                                    :aria-label="showPassword ? 'Ocultar contraseña' : 'Ver contraseña'">
+                                <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                            </button>
+                            <div class="invalid-feedback" x-text="errors.password"></div>
+                        </div>
+                        <div class="auth-strength" aria-hidden="true">
+                            <span :class="segmentClass(0)"></span>
+                            <span :class="segmentClass(1)"></span>
+                            <span :class="segmentClass(2)"></span>
+                            <span :class="segmentClass(3)"></span>
+                        </div>
+                        <div class="form-text d-flex justify-content-between">
+                            <span>Usa mayúsculas, minúsculas, números y símbolos.</span>
+                            <span x-text="form.password ? strength.text : ''" aria-live="polite"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="register-terms"
+                               x-model="form.terms" :class="fieldClass('terms')">
+                        <label class="form-check-label small" for="register-terms">
+                            Acepto los <a href="#" class="text-primary">términos de servicio</a> y la <a href="#" class="text-primary">política de privacidad</a>.
+                        </label>
+                        <div class="invalid-feedback d-block" x-show="errors.terms" x-cloak x-text="errors.terms"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100" :disabled="submitting">
+                        <span class="spinner-border spinner-border-sm me-2" x-show="submitting" x-cloak aria-hidden="true"></span>
+                        <span x-text="submitting ? 'Creando cuenta\u2026' : 'Crear Cuenta'">Crear Cuenta</span>
+                    </button>
+                </form>
+
+                <p class="auth-footnote">¿Ya tienes una cuenta? <a href="./login.html" class="text-primary fw-semibold">Inicia sesión</a></p>
+            </div>
+
+            <p class="auth-legal">OmniStore eCommerce Colombia &copy; 2026. Conectado a Supabase PostgreSQL.</p>
+        </main>
+
+        <aside class="auth-aside">
+            <div class="auth-aside-inner">
+                <span class="badge bg-warning text-dark mb-3 fw-bold"><i class="bi bi-stars"></i> Marketplace Colombia & Admin 2026</span>
+                <p class="auth-quote">La solución completa para tu tienda en línea y panel de administración inteligente.</p>
+                <ul class="auth-points">
+                    <li><i class="bi bi-check2-circle text-primary"></i><span>Base de datos PostgreSQL en Supabase con sincronización Realtime.</span></li>
+                    <li><i class="bi bi-check2-circle text-primary"></i><span>Catálogo de productos estilo AliExpress / Temu con carrito de compras y cupones.</span></li>
+                    <li><i class="bi bi-check2-circle text-primary"></i><span>Gestión completa de inventario, stock en vivo, pedidos y clientes.</span></li>
+                    <li><i class="bi bi-check2-circle text-primary"></i><span>Roles independientes para SuperAdmin, Vendedores y Clientes.</span></li>
+                </ul>
+                <dl class="auth-stats">
+                    <div><dt>PostgreSQL</dt><dd>Supabase</dd></div>
+                    <div><dt>100%</dt><dd>Realtime</dd></div>
+                    <div><dt>COP</dt><dd>Colombia</dd></div>
+                </dl>
+            </div>
+        </aside>
+    </div>
+
+    <script type="module" src="./scripts/auth.js"></script>
+</body>
+</html>

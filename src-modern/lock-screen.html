@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="description" content="Bloqueo de pantalla en OmniStore.">
+    <meta name="robots" content="noindex">
+
+    <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg">
+
+
+    <title>Pantalla Bloqueada &middot; OmniStore</title>
+
+    <meta name="theme-color" content="#ff5722">
+    <link rel="manifest" href="./manifest.json">
+</head>
+
+<body data-page="lock-screen">
+    <div class="auth-layout">
+        <main class="auth-main">
+            <div class="auth-topbar">
+                <a class="auth-brand" href="./marketplace.html">
+                    <img src="./assets/images/logo.svg" alt="OmniStore Logo">
+                    <span>OmniStore</span>
+                </a>
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-theme-toggle aria-label="Cambiar tema">
+                    <i class="bi bi-sun-fill theme-icon-light"></i>
+                    <i class="bi bi-moon-fill theme-icon-dark d-none"></i>
+                </button>
+            </div>
+
+            <div class="auth-body" x-data="lockScreenForm()">
+                <div class="text-center">
+                    <div class="auth-avatar"><i class="bi bi-lock-fill text-warning"></i></div>
+                    <div class="auth-heading">
+                        <h1>Pantalla Bloqueada</h1>
+                        <p>Sesión activa para <strong>admin@omnistore.com</strong>. Ingresa tu clave para continuar.</p>
+                    </div>
+                </div>
+
+                <form class="auth-form" @submit.prevent="submit" novalidate>
+                    <div class="mb-4">
+                        <label class="form-label visually-hidden" for="lock-password">Contraseña</label>
+                        <div class="auth-password">
+                            <input :type="showPassword ? 'text' : 'password'" class="form-control" id="lock-password"
+                                   autocomplete="current-password" x-model="form.password"
+                                   :class="error ? 'is-invalid' : ''" placeholder="Ingresa tu contraseña" required autofocus>
+                            <button type="button" class="auth-password-toggle" @click="togglePassword"
+                                    :aria-label="showPassword ? 'Ocultar contraseña' : 'Ver contraseña'">
+                                <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                            </button>
+                            <div class="invalid-feedback" x-text="error"></div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100" :disabled="submitting">
+                        <span class="spinner-border spinner-border-sm me-2" x-show="submitting" x-cloak aria-hidden="true"></span>
+                        <span x-text="submitting ? 'Desbloqueando\u2026' : 'Desbloquear Sesión'">Desbloquear Sesión</span>
+                    </button>
+                </form>
+
+                <p class="auth-footnote">¿No eres tú? <a href="./login.html" class="text-primary fw-semibold">Iniciar sesión con otra cuenta</a></p>
+            </div>
+
+            <p class="auth-legal">OmniStore eCommerce Colombia &copy; 2026. Conectado a Supabase PostgreSQL.</p>
+        </main>
+
+        <aside class="auth-aside">
+            <div class="auth-aside-inner">
+                <span class="badge bg-warning text-dark mb-3 fw-bold"><i class="bi bi-shield-check"></i> OmniStore Admin</span>
+                <p class="auth-quote">Tu sesión se encuentra protegida con bloqueo automático tras inactividad.</p>
+                <ul class="auth-points">
+                    <li><i class="bi bi-check2-circle text-primary"></i><span>Protección contra accesos desatendidos.</span></li>
+                    <li><i class="bi bi-check2-circle text-primary"></i><span>Reanudación instantánea del estado de trabajo.</span></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <script type="module" src="./scripts/auth.js"></script>
+</body>
+</html>

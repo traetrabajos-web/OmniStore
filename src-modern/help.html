@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <title>Centro de Ayuda & Soporte - OmniStore Admin</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Centro de soporte, documentación y preguntas frecuentes de OmniStore Colombia">
+    <meta name="keywords" content="omnistore, admin, dashboard, ayuda, soporte, documentacion, faq">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    
+    <!-- Immediate Authentication Guard -->
+    <script>
+        (function() {
+            try {
+                var raw = localStorage.getItem('omnistore_user_session');
+                if (!raw) {
+                    var p = window.location.pathname + window.location.search;
+                    window.location.replace('./login.html?redirect=' + encodeURIComponent(p));
+                    return;
+                }
+                var user = JSON.parse(raw);
+                if (user.role === 'customer') {
+                    window.location.replace('./marketplace.html');
+                }
+            } catch (e) {}
+        })();
+    </script>
+</head>
+
+<body data-page="help" class="help-page">
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+    <!-- Admin App Container -->
+    <div class="admin-app">
+        <div class="admin-wrapper" id="admin-wrapper">
+            
+            <!-- Header -->
+            <header class="admin-header">
+                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+                    <div class="container-fluid">
+                        <!-- Logo/Brand -->
+                        <a class="navbar-brand d-flex align-items-center" href="./index.html">
+                        <div class="brand-icon me-2">
+                            <i class="bi bi-bag-check-fill"></i>
+                        </div>
+                        <span class="brand-text">OmniStore</span>
+                        <span class="admin-pill ms-2">Admin</span>
+                    </a>
+
+                        <!-- Sidebar Toggle -->
+                        <button class="hamburger-menu" type="button" data-sidebar-toggle aria-label="Toggle sidebar">
+                            <i class="bi bi-list"></i>
+                        </button>
+
+                        <!-- Search Bar with Alpine.js -->
+                        <div class="search-container flex-grow-1 mx-4" x-data="searchComponent">
+                            <div class="position-relative">
+                                <input type="search" 
+                                       class="form-control" 
+                                       placeholder="Buscar guías de ayuda o soporte... (Ctrl+K)"
+                                       x-model="query"
+                                       @input="search()"
+                                       data-search-input
+                                       aria-label="Search">
+                                <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y me-3"></i>
+                                
+                                <!-- Search Results Dropdown -->
+                                <div x-show="results.length > 0" 
+                                     x-transition:enter="transition ease-out duration-100"
+                                     x-transition:enter-start="opacity-0 scale-95"
+                                     x-transition:enter-end="opacity-100 scale-100"
+                                     class="position-absolute top-100 start-0 w-100 bg-white border rounded-2 shadow-lg mt-1 z-3">
+                                    <template x-for="result in results" :key="result.title">
+                                        <a :href="result.url" class="d-block px-3 py-2 text-decoration-none text-dark border-bottom">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-file-text me-2 text-muted"></i>
+                                                <span x-text="result.title"></span>
+                                                <small class="ms-auto text-muted" x-text="result.type"></small>
+                                            </div>
+                                        </a>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Side Icons -->
+                        <div class="navbar-nav flex-row">
+                            <!-- Theme Toggle with Alpine.js -->
+                            <div x-data="themeSwitch">
+                                <button class="btn btn-outline-secondary me-2" 
+                                        type="button" 
+                                        @click="toggle()"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        title="Cambiar tema">
+                                    <i class="bi bi-sun-fill" x-show="currentTheme === 'light'"></i>
+                                    <i class="bi bi-moon-fill" x-show="currentTheme === 'dark'"></i>
+                                </button>
+                            </div>
+
+                            <!-- Fullscreen Toggle -->
+                            <button class="btn btn-outline-secondary me-2 d-none d-lg-inline-block" 
+                                    type="button" 
+                                    data-fullscreen-toggle
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="bottom"
+                                    title="Pantalla completa">
+                                <i class="bi bi-arrows-fullscreen icon-hover"></i>
+                            </button>
+
+                            <!-- Notifications -->
+                            <div class="dropdown me-2">
+                                <button class="btn btn-outline-secondary position-relative" 
+                                        type="button" 
+                                        data-bs-toggle="dropdown" 
+                                        aria-expanded="false">
+                                    <i class="bi bi-bell"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        3
+                                    </span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><h6 class="dropdown-header">Notificaciones</h6></li>
+                                    <li><a class="dropdown-item" href="#">Nuevo usuario registrado</a></li>
+                                    <li><a class="dropdown-item" href="#">Sincronización PostgreSQL OK</a></li>
+                                    <li><a class="dropdown-item" href="#">Nuevo pedido recibido</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-center" href="./orders.html">Ver todas las notificaciones</a></li>
+                                </ul>
+                            </div>
+
+                                                    <!-- User Menu -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary d-flex align-items-center" 
+                                    type="button" 
+                                    data-bs-toggle="dropdown" 
+                                    aria-expanded="false">
+                                <img src="./assets/images/avatar-placeholder.svg" 
+                                     alt="Avatar Administrador" 
+                                     width="24" 
+                                     height="24" 
+                                     data-user-avatar
+                                     class="rounded-circle me-2">
+                                <span class="d-none d-md-inline" data-user-name>Admin Colombia</span>
+                                <span class="badge bg-primary ms-2" data-user-role>SuperAdmin</span>
+                                <i class="bi bi-chevron-down ms-1"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="./users.html"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
+                                <li><a class="dropdown-item" href="./settings.html"><i class="bi bi-gear me-2"></i>Ajustes</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="./login.html" data-auth-logout><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            </header>
+
+                    <!-- Sidebar -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-content">
+                <nav class="sidebar-nav">
+                    <ul class="nav flex-column">
+                        <!-- Direct access to Marketplace Storefront -->
+                        <li class="nav-item mb-2">
+                            <a class="nav-link marketplace-nav-btn text-white fw-bold rounded-3 shadow-sm d-flex align-items-center" href="./marketplace.html">
+                                <i class="bi bi-shop fs-5"></i>
+                                <span>Ir al Marketplace</span>
+                                <i class="bi bi-box-arrow-up-right ms-auto"></i>
+                            </a>
+                        </li>
+
+                        <!-- VENTAS -->
+                        <li class="nav-item">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Ventas</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./index.html">
+                                <i class="bi bi-speedometer2"></i>
+                                <span>Dashboard General</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#ordersSubmenu" aria-expanded="false" aria-controls="ordersSubmenu">
+                                <i class="bi bi-bag-check-fill"></i>
+                                <span>Pedidos & Ventas</span>
+                                <span class="badge bg-danger rounded-pill ms-2 me-1" style="font-size: 0.7rem;">3</span>
+                                <i class="bi bi-chevron-down ms-auto"></i>
+                            </a>
+                            <div class="collapse" id="ordersSubmenu">
+                                <ul class="nav nav-submenu">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./orders.html">
+                                            <i class="bi bi-list-ul"></i>
+                                            <span>Todos los pedidos</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./orders.html?filter=pending">
+                                            <i class="bi bi-clock-history"></i>
+                                            <span>Pendientes de pago</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./orders.html?filter=processing">
+                                            <i class="bi bi-box-arrow-right"></i>
+                                            <span>Por enviar</span>
+                                            <span class="badge bg-danger rounded-pill ms-auto">3</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./orders.html?filter=refunded">
+                                            <i class="bi bi-arrow-counterclockwise"></i>
+                                            <span>Devoluciones & reembolsos</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./orders.html?filter=abandoned">
+                                            <i class="bi bi-cart-x"></i>
+                                            <span>Carritos abandonados</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./orders.html?tab=payments">
+                                            <i class="bi bi-credit-card"></i>
+                                            <span>Pagos & transacciones</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <!-- CATÁLOGO -->
+                        <li class="nav-item mt-2">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Catálogo</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#productsSubmenu" aria-expanded="false" aria-controls="productsSubmenu">
+                                <i class="bi bi-box-seam-fill"></i>
+                                <span>Catálogo de Productos</span>
+                                <span class="badge bg-success-subtle text-success border ms-2 me-1" style="font-size: 0.68rem;">En Vivo</span>
+                                <i class="bi bi-chevron-down ms-auto"></i>
+                            </a>
+                            <div class="collapse" id="productsSubmenu">
+                                <ul class="nav nav-submenu">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html">
+                                            <i class="bi bi-grid-fill"></i>
+                                            <span>Todos los productos</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html?view=categories">
+                                            <i class="bi bi-tags-fill"></i>
+                                            <span>Categorías</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html?view=brands">
+                                            <i class="bi bi-patch-check-fill"></i>
+                                            <span>Marcas</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html?view=collections">
+                                            <i class="bi bi-collection-fill"></i>
+                                            <span>Colecciones</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#inventorySubmenu" aria-expanded="false" aria-controls="inventorySubmenu">
+                                <i class="bi bi-stack"></i>
+                                <span>Inventario & Stock</span>
+                                <span class="badge bg-warning-subtle text-warning-emphasis border ms-2 me-1" style="font-size: 0.7rem;">2</span>
+                                <i class="bi bi-chevron-down ms-auto"></i>
+                            </a>
+                            <div class="collapse" id="inventorySubmenu">
+                                <ul class="nav nav-submenu">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html?tab=inventory">
+                                            <i class="bi bi-bar-chart-steps"></i>
+                                            <span>Niveles de stock</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html?tab=low-stock">
+                                            <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                                            <span>Alertas de stock bajo</span>
+                                            <span class="badge bg-danger rounded-pill ms-auto">2</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html?tab=movements">
+                                            <i class="bi bi-arrow-left-right"></i>
+                                            <span>Movimientos de kardex</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html?tab=suppliers">
+                                            <i class="bi bi-truck"></i>
+                                            <span>Proveedores & compras</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <!-- CLIENTES -->
+                        <li class="nav-item mt-2">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Clientes</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./users.html">
+                                <i class="bi bi-people-fill"></i>
+                                <span>Clientes & Usuarios</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./users.html?tab=reviews">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <span>Reseñas & Calificaciones</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./help.html">
+                                <i class="bi bi-headset"></i>
+                                <span>Soporte (Tickets & FAQ)</span>
+                            </a>
+                        </li>
+
+                        <!-- MARKETING -->
+                        <li class="nav-item mt-2">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Marketing</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=coupons">
+                                <i class="bi bi-ticket-perforated-fill"></i>
+                                <span>Cupones & Descuentos</span>
+                                <span class="badge bg-primary-subtle text-primary border ms-auto">Activo</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=banners">
+                                <i class="bi bi-megaphone-fill"></i>
+                                <span>Promociones & Banners</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=campaigns">
+                                <i class="bi bi-send-check-fill"></i>
+                                <span>Campañas (Email / WhatsApp)</span>
+                            </a>
+                        </li>
+
+                        <!-- LOGÍSTICA -->
+                        <li class="nav-item mt-2">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Logística</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./orders.html?tab=shipping">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <span>Envíos & Guías</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=carriers">
+                                <i class="bi bi-truck-flatbed"></i>
+                                <span>Transportadoras</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=shipping-rates">
+                                <i class="bi bi-globe-americas"></i>
+                                <span>Zonas & Tarifas de Envío</span>
+                            </a>
+                        </li>
+
+                        <!-- REPORTES -->
+                        <li class="nav-item mt-2">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Reportes</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./analytics.html">
+                                <i class="bi bi-graph-up-arrow"></i>
+                                <span>Métricas & Analytics</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./reports.html">
+                                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                                <span>Reportes de Ventas</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./reports.html?tab=invoices">
+                                <i class="bi bi-receipt"></i>
+                                <span>Facturación & Impuestos</span>
+                            </a>
+                        </li>
+
+                        <!-- CONTENIDO -->
+                        <li class="nav-item mt-2">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Contenido</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=pages">
+                                <i class="bi bi-file-richtext-fill"></i>
+                                <span>Páginas & Blog</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=menus">
+                                <i class="bi bi-layout-text-window-reverse"></i>
+                                <span>Menús & Footer</span>
+                            </a>
+                        </li>
+
+                        <!-- SISTEMA -->
+                        <li class="nav-item mt-2">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Sistema</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html">
+                                <i class="bi bi-gear-fill"></i>
+                                <span>Ajustes de Tienda</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./users.html?tab=roles">
+                                <i class="bi bi-person-badge-fill"></i>
+                                <span>Equipo, Roles & Permisos</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=integrations">
+                                <i class="bi bi-plugin"></i>
+                                <span>Integraciones</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=notifications">
+                                <i class="bi bi-bell-fill"></i>
+                                <span>Plantillas de Notificaciones</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./security.html">
+                                <i class="bi bi-shield-lock-fill"></i>
+                                <span>Seguridad & Base de Datos</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+            <!-- Sidebar Backdrop (mobile overlay) -->
+        <div class="sidebar-backdrop" aria-hidden="true"></div>
+            <!-- Main Content -->
+            <main id="main-content" class="admin-main">
+                <div class="container-fluid p-4 p-lg-4">
+                    
+                    <!-- Help Container -->
+                    <div x-data="helpComponent" x-init="init()" class="help-layout">
+                        
+                        <!-- Page Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-4 mb-lg-4 mb-xl-5">
+                            <div>
+                                <h1 class="h3 mb-0">Help & Support</h1>
+                                <p class="text-muted mb-0">Get help, find documentation, and contact support</p>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-outline-secondary" @click="downloadGuide()">
+                                    <i class="bi bi-download me-2"></i>User Guide
+                                </button>
+                                <button type="button" class="btn btn-primary" @click="setActiveSection('contact')">
+                                    <i class="bi bi-headset me-2"></i>Contact Support
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-6">
+                            
+                            <!-- Help Navigation Sidebar -->
+                            <div class="col-lg-3 help-sidebar">
+                                <nav class="help-nav nav nav-pills flex-column">
+                                    <template x-for="section in sections" :key="section.id">
+                                        <a class="nav-link" 
+                                           :class="{ 'active': activeSection === section.id }"
+                                           href="#"
+                                           @click="setActiveSection(section.id)">
+                                            <i :class="section.icon" class="me-2"></i>
+                                            <span x-text="section.name"></span>
+                                        </a>
+                                    </template>
+                                    
+                                </nav>
+                            </div>
+
+                            <!-- Help Content -->
+                            <div class="col-lg-9 help-content">
+                                
+                                <!-- Getting Started -->
+                                <div x-show="activeSection === 'getting-started'" class="help-section" style="display: block;">
+                                    <h5 class="mb-4">Getting Started</h5>
+                                    
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <div class="article-card">
+                                                <h6 class="mb-2">Quick Start Guide</h6>
+                                                <p class="text-muted mb-3">Learn the basics of navigating and using the admin dashboard</p>
+                                                <div class="article-meta mb-3">
+                                                    <span class="rating-stars">★★★★★</span>
+                                                    <span class="text-muted">5 min read</span>
+                                                </div>
+                                                <a href="#" class="btn btn-outline-primary btn-sm" @click="openArticle('quick-start')">Read Article</a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="article-card">
+                                                <h6 class="mb-2">Dashboard Overview</h6>
+                                                <p class="text-muted mb-3">Understand the main dashboard features and widgets</p>
+                                                <div class="article-meta mb-3">
+                                                    <span class="rating-stars">★★★★☆</span>
+                                                    <span class="text-muted">3 min read</span>
+                                                </div>
+                                                <a href="#" class="btn btn-outline-primary btn-sm" @click="openArticle('dashboard-overview')">Read Article</a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="article-card">
+                                                <h6 class="mb-2">User Management</h6>
+                                                <p class="text-muted mb-3">How to add, edit, and manage user accounts</p>
+                                                <div class="article-meta mb-3">
+                                                    <span class="rating-stars">★★★★★</span>
+                                                    <span class="text-muted">8 min read</span>
+                                                </div>
+                                                <a href="#" class="btn btn-outline-primary btn-sm" @click="openArticle('user-management')">Read Article</a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="video-thumbnail" @click="playVideo('intro-video')">
+                                                <img src="./assets/images/video-placeholder.svg" class="img-fluid" width="300" height="180" alt="Platform introduction video thumbnail">
+                                                <div class="video-play-button">
+                                                    <i class="bi bi-play-fill"></i>
+                                                </div>
+                                            </div>
+                                            <h6 class="mt-3 mb-2">Platform Introduction</h6>
+                                            <p class="text-muted mb-0">5-minute video walkthrough of the platform</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tickets de Soporte & PQRS -->
+                                <div x-show="activeSection === 'tickets'" class="help-section">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div>
+                                            <h5 class="fw-bold mb-1">Tickets de Soporte & PQRS</h5>
+                                            <p class="text-muted small mb-0">Gestión y atención a solicitudes de clientes de OmniStore Colombia</p>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <select class="form-select form-select-sm" style="width: 150px;" x-model="ticketFilterStatus">
+                                                <option value="all">Todos los estados</option>
+                                                <option value="Abierto">Abiertos</option>
+                                                <option value="En Proceso">En Proceso</option>
+                                                <option value="Resuelto">Resueltos</option>
+                                            </select>
+                                            <button type="button" class="btn btn-primary btn-sm" @click="setActiveSection('contact')">
+                                                <i class="bi bi-plus-lg me-1"></i>Radicar Ticket
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Cliente / Solicitante</th>
+                                                    <th>Asunto & Categoría</th>
+                                                    <th>Prioridad</th>
+                                                    <th>Estado</th>
+                                                    <th>Fecha</th>
+                                                    <th class="text-end">Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="t in filteredTickets" :key="t.id">
+                                                    <tr>
+                                                        <td><span class="badge bg-light text-dark border font-monospace" x-text="'#' + t.id"></span></td>
+                                                        <td>
+                                                            <div class="fw-bold text-truncate" style="max-width: 160px;" x-text="t.customer"></div>
+                                                            <small class="text-muted text-truncate d-block" style="max-width: 160px;" x-text="t.email"></small>
+                                                        </td>
+                                                        <td>
+                                                            <div class="fw-bold text-truncate" style="max-width: 220px;" x-text="t.subject"></div>
+                                                            <small class="badge bg-light text-secondary border" x-text="t.category"></small>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge" :class="t.priority === 'urgent' || t.priority === 'Alta' ? 'bg-danger' : (t.priority === 'Media' ? 'bg-warning text-dark' : 'bg-primary')" x-text="t.priority"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge" :class="t.status === 'Resuelto' ? 'bg-success' : (t.status === 'En Proceso' ? 'bg-warning text-dark' : 'bg-secondary')" x-text="t.status"></span>
+                                                        </td>
+                                                        <td class="small text-muted" x-text="t.date"></td>
+                                                        <td class="text-end">
+                                                            <div class="btn-group btn-group-sm">
+                                                                <button type="button" class="btn btn-outline-primary" @click="viewTicketDetails(t)" title="Ver y Responder">
+                                                                    <i class="bi bi-eye"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-outline-success" @click="changeTicketStatus(t, 'Resuelto')" title="Marcar Resuelto" x-show="t.status !== 'Resuelto'">
+                                                                    <i class="bi bi-check2-circle"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-outline-danger" @click="deleteTicketPrompt(t.id)" title="Eliminar">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- FAQ -->
+                                <div x-show="activeSection === 'faq'" class="help-section">
+                                    <h5 class="mb-4">Preguntas Frecuentes (FAQ)</h5>
+                                    
+                                    <div class="mb-4">
+                                        <input type="text" class="form-control" placeholder="Search FAQ..." x-model="faqSearch" @input="filterFAQ()">
+                                    </div>
+                                    
+                                    <div class="faq-list">
+                                        <template x-for="(faq, index) in filteredFAQ" :key="index">
+                                            <div class="faq-item">
+                                                <button class="faq-question" 
+                                                        :class="{ 'active': faq.open }"
+                                                        @click="toggleFAQ(index)"
+                                                        x-html="highlightText(faq.question, faqSearch)">
+                                                </button>
+                                                <div class="faq-answer" :class="{ 'show': faq.open }" x-html="highlightText(faq.answer, faqSearch)">
+                                                </div>
+                                            </div>
+                                        </template>
+                                        
+                                        <!-- Fallback FAQ content -->
+                                        <div class="faq-item" style="display: block;">
+                                            <button class="faq-question" data-faq-toggle aria-expanded="false">
+                                                How do I reset my password?
+                                            </button>
+                                            <div class="faq-answer">
+                                                You can reset your password by clicking on the "Forgot Password" link on the login page. Enter your email address and follow the instructions sent to your email.
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="faq-item" style="display: block;">
+                                            <button class="faq-question" data-faq-toggle aria-expanded="false">
+                                                How do I add new users to the system?
+                                            </button>
+                                            <div class="faq-answer">
+                                                Navigate to the Users page from the sidebar, click the "Add User" button, fill in the required information, and assign appropriate roles and permissions.
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="faq-item" style="display: block;">
+                                            <button class="faq-question" data-faq-toggle aria-expanded="false">
+                                                Can I export data from the dashboard?
+                                            </button>
+                                            <div class="faq-answer">
+                                                Yes, most pages include export functionality. Look for the "Export" button or dropdown menu to download data in various formats including CSV, Excel, and PDF.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Documentation -->
+                                <div x-show="activeSection === 'documentation'" class="help-section">
+                                    <h5 class="mb-4">Documentation</h5>
+                                    
+                                    <div class="row g-4">
+                                        <div class="col-lg-4">
+                                            <div class="list-group">
+                                                <template x-for="category in docCategories" :key="category.id">
+                                                    <a href="#" class="list-group-item list-group-item-action"
+                                                       :class="{ 'active': selectedDocCategory === category.id }"
+                                                       @click="selectDocCategory(category.id)">
+                                                        <i :class="category.icon" class="me-2"></i>
+                                                        <span x-text="category.name"></span>
+                                                        <span class="badge bg-secondary ms-auto" x-text="category.count"></span>
+                                                    </a>
+                                                </template>
+                                                
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-8">
+                                            <template x-for="doc in selectedDocs" :key="doc.id">
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0" x-text="doc.title"></h6>
+                                                        <span class="badge bg-primary" x-text="doc.type"></span>
+                                                    </div>
+                                                    <p class="text-muted mb-3" x-text="doc.description"></p>
+                                                    <div class="article-meta mb-3">
+                                                        <span x-text="`Updated ${doc.lastUpdated}`"></span>
+                                                        <span class="mx-2">•</span>
+                                                        <span x-text="`${doc.readTime} min read`"></span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm" @click="openDoc(doc.id)">View Documentation</a>
+                                                </div>
+                                            </template>
+                                            
+                                            <!-- Fallback documentation articles (only shown when Alpine.js fails) -->
+                                            <div class="fallback-docs" style="display: none;">
+                                            
+                                            <!-- Fallback documentation articles -->
+                                            <div id="docs-getting-started" class="docs-category-content">
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Quick Start Guide</h6>
+                                                        <span class="badge bg-primary">Guide</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Get up and running with the admin dashboard in 5 minutes</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 15, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>5 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                                
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Dashboard Overview</h6>
+                                                        <span class="badge bg-primary">Tutorial</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Understanding the main dashboard interface and navigation</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 12, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>8 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                                
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">First Login Setup</h6>
+                                                        <span class="badge bg-primary">Guide</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Complete your profile and configure initial settings</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 10, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>6 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                            </div>
+                                            
+                                            <div id="docs-user-management" class="docs-category-content" style="display: none;">
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Adding New Users</h6>
+                                                        <span class="badge bg-primary">Tutorial</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Step-by-step guide to adding users to your organization</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 18, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>7 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                                
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">User Roles & Permissions</h6>
+                                                        <span class="badge bg-primary">Guide</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Configure roles and manage user permissions effectively</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 16, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>12 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                            </div>
+                                            
+                                            <div id="docs-analytics" class="docs-category-content" style="display: none;">
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Creating Custom Reports</h6>
+                                                        <span class="badge bg-primary">Tutorial</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Build and customize reports to meet your specific needs</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 20, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>15 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                                
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Data Visualization Guide</h6>
+                                                        <span class="badge bg-primary">Guide</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Understanding charts, graphs, and dashboard widgets</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 14, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>10 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                            </div>
+                                            
+                                            <div id="docs-security" class="docs-category-content" style="display: none;">
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Two-Factor Authentication Setup</h6>
+                                                        <span class="badge bg-primary">Guide</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Secure your account with two-factor authentication</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 22, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>8 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                                
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Password Security Best Practices</h6>
+                                                        <span class="badge bg-primary">Guide</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Learn how to create and manage secure passwords</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 19, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>6 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                            </div>
+                                            
+                                            <div id="docs-integrations" class="docs-category-content" style="display: none;">
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Third-Party Integrations</h6>
+                                                        <span class="badge bg-primary">Guide</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Connect with popular services and applications</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 25, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>12 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                                
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Webhook Configuration</h6>
+                                                        <span class="badge bg-primary">Tutorial</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Set up webhooks for real-time data synchronization</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 23, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>10 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                            </div>
+                                            
+                                            <div id="docs-api" class="docs-category-content" style="display: none;">
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">API Authentication</h6>
+                                                        <span class="badge bg-primary">Reference</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Learn how to authenticate with our REST API</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 28, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>5 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                                
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">API Endpoints Reference</h6>
+                                                        <span class="badge bg-primary">Reference</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Complete reference for all available API endpoints</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 26, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>20 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                            </div>
+                                            
+                                            <div id="docs-troubleshooting" class="docs-category-content" style="display: none;">
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Common Issues & Solutions</h6>
+                                                        <span class="badge bg-primary">Guide</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Quick solutions to frequently encountered problems</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 30, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>15 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                                
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Performance Optimization</h6>
+                                                        <span class="badge bg-primary">Guide</span>
+                                                    </div>
+                                                    <p class="text-muted mb-3">Tips to improve dashboard performance and load times</p>
+                                                    <div class="article-meta mb-3">
+                                                        <span>Updated Jan 27, 2032</span>
+                                                        <span class="mx-2">•</span>
+                                                        <span>8 min read</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">View Documentation</a>
+                                                </div>
+                                            </div>
+                                            </div> <!-- /.fallback-docs -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Contact Support -->
+                                <div x-show="activeSection === 'contact'" class="help-section">
+                                    <h5 class="mb-4">Contact Support</h5>
+                                    
+                                    <div class="row g-4 mb-5">
+                                        <div class="col-md-4">
+                                            <div class="contact-card">
+                                                <div class="contact-icon bg-primary bg-opacity-10 text-primary">
+                                                    <i class="bi bi-chat-dots"></i>
+                                                </div>
+                                                <h6 class="mb-2">Live Chat</h6>
+                                                <p class="text-muted mb-3">Chat with our support team in real-time</p>
+                                                <div class="mb-3">
+                                                    <span class="status-indicator status-operational"></span>
+                                                    <small class="text-success-emphasis">Online</small>
+                                                </div>
+                                                <button class="btn btn-primary btn-sm" @click="startLiveChat()">Start Chat</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                            <div class="contact-card">
+                                                <div class="contact-icon bg-success bg-opacity-10 text-success">
+                                                    <i class="bi bi-envelope"></i>
+                                                </div>
+                                                <h6 class="mb-2">Email Support</h6>
+                                                <p class="text-muted mb-3">Send us an email and we'll respond within 24 hours</p>
+                                                <div class="mb-3">
+                                                    <span class="status-indicator status-operational"></span>
+                                                    <small class="text-success-emphasis">Available</small>
+                                                </div>
+                                                <button class="btn btn-success btn-sm" @click="openEmailForm()">Send Email</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                            <div class="contact-card">
+                                                <div class="contact-icon bg-warning bg-opacity-10 text-warning">
+                                                    <i class="bi bi-telephone"></i>
+                                                </div>
+                                                <h6 class="mb-2">Phone Support</h6>
+                                                <p class="text-muted mb-3">Call us for urgent technical issues</p>
+                                                <div class="mb-3">
+                                                    <span class="status-indicator status-maintenance"></span>
+                                                    <small class="text-warning">Limited Hours</small>
+                                                </div>
+                                                <button class="btn btn-warning btn-sm" @click="showPhoneInfo()">View Number</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Support Ticket Form -->
+                                    <div class="row">
+                                        <div class="col-lg-8">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h6 class="mb-0">Submit a Support Ticket</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <form @submit.prevent="submitTicket()">
+                                                        <div class="row g-3">
+                                                            <div class="col-md-6">
+                                                                <label class="form-label">Your Name</label>
+                                                                <input type="text" class="form-control" x-model="supportTicket.name" required>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label class="form-label">Email Address</label>
+                                                                <input type="email" class="form-control" x-model="supportTicket.email" required>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label class="form-label">Priority</label>
+                                                                <select class="form-select" x-model="supportTicket.priority" required>
+                                                                    <option value="">Select Priority</option>
+                                                                    <option value="low">Low - General Question</option>
+                                                                    <option value="medium">Medium - Feature Issue</option>
+                                                                    <option value="high">High - System Problem</option>
+                                                                    <option value="urgent">Urgent - Critical Issue</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label class="form-label">Category</label>
+                                                                <select class="form-select" x-model="supportTicket.category" required>
+                                                                    <option value="">Select Category</option>
+                                                                    <option value="technical">Technical Issue</option>
+                                                                    <option value="billing">Billing & Account</option>
+                                                                    <option value="feature">Feature Request</option>
+                                                                    <option value="bug">Bug Report</option>
+                                                                    <option value="other">Other</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <label class="form-label">Subject</label>
+                                                                <input type="text" class="form-control" x-model="supportTicket.subject" required>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <label class="form-label">Description</label>
+                                                                <textarea class="form-control" rows="5" x-model="supportTicket.description" placeholder="Please describe your issue in detail..." required></textarea>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <label class="form-label">Attachments (Optional)</label>
+                                                                <input type="file" class="form-control" multiple accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
+                                                                <small class="text-muted">Max 5 files, 10MB each</small>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <button type="submit" class="btn btn-primary" :disabled="submittingTicket">
+                                                                    <span x-show="!submittingTicket">Submit Ticket</span>
+                                                                    <span x-show="submittingTicket">
+                                                                        <i class="bi bi-hourglass me-2"></i>Submitting...
+                                                                    </span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-4">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h6 class="mb-0">System Status</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <template x-for="service in systemStatus" :key="service.name">
+                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                            <span x-text="service.name"></span>
+                                                            <div>
+                                                                <span class="status-indicator" :class="'status-' + service.status"></span>
+                                                                <small x-text="service.statusText" :class="'text-' + (service.status === 'operational' ? 'success' : service.status === 'maintenance' ? 'warning' : 'danger')"></small>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <hr>
+                                                    <a href="#" class="btn btn-outline-secondary btn-sm w-100" @click="viewSystemStatus()">View Full Status</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Feature Requests -->
+                                <div x-show="activeSection === 'features'" class="help-section">
+                                    <h5 class="mb-4">Feature Requests</h5>
+                                    
+                                    <div class="feature-request-form mb-4">
+                                        <h6 class="mb-3">Submit a Feature Request</h6>
+                                        <form @submit.prevent="submitFeatureRequest()">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Feature Title</label>
+                                                    <input type="text" class="form-control" x-model="featureRequest.title" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Category</label>
+                                                    <select class="form-select" x-model="featureRequest.category" required>
+                                                        <option value="">Select Category</option>
+                                                        <option value="ui">User Interface</option>
+                                                        <option value="analytics">Analytics</option>
+                                                        <option value="reporting">Reporting</option>
+                                                        <option value="integration">Integration</option>
+                                                        <option value="performance">Performance</option>
+                                                        <option value="other">Other</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label">Description</label>
+                                                    <textarea class="form-control" rows="4" x-model="featureRequest.description" placeholder="Describe the feature and how it would benefit users..." required></textarea>
+                                                </div>
+                                                <div class="col-12">
+                                                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                    <!-- Popular Feature Requests -->
+                                    <h6 class="mb-3">Popular Requests</h6>
+                                    <div class="row g-3">
+                                        <template x-for="request in popularRequests" :key="request.id">
+                                            <div class="col-12">
+                                                <div class="article-card">
+                                                    <div class="d-flex justify-content-between align-items-start">
+                                                        <div class="flex-grow-1">
+                                                            <h6 class="mb-2" x-text="request.title"></h6>
+                                                            <p class="text-muted mb-2" x-text="request.description"></p>
+                                                            <div class="article-meta">
+                                                                <span class="badge bg-primary" x-text="request.category"></span>
+                                                                <span class="mx-2">•</span>
+                                                                <span x-text="`${request.votes} votes`"></span>
+                                                                <span class="mx-2">•</span>
+                                                                <span x-text="request.status"></span>
+                                                            </div>
+                                                        </div>
+                                                        <button class="btn btn-outline-primary btn-sm" @click="voteFeature(request.id)" :disabled="request.voted">
+                                                            <i class="bi bi-heart" :class="{ 'bi-heart-fill': request.voted }"></i>
+                                                            <span x-text="request.voted ? 'Voted' : 'Vote'"></span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    
+    <!-- Vite Script -->
+    <script type="module" src="./scripts/main.js"></script>
+    
+    <!-- Sidebar Toggle Script -->
+    <script>
+      // Fallback navigation function
+      function showSection(sectionId) {
+        // Hide all sections
+        const sections = document.querySelectorAll('.help-section');
+        sections.forEach(section => {
+          section.style.display = 'none';
+        });
+        
+        // Show selected section
+        const targetSection = document.querySelector(`[x-show="activeSection === '${sectionId}'"]`);
+        if (targetSection) {
+          targetSection.style.display = 'block';
+        }
+        
+        // Update navigation
+        const navLinks = document.querySelectorAll('.fallback-nav .nav-link');
+        navLinks.forEach(link => link.classList.remove('active'));
+        event.target.closest('.nav-link').classList.add('active');
+      }
+      
+      document.addEventListener('DOMContentLoaded', function() {
+        // Ensure Getting Started section is visible by default
+        setTimeout(() => {
+          const gettingStartedSection = document.querySelector(`[x-show="activeSection === 'getting-started'"]`);
+          if (gettingStartedSection) {
+            gettingStartedSection.style.display = 'block';
+          }
+        }, 100);
+        
+      });
+      
+      // Show fallback content if Alpine.js doesn't load
+      setTimeout(() => {
+        // Check if Alpine.js is working by looking for x-data elements that have been processed
+        const alpineElements = document.querySelectorAll('[x-data]');
+        let alpineWorking = false;
+        
+        alpineElements.forEach(el => {
+          if (el.__x) { // Alpine.js adds __x property to processed elements
+            alpineWorking = true;
+          }
+        });
+        
+        if (!alpineWorking) {
+          console.log('Alpine.js not detected, showing fallback documentation');
+          const fallbackDocs = document.querySelector('.fallback-docs');
+          if (fallbackDocs) {
+            fallbackDocs.style.display = 'block';
+          }
+        }
+      }, 1000);
+      
+      // Documentation category switching functionality
+      function showDocCategory(categoryId, activeElement) {
+        // Hide all documentation category content
+        const allDocs = document.querySelectorAll('.docs-category-content');
+        allDocs.forEach(doc => {
+          doc.style.display = 'none';
+        });
+        
+        // Show selected category content
+        const selectedDoc = document.getElementById('docs-' + categoryId);
+        if (selectedDoc) {
+          selectedDoc.style.display = 'block';
+        }
+        
+        // Update active state in navigation
+        const allNavItems = document.querySelectorAll('.list-group-item');
+        allNavItems.forEach(item => {
+          item.classList.remove('active');
+        });
+        
+        if (activeElement) {
+          activeElement.classList.add('active');
+        }
+        
+        console.log('Switched to documentation category:', categoryId);
+      }
+      
+      // Fallback FAQ toggle functionality
+      function toggleFAQ(element) {
+        const answer = element.nextElementSibling;
+        const isOpen = element.classList.contains('active');
+        
+        if (isOpen) {
+          element.classList.remove('active');
+          answer.classList.remove('show');
+        } else {
+          element.classList.add('active');
+          answer.classList.add('show');
+        }
+      }
+      
+      // Add click listeners to FAQ questions for fallback functionality
+      document.querySelectorAll('.faq-question').forEach(question => {
+        if (!question.hasAttribute('@click')) {
+          question.addEventListener('click', function() {
+            toggleFAQ(this);
+          });
+        }
+      });
+    </script>
+</body>
+</html>

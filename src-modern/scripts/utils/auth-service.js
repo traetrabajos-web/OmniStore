@@ -1,0 +1,442 @@
+// ==============================================================================
+// OmniStore - Authentication & Session Management Service
+// ==============================================================================
+
+import { getSupabaseClient } from './supabase.js';
+import { addUser } from './store-data.js';
+
+const SESSION_STORAGE_KEY = 'omnistore_user_session';
+
+// Built-in seed accounts for instant fallback & demo access
+export const DEMO_ACCOUNTS = [
+  {
+    id: 1,
+    name: 'Alejandro Morales',
+    email: 'admin@omnistore.com',
+    password: 'Admin*2026',
+    role: 'admin',
+    roleLabel: 'Super Administrador',
+    avatar: './assets/images/avatar-placeholder.svg',
+    defaultRedirect: './index.html',
+    badgeClass: 'bg-primary'
+  },
+  {
+    id: 2,
+    name: 'Sofía Valenzuela',
+    email: 'vendor@omnistore.com',
+    password: 'Vendor*2026',
+    role: 'vendor',
+    roleLabel: 'Vendedor',
+    avatar: './assets/images/avatar-placeholder.svg',
+    defaultRedirect: './orders.html',
+    badgeClass: 'bg-info'
+  },
+  {
+    id: 3,
+    name: 'Carlos Mendoza',
+    email: 'cliente@omnistore.com',
+    password: 'Cliente*2026',
+    role: 'customer',
+    roleLabel: 'Cliente',
+    avatar: './assets/images/avatar-placeholder.svg',
+    defaultRedirect: './marketplace.html',
+    badgeClass: 'bg-success'
+  }
+];
+
+/**
+ * Get the currently logged-in user from localStorage session
+ */
+export function getCurrentUser() {
+  try {
+    const raw = localStorage.getItem(SESSION_STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) {
+    console.error('Error reading user session:', e);
+    return null;
+  }
+}
+
+/**
+ * Check if a user is currently logged in
+ */
+export function isAuthenticated() {
+  return getCurrentUser() !== null;
+}
+
+/**
+ * Log in a user with email and password
+ * First attempts to query Supabase public.users, falls back to DEMO_ACCOUNTS
+ */
+export async function loginUser(email, password, remember = true) {
+  const cleanEmail = (email || '').trim().toLowerCase();
+  const cleanPassword = (password || '').trim();
+
+  if (!cleanEmail || !cleanPassword) {
+    return { success: false, error: 'Por favor ingresa tu correo electrónico y contraseña.' };
+  }
+
+  // 1. Try direct PostgreSQL Backend API
+  try {
+    const apiRes = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cleanEmail, password: cleanPassword })
+    });
+    if (apiRes.ok) {
+      const data = await apiRes.json();
+      if (data.success && data.user) {
+        const userSession = {
+          ...data.user,
+          loggedAt: new Date().toISOString(),
+          source: 'postgresql_db'
+        };
+        saveSession(userSession, remember);
+        return {
+          success: true,
+          user: userSession,
+          redirectUrl: data.redirectUrl || getRedirectForRole(userSession.role)
+        };
+      }
+    } else {
+      const errData = await apiRes.json().catch(() => ({}));
+      if (errData.error) {
+        // Known error from database
+        return { success: false, error: errData.error };
+      }
+    }
+  } catch {
+    // API not reachable, try client fallback
+  }
+
+  // 2. Try Supabase Client if configured
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .ilike('email', cleanEmail)
+        .maybeSingle();
+
+      if (!error && data) {
+        if (data.password_hash === cleanPassword || data.password === cleanPassword) {
+          const userSession = {
+            id: data.id,
+            name: data.name || 'Usuario OmniStore',
+            email: data.email,
+            role: data.role || 'customer',
+            avatar: data.avatar || './assets/images/avatar-placeholder.svg',
+            phone: data.phone || '',
+            city: data.city || '',
+            country: data.country || '',
+            status: data.status || 'active',
+            loggedAt: new Date().toISOString(),
+            source: 'supabase_db'
+          };
+
+          saveSession(userSession, remember);
+          updateLastLogin(data.id);
+
+          return {
+            success: true,
+            user: userSession,
+            redirectUrl: getRedirectForRole(userSession.role)
+          };
+        }
+      }
+    } catch {
+      // Ignore
+    }
+  }
+
+  // 3. Check built-in demo seed accounts
+  const demoMatch = DEMO_ACCOUNTS.find(
+    (acc) => acc.email.toLowerCase() === cleanEmail && acc.password === cleanPassword
+  );
+
+  if (demoMatch) {
+    const userSession = {
+      id: demoMatch.id,
+      name: demoMatch.name,
+      email: demoMatch.email,
+      role: demoMatch.role,
+      avatar: demoMatch.avatar,
+      loggedAt: new Date().toISOString(),
+      source: 'seed_account'
+    };
+
+    saveSession(userSession, remember);
+    return {
+      success: true,
+      user: userSession,
+      redirectUrl: demoMatch.defaultRedirect
+    };
+  }
+
+  return {
+    success: false,
+    error: 'Credenciales inválidas. Verifica tu correo y contraseña.'
+  };
+}
+
+/**
+ * Register a new user account
+ */
+export async function registerUser({ name, email, password, role = 'customer' }) {
+  const cleanName = (name || '').trim();
+  const cleanEmail = (email || '').trim().toLowerCase();
+  const cleanPassword = (password || '').trim();
+
+  if (!cleanName || !cleanEmail || !cleanPassword) {
+    return { success: false, error: 'Todos los campos son obligatorios.' };
+  }
+
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      // Check if email already exists
+      const { data: existing } = await supabase
+        .from('users')
+        .select('id')
+        .ilike('email', cleanEmail)
+        .maybeSingle();
+
+      if (existing) {
+        return { success: false, error: 'Ya existe una cuenta con este correo electrónico.' };
+      }
+
+      const { data, error } = await supabase
+        .from('users')
+        .insert([
+          {
+            name: cleanName,
+            email: cleanEmail,
+            password_hash: cleanPassword,
+            role,
+            avatar: './assets/images/avatar-placeholder.svg',
+            status: 'active'
+          }
+        ])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      const userSession = {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        role: data.role,
+        avatar: data.avatar,
+        loggedAt: new Date().toISOString(),
+        source: 'supabase_db'
+      };
+
+      try {
+        addUser({
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          role: data.role,
+          department: 'Bolívar',
+          city: 'Cartagena de Indias'
+        });
+      } catch {}
+
+      saveSession(userSession, true);
+      return {
+        success: true,
+        user: userSession,
+        redirectUrl: getRedirectForRole(userSession.role)
+      };
+    } catch (e) {
+      console.error('Error in registration:', e);
+      return { success: false, error: 'Error al registrar usuario: ' + e.message };
+    }
+  }
+
+  // Local fallback registration
+  const userSession = {
+    id: Date.now(),
+    name: cleanName,
+    email: cleanEmail,
+    role,
+    avatar: './assets/images/avatar-placeholder.svg',
+    loggedAt: new Date().toISOString(),
+    source: 'local_storage'
+  };
+
+  try {
+    addUser({
+      id: userSession.id,
+      name: cleanName,
+      email: cleanEmail,
+      role,
+      department: 'Bolívar',
+      city: 'Cartagena de Indias'
+    });
+  } catch {}
+
+  saveSession(userSession, true);
+  return {
+    success: true,
+    user: userSession,
+    redirectUrl: getRedirectForRole(userSession.role)
+  };
+}
+
+/**
+ * Save user session to localStorage
+ */
+function saveSession(userSession) {
+  try {
+    localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(userSession));
+    window.dispatchEvent(new CustomEvent('omnistore:auth-changed', { detail: userSession }));
+  } catch (e) {
+    console.error('Could not save session:', e);
+  }
+}
+
+/**
+ * Log out current user
+ */
+export function logoutUser() {
+  try {
+    localStorage.removeItem(SESSION_STORAGE_KEY);
+    sessionStorage.removeItem(SESSION_STORAGE_KEY);
+    window.dispatchEvent(new CustomEvent('omnistore:auth-changed', { detail: null }));
+    window.location.replace('./login.html');
+  } catch {
+    window.location.replace('./login.html');
+  }
+}
+
+/**
+ * Determine redirection URL based on user role
+ */
+export function getRedirectForRole(role) {
+  switch (role) {
+    case 'admin':
+      return './index.html';
+    case 'vendor':
+      return './orders.html';
+    case 'customer':
+    default:
+      return './marketplace.html';
+  }
+}
+
+/**
+ * Asynchronously update last_login timestamp in Supabase
+ */
+async function updateLastLogin(userId) {
+  try {
+    const supabase = getSupabaseClient();
+    if (supabase && userId) {
+      await supabase
+        .from('users')
+        .update({ last_login: new Date().toISOString() })
+        .eq('id', userId);
+    }
+  } catch {
+    // Ignore non-critical timestamp errors
+  }
+}
+
+/**
+ * Enforce authentication and role permissions on protected admin pages
+ */
+export function enforceAuthAndRoles() {
+  const currentPage = document.body?.dataset?.page || '';
+  const publicPages = ['login', 'register', 'forgot-password', 'reset-password', 'two-factor', 'lock-screen', '404', '500', 'maintenance', 'marketplace'];
+  
+  const path = (window.location.pathname || '').toLowerCase();
+  const isPublicPage = publicPages.some(p => path.includes(p)) || publicPages.includes(currentPage);
+  
+  if (isPublicPage) {
+    return;
+  }
+
+  const currentUser = getCurrentUser();
+
+  // If no user is logged in, immediately redirect to login page replacing history
+  if (!currentUser) {
+    const targetUrl = window.location.pathname + window.location.search;
+    window.location.replace(`./login.html?redirect=${encodeURIComponent(targetUrl)}`);
+    return;
+  }
+
+  // If role is 'customer', customers must be redirected to the public marketplace
+  if (currentUser.role === 'customer') {
+    window.location.replace('./marketplace.html');
+    return;
+  }
+
+  // If role is 'vendor', enforce role restrictions (no access to system security or root database config)
+  if (currentUser.role === 'vendor') {
+    const currentPath = window.location.pathname;
+    const currentFile = currentPath.substring(currentPath.lastIndexOf('/') + 1) || 'index.html';
+    const restrictedForVendor = ['security.html'];
+    
+    if (restrictedForVendor.includes(currentFile)) {
+      alert('🔒 Acceso Restringido: Tu cuenta de Vendedor no tiene permisos para acceder al módulo de Seguridad y Base de Datos.');
+      window.location.replace('./orders.html');
+      return;
+    }
+
+    // Adapt sidebar for vendor by hiding system-level admin sections
+    const securityLink = document.querySelector('a[href="./security.html"]');
+    if (securityLink) {
+      const li = securityLink.closest('.nav-item');
+      if (li) li.style.display = 'none';
+    }
+  }
+}
+
+// Automatic reactive listeners for bfcache and history back/forward navigation
+if (typeof window !== 'undefined') {
+  window.addEventListener('pageshow', () => {
+    enforceAuthAndRoles();
+  });
+  window.addEventListener('popstate', () => {
+    enforceAuthAndRoles();
+  });
+}
+
+/**
+ * Initializes and binds the user menu / profile dropdown across all pages
+ */
+export function initUserHeaderDropdown() {
+  const currentUser = getCurrentUser();
+  const userAvatarEls = document.querySelectorAll('[data-user-avatar]');
+  const userNameEls = document.querySelectorAll('[data-user-name]');
+  const userRoleEls = document.querySelectorAll('[data-user-role]');
+  const logoutBtnEls = document.querySelectorAll('[data-auth-logout]');
+
+  if (currentUser) {
+    userAvatarEls.forEach((el) => {
+      if (el.tagName === 'IMG') el.src = currentUser.avatar || './assets/images/avatar-placeholder.svg';
+    });
+    userNameEls.forEach((el) => {
+      el.textContent = currentUser.name || currentUser.email;
+    });
+    userRoleEls.forEach((el) => {
+      const roleText = currentUser.role === 'admin' 
+        ? 'SuperAdmin' 
+        : (currentUser.role === 'vendor' ? 'Vendedor' : 'Cliente');
+      const badgeColor = currentUser.role === 'admin' ? 'bg-primary' : (currentUser.role === 'vendor' ? 'bg-info' : 'bg-success');
+      el.textContent = roleText;
+      el.className = `badge ${badgeColor} ms-2`;
+    });
+  }
+
+  logoutBtnEls.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      logoutUser();
+    });
+  });
+}
+

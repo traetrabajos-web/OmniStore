@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <title>Tables - Bootstrap 5 Elements</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Bootstrap 5 table examples - responsive design, striped, bordered, and hover styles">
+    <meta name="keywords" content="bootstrap, tables, responsive, striped, bordered, hover, data tables">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Fonts -->
+    
+    
+    <!-- Custom syntax highlighting overrides -->
+    <style>
+        .element-code-block pre[class*="language-"] {
+            background: #1e1e1e !important;
+            border: 1px solid #333 !important;
+            border-radius: 0.5rem !important;
+            margin: 0 !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .element-code-block code[class*="language-"] {
+            background: transparent !important;
+            color: #d4d4d4 !important;
+            font-family: 'Fira Code', 'Courier New', monospace !important;
+            font-size: 0.875rem !important;
+            line-height: 1.6 !important;
+        }
+        
+        /* VS Code inspired colors */
+        .token.tag { color: #569cd6 !important; }
+        .token.attr-name { color: #9cdcfe !important; }
+        .token.attr-value { color: #ce9178 !important; }
+        .token.string { color: #ce9178 !important; }
+        .token.punctuation { color: #808080 !important; }
+        .token.comment { color: #6a9955 !important; font-style: italic !important; }
+        
+        /* Bootstrap classes highlighting */
+        .token.attr-value .token.string {
+            background: linear-gradient(transparent 0%, transparent 100%);
+        }
+
+        /* Fix unreadable active+hover sidebar navigation */
+        .nav-submenu .nav-link.active:hover {
+            background-color: var(--bs-primary) !important;
+            color: white !important;
+            transform: translateX(2px) !important;
+        }
+
+        .nav-submenu .nav-link.active:hover i {
+            opacity: 1 !important;
+            color: white !important;
+        }
+
+        .sidebar-nav .nav .nav-link.active:hover {
+            background-color: var(--bs-primary) !important;
+            color: white !important;
+            transform: none !important;
+        }
+    </style>
+</head>
+
+<body data-page="elements" class="elements-page">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div class="admin-app">
+        <div class="admin-wrapper" id="admin-wrapper">
+            
+            <!-- Header -->
+            <header class="admin-header">
+                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+                    <div class="container-fluid">
+                        <a class="navbar-brand d-flex align-items-center" href="./index.html">
+                        <div class="brand-icon me-2">
+                            <i class="bi bi-bag-check-fill"></i>
+                        </div>
+                        <span class="brand-text">OmniStore</span>
+                        <span class="admin-pill ms-2">Admin</span>
+                    </a>
+
+                        <!-- Sidebar Toggle -->
+                        <button class="hamburger-menu" type="button" data-sidebar-toggle aria-label="Toggle sidebar">
+                            <i class="bi bi-list"></i>
+                        </button>
+
+                        <div class="search-container flex-grow-1 mx-4" x-data="searchComponent">
+                            <div class="position-relative">
+                                <input type="search" class="form-control" placeholder="Search..." x-model="query" @input="search()" data-search-input>
+                                <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y me-3"></i>
+                            </div>
+                        </div>
+
+                        <div class="navbar-nav flex-row">
+                            <!-- Theme Toggle with Alpine.js -->
+                            <div x-data="themeSwitch">
+                                <button class="btn btn-outline-secondary me-2"
+                                        type="button"
+                                        @click="toggle()"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        title="Toggle theme">
+                                    <i class="bi bi-sun-fill" x-show="currentTheme === 'light'"></i>
+                                    <i class="bi bi-moon-fill" x-show="currentTheme === 'dark'"></i>
+                                </button>
+                            </div>
+
+                            <!-- Fullscreen Toggle (hidden on phones) -->
+                            <button class="btn btn-outline-secondary me-2 d-none d-lg-inline-block"
+                                    type="button"
+                                    data-fullscreen-toggle
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="bottom"
+                                    title="Toggle fullscreen">
+                                <i class="bi bi-arrows-fullscreen icon-hover"></i>
+                            </button>
+
+                            <!-- Notifications -->
+                            <div class="dropdown me-2">
+                                <button class="btn btn-outline-secondary position-relative"
+                                        type="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <i class="bi bi-bell"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        3
+                                    </span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><h6 class="dropdown-header">Notifications</h6></li>
+                                    <li><a class="dropdown-item" href="#">New user registered</a></li>
+                                    <li><a class="dropdown-item" href="#">Server status update</a></li>
+                                    <li><a class="dropdown-item" href="#">New message received</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-center" href="#">View all notifications</a></li>
+                                </ul>
+                            </div>
+
+                                                    <!-- User Menu -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary d-flex align-items-center" 
+                                    type="button" 
+                                    data-bs-toggle="dropdown" 
+                                    aria-expanded="false">
+                                <img src="./assets/images/avatar-placeholder.svg" 
+                                     alt="Avatar Administrador" 
+                                     width="24" 
+                                     height="24" 
+                                     data-user-avatar
+                                     class="rounded-circle me-2">
+                                <span class="d-none d-md-inline" data-user-name>Admin Colombia</span>
+                                <span class="badge bg-primary ms-2" data-user-role>SuperAdmin</span>
+                                <i class="bi bi-chevron-down ms-1"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="./users.html"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
+                                <li><a class="dropdown-item" href="./settings.html"><i class="bi bi-gear me-2"></i>Ajustes</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="./login.html" data-auth-logout><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            </header>
+
+                    <!-- Sidebar -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-content">
+                <nav class="sidebar-nav">
+                    <ul class="nav flex-column">
+                        <!-- Direct access to Marketplace Storefront -->
+                        <li class="nav-item mb-2">
+                            <a class="nav-link marketplace-nav-btn text-white fw-bold rounded-3 shadow-sm d-flex align-items-center" href="./marketplace.html">
+                                <i class="bi bi-shop fs-5"></i>
+                                <span>Ir al Marketplace</span>
+                                <i class="bi bi-box-arrow-up-right ms-auto"></i>
+                            </a>
+                        </li>
+
+                        <!-- VENTAS -->
+                        <li class="nav-item">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Ventas</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./index.html">
+                                <i class="bi bi-speedometer2"></i>
+                                <span>Dashboard General</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#ordersSubmenu" aria-expanded="false" aria-controls="ordersSubmenu">
+                                <i class="bi bi-bag-check-fill"></i>
+                                <span>Pedidos & Ventas</span>
+                                <span class="badge bg-danger rounded-pill ms-2 me-1" style="font-size: 0.7rem;">3</span>
+                                <i class="bi bi-chevron-down ms-auto"></i>
+                            </a>
+                            <div class="collapse" id="ordersSubmenu">
+                                <ul class="nav nav-submenu">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./orders.html">
+                                            <i class="bi bi-list-ul"></i>
+                                            <span>Todos los pedidos</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./orders.html?filter=pending">
+                                            <i class="bi bi-clock-history"></i>
+                                            <span>Pendientes de pago</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./orders.html?filter=processing">
+                                            <i class="bi bi-box-arrow-right"></i>
+                                            <span>Por enviar</span>
+                                            <span class="badge bg-danger rounded-pill ms-auto">3</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./orders.html?filter=refunded">
+                                            <i class="bi bi-arrow-counterclockwise"></i>
+                                            <span>Devoluciones & reembolsos</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./orders.html?filter=abandoned">
+                                            <i class="bi bi-cart-x"></i>
+                                            <span>Carritos abandonados</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./orders.html?tab=payments">
+                                            <i class="bi bi-credit-card"></i>
+                                            <span>Pagos & transacciones</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <!-- CATÁLOGO -->
+                        <li class="nav-item mt-2">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Catálogo</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#productsSubmenu" aria-expanded="false" aria-controls="productsSubmenu">
+                                <i class="bi bi-box-seam-fill"></i>
+                                <span>Catálogo de Productos</span>
+                                <span class="badge bg-success-subtle text-success border ms-2 me-1" style="font-size: 0.68rem;">En Vivo</span>
+                                <i class="bi bi-chevron-down ms-auto"></i>
+                            </a>
+                            <div class="collapse" id="productsSubmenu">
+                                <ul class="nav nav-submenu">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html">
+                                            <i class="bi bi-grid-fill"></i>
+                                            <span>Todos los productos</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html?view=categories">
+                                            <i class="bi bi-tags-fill"></i>
+                                            <span>Categorías</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html?view=brands">
+                                            <i class="bi bi-patch-check-fill"></i>
+                                            <span>Marcas</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html?view=collections">
+                                            <i class="bi bi-collection-fill"></i>
+                                            <span>Colecciones</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#inventorySubmenu" aria-expanded="false" aria-controls="inventorySubmenu">
+                                <i class="bi bi-stack"></i>
+                                <span>Inventario & Stock</span>
+                                <span class="badge bg-warning-subtle text-warning-emphasis border ms-2 me-1" style="font-size: 0.7rem;">2</span>
+                                <i class="bi bi-chevron-down ms-auto"></i>
+                            </a>
+                            <div class="collapse" id="inventorySubmenu">
+                                <ul class="nav nav-submenu">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html?tab=inventory">
+                                            <i class="bi bi-bar-chart-steps"></i>
+                                            <span>Niveles de stock</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html?tab=low-stock">
+                                            <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                                            <span>Alertas de stock bajo</span>
+                                            <span class="badge bg-danger rounded-pill ms-auto">2</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html?tab=movements">
+                                            <i class="bi bi-arrow-left-right"></i>
+                                            <span>Movimientos de kardex</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="./products.html?tab=suppliers">
+                                            <i class="bi bi-truck"></i>
+                                            <span>Proveedores & compras</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <!-- CLIENTES -->
+                        <li class="nav-item mt-2">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Clientes</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./users.html">
+                                <i class="bi bi-people-fill"></i>
+                                <span>Clientes & Usuarios</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./users.html?tab=reviews">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <span>Reseñas & Calificaciones</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./help.html">
+                                <i class="bi bi-headset"></i>
+                                <span>Soporte (Tickets & FAQ)</span>
+                            </a>
+                        </li>
+
+                        <!-- MARKETING -->
+                        <li class="nav-item mt-2">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Marketing</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=coupons">
+                                <i class="bi bi-ticket-perforated-fill"></i>
+                                <span>Cupones & Descuentos</span>
+                                <span class="badge bg-primary-subtle text-primary border ms-auto">Activo</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=banners">
+                                <i class="bi bi-megaphone-fill"></i>
+                                <span>Promociones & Banners</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=campaigns">
+                                <i class="bi bi-send-check-fill"></i>
+                                <span>Campañas (Email / WhatsApp)</span>
+                            </a>
+                        </li>
+
+                        <!-- LOGÍSTICA -->
+                        <li class="nav-item mt-2">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Logística</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./orders.html?tab=shipping">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <span>Envíos & Guías</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=carriers">
+                                <i class="bi bi-truck-flatbed"></i>
+                                <span>Transportadoras</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=shipping-rates">
+                                <i class="bi bi-globe-americas"></i>
+                                <span>Zonas & Tarifas de Envío</span>
+                            </a>
+                        </li>
+
+                        <!-- REPORTES -->
+                        <li class="nav-item mt-2">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Reportes</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./analytics.html">
+                                <i class="bi bi-graph-up-arrow"></i>
+                                <span>Métricas & Analytics</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./reports.html">
+                                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                                <span>Reportes de Ventas</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./reports.html?tab=invoices">
+                                <i class="bi bi-receipt"></i>
+                                <span>Facturación & Impuestos</span>
+                            </a>
+                        </li>
+
+                        <!-- CONTENIDO -->
+                        <li class="nav-item mt-2">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Contenido</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=pages">
+                                <i class="bi bi-file-richtext-fill"></i>
+                                <span>Páginas & Blog</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=menus">
+                                <i class="bi bi-layout-text-window-reverse"></i>
+                                <span>Menús & Footer</span>
+                            </a>
+                        </li>
+
+                        <!-- SISTEMA -->
+                        <li class="nav-item mt-2">
+                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Sistema</small>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html">
+                                <i class="bi bi-gear-fill"></i>
+                                <span>Ajustes de Tienda</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./users.html?tab=roles">
+                                <i class="bi bi-person-badge-fill"></i>
+                                <span>Equipo, Roles & Permisos</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=integrations">
+                                <i class="bi bi-plugin"></i>
+                                <span>Integraciones</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./settings.html?tab=notifications">
+                                <i class="bi bi-bell-fill"></i>
+                                <span>Plantillas de Notificaciones</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./security.html">
+                                <i class="bi bi-shield-lock-fill"></i>
+                                <span>Seguridad & Base de Datos</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+            <!-- Sidebar Backdrop (mobile overlay) -->
+        <div class="sidebar-backdrop" aria-hidden="true"></div>
+            <!-- Main Content -->
+            <main id="main-content" class="admin-main">
+                <div class="container-fluid p-4">
+                    
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb" class="mb-4">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="./elements.html">Elements</a></li>
+                            <li class="breadcrumb-item active">Tables</li>
+                        </ol>
+                    </nav>
+
+                    <!-- Page Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1 class="h3 mb-0">Tables</h1>
+                            <p class="text-muted mb-0">Responsive design, striped, bordered, and hover styles</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-secondary" data-history-back>
+                                <i class="bi bi-arrow-left me-2"></i>Back
+                            </button>
+                            <button class="btn btn-primary" data-copy-all>
+                                <i class="bi bi-clipboard me-2"></i>Copy All
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table Examples -->
+                    <div class="row g-4">
+                        
+                        <!-- Basic Table -->
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="h5 card-title mb-0">Basic Table</h2>
+                                </div>
+                                <div class="card-body">
+                                    <div class="element-preview-container">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">First</th>
+                                                    <th scope="col">Last</th>
+                                                    <th scope="col">Handle</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">3</th>
+                                                    <td colspan="2">Larry the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="element-code-block">
+                                        <pre><code class="language-html">&lt;table class="table"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th scope="col"&gt;#&lt;/th&gt;
+      &lt;th scope="col"&gt;First&lt;/th&gt;
+      &lt;th scope="col"&gt;Last&lt;/th&gt;
+      &lt;th scope="col"&gt;Handle&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;1&lt;/th&gt;
+      &lt;td&gt;Mark&lt;/td&gt;
+      &lt;td&gt;Otto&lt;/td&gt;
+      &lt;td&gt;@mdo&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;2&lt;/th&gt;
+      &lt;td&gt;Jacob&lt;/td&gt;
+      &lt;td&gt;Thornton&lt;/td&gt;
+      &lt;td&gt;@fat&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;3&lt;/th&gt;
+      &lt;td colspan="2"&gt;Larry the Bird&lt;/td&gt;
+      &lt;td&gt;@twitter&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-secondary" data-copy-code>
+                                        <i class="bi bi-clipboard me-2"></i>Copy Code
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table Variants -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="h5 card-title mb-0">Table Variants</h2>
+                                </div>
+                                <div class="card-body">
+                                    <div class="element-preview-container">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Class</th>
+                                                    <th scope="col">Heading</th>
+                                                    <th scope="col">Heading</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">Default</th>
+                                                    <td>Cell</td>
+                                                    <td>Cell</td>
+                                                </tr>
+                                                <tr class="table-primary">
+                                                    <th scope="row">Primary</th>
+                                                    <td>Cell</td>
+                                                    <td>Cell</td>
+                                                </tr>
+                                                <tr class="table-secondary">
+                                                    <th scope="row">Secondary</th>
+                                                    <td>Cell</td>
+                                                    <td>Cell</td>
+                                                </tr>
+                                                <tr class="table-success">
+                                                    <th scope="row">Success</th>
+                                                    <td>Cell</td>
+                                                    <td>Cell</td>
+                                                </tr>
+                                                <tr class="table-danger">
+                                                    <th scope="row">Danger</th>
+                                                    <td>Cell</td>
+                                                    <td>Cell</td>
+                                                </tr>
+                                                <tr class="table-warning">
+                                                    <th scope="row">Warning</th>
+                                                    <td>Cell</td>
+                                                    <td>Cell</td>
+                                                </tr>
+                                                <tr class="table-info">
+                                                    <th scope="row">Info</th>
+                                                    <td>Cell</td>
+                                                    <td>Cell</td>
+                                                </tr>
+                                                <tr class="table-light">
+                                                    <th scope="row">Light</th>
+                                                    <td>Cell</td>
+                                                    <td>Cell</td>
+                                                </tr>
+                                                <tr class="table-dark">
+                                                    <th scope="row">Dark</th>
+                                                    <td>Cell</td>
+                                                    <td>Cell</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="element-code-block">
+                                        <pre><code class="language-html">&lt;table class="table"&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;Default&lt;/th&gt;
+      &lt;td&gt;Cell&lt;/td&gt;
+      &lt;td&gt;Cell&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr class="table-primary"&gt;
+      &lt;th scope="row"&gt;Primary&lt;/th&gt;
+      &lt;td&gt;Cell&lt;/td&gt;
+      &lt;td&gt;Cell&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr class="table-success"&gt;
+      &lt;th scope="row"&gt;Success&lt;/th&gt;
+      &lt;td&gt;Cell&lt;/td&gt;
+      &lt;td&gt;Cell&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr class="table-danger"&gt;
+      &lt;th scope="row"&gt;Danger&lt;/th&gt;
+      &lt;td&gt;Cell&lt;/td&gt;
+      &lt;td&gt;Cell&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-secondary" data-copy-code>
+                                        <i class="bi bi-clipboard me-2"></i>Copy Code
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Striped Table -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="h5 card-title mb-0">Striped Table</h2>
+                                </div>
+                                <div class="card-body">
+                                    <div class="element-preview-container">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">First</th>
+                                                    <th scope="col">Last</th>
+                                                    <th scope="col">Handle</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">3</th>
+                                                    <td>Larry</td>
+                                                    <td>the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">4</th>
+                                                    <td>John</td>
+                                                    <td>Doe</td>
+                                                    <td>@john</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="element-code-block">
+                                        <pre><code class="language-html">&lt;table class="table table-striped"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th scope="col"&gt;#&lt;/th&gt;
+      &lt;th scope="col"&gt;First&lt;/th&gt;
+      &lt;th scope="col"&gt;Last&lt;/th&gt;
+      &lt;th scope="col"&gt;Handle&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;1&lt;/th&gt;
+      &lt;td&gt;Mark&lt;/td&gt;
+      &lt;td&gt;Otto&lt;/td&gt;
+      &lt;td&gt;@mdo&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;!-- More rows... --&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-secondary" data-copy-code>
+                                        <i class="bi bi-clipboard me-2"></i>Copy Code
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hoverable Table -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="h5 card-title mb-0">Hoverable Table</h2>
+                                </div>
+                                <div class="card-body">
+                                    <div class="element-preview-container">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">First</th>
+                                                    <th scope="col">Last</th>
+                                                    <th scope="col">Handle</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">3</th>
+                                                    <td>Larry</td>
+                                                    <td>the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="element-code-block">
+                                        <pre><code class="language-html">&lt;table class="table table-hover"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th scope="col"&gt;#&lt;/th&gt;
+      &lt;th scope="col"&gt;First&lt;/th&gt;
+      &lt;th scope="col"&gt;Last&lt;/th&gt;
+      &lt;th scope="col"&gt;Handle&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;1&lt;/th&gt;
+      &lt;td&gt;Mark&lt;/td&gt;
+      &lt;td&gt;Otto&lt;/td&gt;
+      &lt;td&gt;@mdo&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;!-- More rows... --&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-secondary" data-copy-code>
+                                        <i class="bi bi-clipboard me-2"></i>Copy Code
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bordered Table -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="h5 card-title mb-0">Bordered Table</h2>
+                                </div>
+                                <div class="card-body">
+                                    <div class="element-preview-container">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">First</th>
+                                                    <th scope="col">Last</th>
+                                                    <th scope="col">Handle</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">3</th>
+                                                    <td colspan="2">Larry the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="element-code-block">
+                                        <pre><code class="language-html">&lt;table class="table table-bordered"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th scope="col"&gt;#&lt;/th&gt;
+      &lt;th scope="col"&gt;First&lt;/th&gt;
+      &lt;th scope="col"&gt;Last&lt;/th&gt;
+      &lt;th scope="col"&gt;Handle&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;1&lt;/th&gt;
+      &lt;td&gt;Mark&lt;/td&gt;
+      &lt;td&gt;Otto&lt;/td&gt;
+      &lt;td&gt;@mdo&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;!-- More rows... --&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-secondary" data-copy-code>
+                                        <i class="bi bi-clipboard me-2"></i>Copy Code
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Borderless Table -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="h5 card-title mb-0">Borderless Table</h2>
+                                </div>
+                                <div class="card-body">
+                                    <div class="element-preview-container">
+                                        <table class="table table-borderless">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">First</th>
+                                                    <th scope="col">Last</th>
+                                                    <th scope="col">Handle</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">3</th>
+                                                    <td colspan="2">Larry the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="element-code-block">
+                                        <pre><code class="language-html">&lt;table class="table table-borderless"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th scope="col"&gt;#&lt;/th&gt;
+      &lt;th scope="col"&gt;First&lt;/th&gt;
+      &lt;th scope="col"&gt;Last&lt;/th&gt;
+      &lt;th scope="col"&gt;Handle&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;1&lt;/th&gt;
+      &lt;td&gt;Mark&lt;/td&gt;
+      &lt;td&gt;Otto&lt;/td&gt;
+      &lt;td&gt;@mdo&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;!-- More rows... --&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-secondary" data-copy-code>
+                                        <i class="bi bi-clipboard me-2"></i>Copy Code
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Small Table -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="h5 card-title mb-0">Small Table</h2>
+                                </div>
+                                <div class="card-body">
+                                    <div class="element-preview-container">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">First</th>
+                                                    <th scope="col">Last</th>
+                                                    <th scope="col">Handle</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">3</th>
+                                                    <td colspan="2">Larry the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="element-code-block">
+                                        <pre><code class="language-html">&lt;table class="table table-sm"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th scope="col"&gt;#&lt;/th&gt;
+      &lt;th scope="col"&gt;First&lt;/th&gt;
+      &lt;th scope="col"&gt;Last&lt;/th&gt;
+      &lt;th scope="col"&gt;Handle&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;1&lt;/th&gt;
+      &lt;td&gt;Mark&lt;/td&gt;
+      &lt;td&gt;Otto&lt;/td&gt;
+      &lt;td&gt;@mdo&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;!-- More rows... --&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-secondary" data-copy-code>
+                                        <i class="bi bi-clipboard me-2"></i>Copy Code
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Responsive Table -->
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="h5 card-title mb-0">Responsive Tables</h2>
+                                </div>
+                                <div class="card-body">
+                                    <div class="element-preview-container">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">Heading</th>
+                                                        <th scope="col">Heading</th>
+                                                        <th scope="col">Heading</th>
+                                                        <th scope="col">Heading</th>
+                                                        <th scope="col">Heading</th>
+                                                        <th scope="col">Heading</th>
+                                                        <th scope="col">Heading</th>
+                                                        <th scope="col">Heading</th>
+                                                        <th scope="col">Heading</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row">1</th>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">2</th>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">3</th>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                        <td>Cell</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="element-code-block">
+                                        <pre><code class="language-html">&lt;div class="table-responsive"&gt;
+  &lt;table class="table"&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope="col"&gt;#&lt;/th&gt;
+        &lt;th scope="col"&gt;Heading&lt;/th&gt;
+        &lt;th scope="col"&gt;Heading&lt;/th&gt;
+        &lt;th scope="col"&gt;Heading&lt;/th&gt;
+        &lt;th scope="col"&gt;Heading&lt;/th&gt;
+        &lt;th scope="col"&gt;Heading&lt;/th&gt;
+        &lt;th scope="col"&gt;Heading&lt;/th&gt;
+        &lt;th scope="col"&gt;Heading&lt;/th&gt;
+        &lt;th scope="col"&gt;Heading&lt;/th&gt;
+        &lt;th scope="col"&gt;Heading&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;th scope="row"&gt;1&lt;/th&gt;
+        &lt;td&gt;Cell&lt;/td&gt;
+        &lt;td&gt;Cell&lt;/td&gt;
+        &lt;td&gt;Cell&lt;/td&gt;
+        &lt;td&gt;Cell&lt;/td&gt;
+        &lt;td&gt;Cell&lt;/td&gt;
+        &lt;td&gt;Cell&lt;/td&gt;
+        &lt;td&gt;Cell&lt;/td&gt;
+        &lt;td&gt;Cell&lt;/td&gt;
+        &lt;td&gt;Cell&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;!-- More rows... --&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;</code></pre>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-secondary" data-copy-code>
+                                        <i class="bi bi-clipboard me-2"></i>Copy Code
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dark Table -->
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="h5 card-title mb-0">Dark Table</h2>
+                                </div>
+                                <div class="card-body">
+                                    <div class="element-preview-container">
+                                        <table class="table table-dark">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">First</th>
+                                                    <th scope="col">Last</th>
+                                                    <th scope="col">Handle</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">3</th>
+                                                    <td>Larry</td>
+                                                    <td>the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="element-code-block">
+                                        <pre><code class="language-html">&lt;table class="table table-dark"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th scope="col"&gt;#&lt;/th&gt;
+      &lt;th scope="col"&gt;First&lt;/th&gt;
+      &lt;th scope="col"&gt;Last&lt;/th&gt;
+      &lt;th scope="col"&gt;Handle&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;1&lt;/th&gt;
+      &lt;td&gt;Mark&lt;/td&gt;
+      &lt;td&gt;Otto&lt;/td&gt;
+      &lt;td&gt;@mdo&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;!-- More rows... --&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-secondary" data-copy-code>
+                                        <i class="bi bi-clipboard me-2"></i>Copy Code
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="admin-footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-0 text-muted">© 2026 Modern Bootstrap Admin Template</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="mb-0 text-muted">Built with Bootstrap 5 by <a href="https://colorlib.com/" target="_blank" rel="noopener noreferrer">Colorlib</a> &bull; Distributed by <a href="https://themewagon.com/" target="_blank" rel="noopener noreferrer">ThemeWagon</a></p>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="./scripts/main.js"></script>
+    
+    
+</body>
+</html>

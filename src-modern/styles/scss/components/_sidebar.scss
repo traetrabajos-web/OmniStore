@@ -1,0 +1,38 @@
+// ==========================================================================
+// Sidebar Component Styles (scrollbar, content padding)
+// Layout positioning is handled by layout/_sidebar.scss
+// Mobile/collapse behavior is handled by components/_navigation.scss
+// ==========================================================================
+
+.admin-sidebar {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 87, 34, 0.45) transparent;
+
+  // Custom scrollbar with OmniStore brand orange accents
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ff5722 0%, #ff9800 100%);
+    border-radius: 4px;
+
+    &:hover {
+      background: linear-gradient(180deg, #ff4500 0%, #ff7a00 100%);
+    }
+  }
+
+  .sidebar-content {
+    padding: 0.85rem 0.75rem 3.5rem 0.75rem;
+    min-height: 100%;
+    box-sizing: border-box;
+  }
+}
