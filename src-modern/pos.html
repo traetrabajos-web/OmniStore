@@ -430,19 +430,19 @@
                             <div class="small">Tel / WhatsApp: +57 310 845 9210</div>
                             <div class="border-top border-bottom my-2 py-1 fw-bold border-dark">
                                 FACTURA ELECTRÓNICA DE VENTA POS<br>
-                                <span x-text="lastSale?.invoiceNumber || 'FE-2026-POS001'"></span>
+                                <span x-text="lastSale.invoiceNumber || 'FE-2026-POS001'"></span>
                             </div>
                         </div>
 
                         <div class="small mb-2">
-                            <div><strong>Fecha:</strong> <span x-text="lastSale?.date"></span></div>
-                            <div><strong>Pedido:</strong> <span x-text="lastSale?.orderNumber"></span></div>
-                            <div><strong>Caja / Terminal:</strong> <span x-text="lastSale?.terminal"></span></div>
-                            <div><strong>Cajero:</strong> <span x-text="lastSale?.cashier"></span></div>
+                            <div><strong>Fecha:</strong> <span x-text="lastSale.date || '-'"></span></div>
+                            <div><strong>Pedido:</strong> <span x-text="lastSale.orderNumber || '-'"></span></div>
+                            <div><strong>Caja / Terminal:</strong> <span x-text="lastSale.terminal"></span></div>
+                            <div><strong>Cajero:</strong> <span x-text="lastSale.cashier"></span></div>
                             <div class="border-top border-dark pt-1 mt-1">
-                                <div><strong>Cliente:</strong> <span x-text="lastSale?.customer?.name"></span></div>
-                                <div><strong>Doc / NIT:</strong> <span x-text="lastSale?.customer?.docType + ' ' + lastSale?.customer?.docNumber"></span></div>
-                                <div><strong>Email:</strong> <span x-text="lastSale?.customer?.email"></span></div>
+                                <div><strong>Cliente:</strong> <span x-text="lastSale.customer.name"></span></div>
+                                <div><strong>Doc / NIT:</strong> <span x-text="(lastSale.customer.docType || 'CC') + ' ' + (lastSale.customer.docNumber || '')"></span></div>
+                                <div><strong>Email:</strong> <span x-text="lastSale.customer.email || '-'"></span></div>
                             </div>
                         </div>
 
@@ -454,7 +454,7 @@
                             </div>
                         </div>
 
-                        <template x-for="it in (lastSale?.items || [])" :key="it.id">
+                        <template x-for="it in (lastSale.items || [])" :key="it.id">
                             <div class="d-flex mb-1" style="font-size: 11px;">
                                 <span style="width: 50%;" class="text-truncate" x-text="it.name"></span>
                                 <span style="width: 20%;" class="text-center" x-text="it.quantity + 'x'"></span>
@@ -465,40 +465,40 @@
                         <div class="border-top border-dark my-2 pt-2">
                             <div class="d-flex">
                                 <span>Subtotal:</span>
-                                <span class="fw-bold" x-text="formatPrice(lastSale?.subtotal)"></span>
+                                <span class="fw-bold" x-text="formatPrice(lastSale.subtotal)"></span>
                             </div>
-                            <div class="d-flex text-success" x-show="lastSale?.discountPercent > 0">
-                                <span>Descuento (<span x-text="lastSale?.discountPercent"></span>%):</span>
-                                <span>-<span x-text="formatPrice(lastSale?.discountAmount)"></span></span>
+                            <div class="d-flex text-success" x-show="lastSale.discountPercent > 0">
+                                <span>Descuento (<span x-text="lastSale.discountPercent"></span>%):</span>
+                                <span>-<span x-text="formatPrice(lastSale.discountAmount)"></span></span>
                             </div>
                             <div class="d-flex">
                                 <span>Base Gravable:</span>
-                                <span x-text="formatPrice(lastSale?.taxableBase)"></span>
+                                <span x-text="formatPrice(lastSale.taxableBase)"></span>
                             </div>
                             <div class="d-flex">
                                 <span>IVA (19% DIAN):</span>
-                                <span x-text="formatPrice(lastSale?.ivaAmount)"></span>
+                                <span x-text="formatPrice(lastSale.ivaAmount)"></span>
                             </div>
                             <div class="d-flex fw-bold fs-6 border-top border-bottom border-dark py-1 my-1">
                                 <span>TOTAL PAGADO:</span>
-                                <span x-text="formatPrice(lastSale?.total)"></span>
+                                <span x-text="formatPrice(lastSale.total)"></span>
                             </div>
-                            <div class="d-flex" x-show="lastSale?.paymentMethod === 'cash'">
+                            <div class="d-flex" x-show="lastSale.paymentMethod === 'cash'">
                                 <span>Efectivo Recibido:</span>
-                                <span x-text="formatPrice(lastSale?.cashTendered)"></span>
+                                <span x-text="formatPrice(lastSale.cashTendered)"></span>
                             </div>
-                            <div class="d-flex fw-bold text-success" x-show="lastSale?.paymentMethod === 'cash'">
+                            <div class="d-flex fw-bold text-success" x-show="lastSale.paymentMethod === 'cash'">
                                 <span>Cambio / Vuelto:</span>
-                                <span x-text="formatPrice(lastSale?.changeDue)"></span>
+                                <span x-text="formatPrice(lastSale.changeDue)"></span>
                             </div>
                             <div class="small text-muted mt-1">
-                                <strong>Medio de Pago:</strong> <span x-text="lastSale?.paymentMethod === 'cash' ? 'Efectivo en Caja' : (lastSale?.paymentMethod === 'card' ? 'Datáfono / Tarjeta' : 'Nequi / Transferencia')"></span>
+                                <strong>Medio de Pago:</strong> <span x-text="lastSale.paymentMethod === 'cash' ? 'Efectivo en Caja' : (lastSale.paymentMethod === 'card' ? 'Datáfono / Tarjeta' : 'Nequi / Transferencia')"></span>
                             </div>
                         </div>
 
                         <div class="text-center mt-3 pt-2 border-top border-dark">
                             <div class="small fw-bold mb-1">CÓDIGO ÚNICO DE FACTURA (CUFE DIAN):</div>
-                            <div class="cufe-text font-monospace bg-light p-1 border border-dark rounded text-dark" style="font-size: 8px; word-break: break-all;" x-text="lastSale?.cufe"></div>
+                            <div class="cufe-text font-monospace bg-light p-1 border border-dark rounded text-dark" style="font-size: 8px; word-break: break-all;" x-text="lastSale.cufe || 'CUFE-PENDIENTE'"></div>
                             
                             <!-- Simulated QR Code -->
                             <div class="my-2 d-flex justify-content-center">

@@ -62,7 +62,25 @@ function posAppFactory() {
     cashTendered: 0,
     
     // Thermal receipt state
-    lastSale: null,
+    lastSale: {
+      orderNumber: '',
+      invoiceNumber: 'FE-2026-POS001',
+      cufe: '',
+      date: '',
+      cashier: 'Alejandro Morales',
+      terminal: 'POS-CTG-01',
+      customer: { name: 'Cliente de Mostrador', docType: 'CC', docNumber: '222222222222', email: '' },
+      items: [],
+      subtotal: 0,
+      discountPercent: 0,
+      discountAmount: 0,
+      taxableBase: 0,
+      ivaAmount: 0,
+      total: 0,
+      paymentMethod: 'cash',
+      cashTendered: 0,
+      changeDue: 0
+    },
     showReceiptModal: false,
     
     // Cash shift / Arqueo de caja
