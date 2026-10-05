@@ -48,6 +48,7 @@ export default defineConfig({
         settings: resolve(__dirname, 'src-modern/settings.html'),
         users: resolve(__dirname, 'src-modern/users.html'),
         marketplace: resolve(__dirname, 'src-modern/marketplace.html'),
+        pos: resolve(__dirname, 'src-modern/pos.html'),
 
         // Standalone pages — rendered outside the admin shell, entry `auth.js`.
         login: resolve(__dirname, 'src-modern/login.html'),

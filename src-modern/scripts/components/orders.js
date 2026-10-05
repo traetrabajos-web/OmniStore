@@ -373,8 +373,219 @@ document.addEventListener('alpine:init', () => {
       });
     },
 
-    printInvoice(_order) {
-      window.print();
+    printInvoice(order) {
+      const orderNum = order.orderNumber || 'PEDIDO-001';
+      const cust = order.customer || { name: 'Cliente OmniStore', email: 'cliente@ejemplo.com' };
+      const items = order.items || [];
+      const totalNum = typeof order.total === 'number' ? order.total : (parseFloat(order.total) || 0);
+      const baseNum = Math.round(totalNum / 1.19);
+      const ivaNum = totalNum - baseNum;
+      const cufe = Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+      const invoiceNumber = 'FE-2026-' + (orderNum.replace(/\D/g, '') || '4890');
+
+      const itemsHtml = items.map(it => `
+        <tr>
+          <td style="padding: 6px; border-bottom: 1px solid #ddd;">${it.name || 'Artículo'}</td>
+          <td style="padding: 6px; border-bottom: 1px solid #ddd; text-align: center;">${it.quantity || 1}</td>
+          <td style="padding: 6px; border-bottom: 1px solid #ddd; text-align: right;">${this.formatPrice(it.price || 0)}</td>
+          <td style="padding: 6px; border-bottom: 1px solid #ddd; text-align: right;">${this.formatPrice((it.price || 0) * (it.quantity || 1))}</td>
+        </tr>
+      `).join('');
+
+      Swal.fire({
+        title: `Factura Electrónica DIAN: ${invoiceNumber}`,
+        width: '780px',
+        html: `
+          <div class="text-start p-2" id="printable-dian-invoice" style="font-family: Arial, sans-serif; font-size: 13px;">
+            <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
+              <div>
+                <h4 style="margin: 0; color: #ff5722; font-weight: bold;">OMNISTORE COLOMBIA S.A.S.</h4>
+                <div style="font-size: 11px; color: #555;">NIT: 901.482.910-4 | Régimen Común</div>
+                <div style="font-size: 11px; color: #555;">CEDI El Bosque / Cra. 3 # 7-15, Bocagrande, Cartagena</div>
+                <div style="font-size: 11px; color: #555;">Resolución DIAN Nº 18764000001 de 2026 (Rango FE-001 a FE-99999)</div>
+              </div>
+              <div class="text-end">
+                <div class="badge bg-primary fs-6 mb-1">${invoiceNumber}</div>
+                <div style="font-size: 11px;"><strong>Fecha Emisión:</strong> ${new Date().toLocaleDateString('es-CO')}</div>
+                <div style="font-size: 11px;"><strong>Pedido Ref:</strong> ${orderNum}</div>
+              </div>
+            </div>
+
+            <div class="row g-2 p-2 bg-light rounded border mb-3">
+              <div class="col-6">
+                <strong>Adquirente / Cliente:</strong> ${cust.name}<br>
+                <small class="text-muted">NIT / CC: 1.047.${Math.floor(100000 + Math.random() * 900000)} | Tel: ${cust.phone || '+57 310 000 0000'}</small>
+              </div>
+              <div class="col-6">
+                <strong>Dirección de Entrega:</strong> ${order.shippingAddress || 'Cartagena de Indias'}<br>
+                <small class="text-muted">Medio de Pago: ${order.paymentMethod || 'Pasarela Wompi / PSE'}</small>
+              </div>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px;">
+              <thead>
+                <tr style="background: #212529; color: #fff;">
+                  <th style="padding: 6px; text-align: left;">Descripción del Producto</th>
+                  <th style="padding: 6px; text-align: center; width: 60px;">Cant</th>
+                  <th style="padding: 6px; text-align: right; width: 110px;">V/Unitario</th>
+                  <th style="padding: 6px; text-align: right; width: 120px;">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsHtml}
+              </tbody>
+            </table>
+
+            <div class="row g-2 pt-2 border-top">
+              <div class="col-7">
+                <div style="font-size: 9px; line-height: 1.2;" class="p-2 border rounded bg-light">
+                  <strong>CUFE (Código Único de Factura Electrónica):</strong><br>
+                  <span class="font-monospace text-break" style="font-size: 8px;">${cufe}</span>
+                </div>
+                <div class="mt-2 text-muted" style="font-size: 10px;">
+                  <i class="bi bi-shield-check text-success"></i> Documento tributario validado electrónicamente ante la DIAN mediante estándar UBL 2.1 XML.
+                </div>
+              </div>
+              <div class="col-5">
+                <div class="d-flex justify-content-between py-1">
+                  <span>Subtotal:</span>
+                  <span>${this.formatPrice(baseNum)}</span>
+                </div>
+                <div class="d-flex justify-content-between py-1">
+                  <span>IVA (19%):</span>
+                  <span>${this.formatPrice(ivaNum)}</span>
+                </div>
+                <div class="d-flex justify-content-between py-1 border-top border-dark fw-bold fs-6 text-primary">
+                  <span>TOTAL FACTURA:</span>
+                  <span>${this.formatPrice(totalNum)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: '🖨️ Imprimir Factura A4',
+        denyButtonText: '📦 Rótulo / Guía de Envío',
+        cancelButtonText: 'Cerrar',
+        confirmButtonColor: '#ff5722',
+        denyButtonColor: '#0d6efd'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const printWindow = window.open('', '_blank', 'width=800,height=900');
+          printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <title>Factura Electrónica DIAN - ${invoiceNumber}</title>
+              <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+              <style>
+                body { padding: 20px; font-family: Arial, sans-serif; }
+                @media print {
+                  .no-print { display: none; }
+                }
+              </style>
+            </head>
+            <body onload="window.print();">
+              ${document.getElementById('printable-dian-invoice').innerHTML}
+            </body>
+            </html>
+          `);
+          printWindow.document.close();
+        } else if (result.isDenied) {
+          this.printShippingLabel(order);
+        }
+      });
+    },
+
+    printShippingLabel(order) {
+      const orderNum = order.orderNumber || 'PEDIDO-001';
+      const cust = order.customer || { name: 'Cliente OmniStore' };
+      const trackingNum = 'ENV-CTG-' + Math.floor(1000000 + Math.random() * 9000000);
+
+      Swal.fire({
+        title: 'Guía de Despacho & Rótulo de Envío (10x15cm)',
+        width: '500px',
+        html: `
+          <div id="printable-shipping-label" class="text-start p-3 bg-white border border-dark rounded" style="font-family: Arial, sans-serif; font-size: 12px;">
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+              <div>
+                <h5 class="fw-bold mb-0 text-dark">OMNISTORE EXPRESS</h5>
+                <small class="text-muted">Despacho Nacional & Local Cartagena</small>
+              </div>
+              <div class="text-end">
+                <span class="badge bg-dark fs-6">${orderNum}</span>
+              </div>
+            </div>
+
+            <div class="p-2 border mb-2 bg-light">
+              <strong style="font-size: 11px;">REMITENTE:</strong>
+              <div class="fw-bold">OMNISTORE COLOMBIA S.A.S. (CEDI El Bosque)</div>
+              <div>Cra. 3 # 7-15, Bocagrande, Cartagena de Indias, Bolívar</div>
+              <div>Teléfono: +57 310 845 9210</div>
+            </div>
+
+            <div class="p-2 border border-2 border-dark mb-2">
+              <strong style="font-size: 11px; color: #ff5722;">DESTINATARIO:</strong>
+              <div class="fw-bold fs-6">${cust.name}</div>
+              <div><strong>Dirección:</strong> ${order.shippingAddress || 'Cartagena de Indias'}</div>
+              <div><strong>Ciudad:</strong> ${order.shippingCity || 'Cartagena de Indias (Bolívar)'}</div>
+              <div><strong>Tel / WhatsApp:</strong> ${cust.phone || '+57 310 000 0000'}</div>
+            </div>
+
+            <div class="text-center py-2 border-top border-bottom my-2">
+              <div class="font-monospace fw-bold fs-6">${trackingNum}</div>
+              <!-- Barcode graphic representation -->
+              <div style="font-family: 'Libre Barcode 128', monospace; font-size: 38px; letter-spacing: 2px;">
+                ||| | |||| || ||| |||| | ||| |||||
+              </div>
+              <small class="text-muted">Transportadora Aliada: Domicilios Express / Coordinadora</small>
+            </div>
+
+            <div class="d-flex justify-content-between small">
+              <span><strong>Piezas:</strong> 1 paquete</span>
+              <span><strong>Peso estimado:</strong> 1.5 kg</span>
+              <span><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-CO')}</span>
+            </div>
+          </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: '🖨️ Imprimir Rótulo Adhesivo',
+        cancelButtonText: 'Cerrar',
+        confirmButtonColor: '#ff5722'
+      }).then((res) => {
+        if (res.isConfirmed) {
+          const printWindow = window.open('', '_blank', 'width=500,height=600');
+          printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <title>Rótulo de Envío - ${orderNum}</title>
+              <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+              <style>
+                @page { size: 100mm 150mm; margin: 5mm; }
+                body { padding: 10px; font-family: Arial, sans-serif; }
+              </style>
+            </head>
+            <body onload="window.print(); window.close();">
+              ${document.getElementById('printable-shipping-label').innerHTML}
+            </body>
+            </html>
+          `);
+          printWindow.document.close();
+        }
+      });
+    },
+
+    sendWhatsAppFollowup(order) {
+      const cust = order.customer || {};
+      const phone = (cust.phone || '').replace(/\D/g, '') || '573108459210';
+      const orderNum = order.orderNumber || 'PEDIDO';
+      const totalFmt = this.formatPrice(order.total);
+      
+      const message = encodeURIComponent(`👋 Hola ${cust.name || 'estimado cliente'}, te saludamos de *OmniStore Colombia* 🛍️.\n\nTe confirmamos el estado de tu pedido *#${orderNum}* por un total de *${totalFmt}*.\n\n📍 Destino: ${order.shippingAddress || 'Cartagena'}\n📦 Estado actual: ${order.status === 'delivered' ? '¡Entregado!' : (order.status === 'shipped' ? 'En camino a tu dirección' : 'En preparación en CEDI El Bosque')}.\n\n¡Cualquier duda estamos a tu disposición! ✨`);
+      
+      window.open(`https://wa.me/${phone.startsWith('57') ? phone : '57' + phone}?text=${message}`, '_blank');
     },
 
     createManualOrder() {

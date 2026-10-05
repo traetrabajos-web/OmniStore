@@ -205,6 +205,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="./pos.html" data-page-link="pos">
+                                <i class="bi bi-calculator-fill text-warning"></i>
+                                <span>Punto de Venta (POS)</span>
+                                <span class="badge bg-warning text-dark rounded-pill ms-auto" style="font-size: 0.65rem;">Express</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#ordersSubmenu" aria-expanded="false" aria-controls="ordersSubmenu">
                                 <i class="bi bi-bag-check-fill"></i>
                                 <span>Pedidos & Ventas</span>
@@ -497,6 +504,10 @@
                             <p class="text-muted mb-0">Rastreo de órdenes, despacho de envíos y sincronización de ventas en vivo</p>
                         </div>
                         <div class="d-flex flex-wrap gap-2">
+                            <a href="./pos.html" class="btn btn-warning fw-bold text-dark d-flex align-items-center gap-1 shadow-sm">
+                                <i class="bi bi-calculator-fill"></i>
+                                <span>Punto de Venta POS</span>
+                            </a>
                             <a href="./marketplace.html" class="btn btn-outline-primary" target="_blank">
                                 <i class="bi bi-shop me-2"></i>Ir a la Tienda
                             </a>
@@ -813,9 +824,16 @@
                                                                     <i class="bi bi-check2-circle me-2 text-success"></i>Entregado
                                                                 </a></li>
                                                                 <li><hr class="dropdown-divider"></li>
-                                                                <li><a class="dropdown-item" href="#" @click.prevent="printInvoice(order)">
-                                                                    <i class="bi bi-printer me-2 text-secondary"></i>Imprimir Factura
+                                                                <li><a class="dropdown-item text-success" href="#" @click.prevent="sendWhatsAppFollowup(order)">
+                                                                    <i class="bi bi-whatsapp me-2"></i>Seguimiento WhatsApp
                                                                 </a></li>
+                                                                <li><a class="dropdown-item" href="#" @click.prevent="printInvoice(order)">
+                                                                    <i class="bi bi-receipt me-2 text-primary"></i>Factura Electrónica DIAN
+                                                                </a></li>
+                                                                <li><a class="dropdown-item" href="#" @click.prevent="printShippingLabel(order)">
+                                                                    <i class="bi bi-box-seam me-2 text-info"></i>Rótulo de Envío (Guía)
+                                                                </a></li>
+                                                                <li><hr class="dropdown-divider"></li>
                                                                 <li><a class="dropdown-item text-danger" href="#" @click.prevent="cancelOrder(order)">
                                                                     <i class="bi bi-x-circle me-2"></i>Cancelar Pedido
                                                                 </a></li>

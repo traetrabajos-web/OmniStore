@@ -33,6 +33,21 @@ export const MODULES_PERMISSIONS_CONFIG = [
     ]
   },
   {
+    module: 'pos',
+    label: 'Punto de Venta Mostrador (POS)',
+    icon: 'bi-calculator-fill',
+    badgeClass: 'bg-warning text-dark',
+    description: 'Ventas rápidas en mostrador, escáner de código de barras y tirilla térmica.',
+    pageFile: 'pos.html',
+    pageDataAttr: 'pos',
+    actions: [
+      { id: 'pos.view', label: 'Acceso a Terminal POS', description: 'Abrir interfaz de cobro táctil en mostrador.', default: true },
+      { id: 'pos.create_sale', label: 'Registrar Ventas y Cobros', description: 'Facturar productos y recibir pagos en efectivo/tarjeta.', default: true },
+      { id: 'pos.cash_management', label: 'Arqueo y Cierre de Caja', description: 'Realizar cuadre de caja, apertura y cierre Z.', default: false },
+      { id: 'pos.print_ticket', label: 'Imprimir Tirilla Térmica', description: 'Generar comprobantes POS de 80mm/58mm.', default: true }
+    ]
+  },
+  {
     module: 'products',
     label: 'Catálogo de Productos & Inventario',
     icon: 'bi-box-seam-fill',
@@ -203,6 +218,9 @@ export const ROLE_DEFAULT_PERMISSIONS = {
   
   vendor: [
     'dashboard.view',
+    'pos.view',
+    'pos.create_sale',
+    'pos.print_ticket',
     'products.view',
     'products.create',
     'products.edit',
