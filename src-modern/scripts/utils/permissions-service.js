@@ -425,6 +425,7 @@ export function applySidebarPermissions(user = getActiveSessionUser()) {
   // Map of URL patterns to required permission
   const NAV_PERMISSION_MAP = [
     { selector: 'a[href*="index.html"]', perm: 'dashboard.view' },
+    { selector: 'a[href*="pos.html"]', perm: 'pos.view' },
     { selector: 'a[href*="products.html"]', perm: 'products.view' },
     { selector: 'a[href*="orders.html"]', perm: 'orders.view' },
     { selector: 'a[href*="orders.html?tab=shipping"]', perm: 'orders.shipping' },
@@ -445,40 +446,45 @@ export function applySidebarPermissions(user = getActiveSessionUser()) {
   ];
 
   NAV_PERMISSION_MAP.forEach(({ selector, perm }) => {
-    const links = sidebar.querySelectorAll(selector);
-    links.forEach(link => {
-      const navItem = link.closest('.nav-item');
-      if (navItem) {
-        if (isSuperAdmin || hasPermission(perm, user)) {
-          navItem.style.display = '';
-        } else {
-          navItem.style.display = 'none';
+    // 1. Filter in sidebar
+    if (sidebar) {
+      const links = sidebar.querySelectorAll(selector);
+      links.forEach(link => {
+        const navItem = link.closest('.nav-item');
+        if (navItem) {
+          navItem.style.display = (isSuperAdmin || hasPermission(perm, user)) ? '' : 'none';
         }
+      });
+    }
+
+    // 2. Filter standalone buttons across document (e.g. Header POS button)
+    const docButtons = document.querySelectorAll(`header ${selector}, main ${selector}`);
+    docButtons.forEach(btn => {
+      if (btn.classList.contains('btn') || btn.dataset.permissionGuarded) {
+        btn.style.display = (isSuperAdmin || hasPermission(perm, user)) ? '' : 'none';
       }
     });
   });
 
   // Clean up empty section headers in sidebar
-  sidebar.querySelectorAll('.nav-item').forEach(item => {
-    const header = item.querySelector('small.text-uppercase');
-    if (header) {
-      // Check if subsequent items before next header are visible
-      let next = item.nextElementSibling;
-      let hasVisibleChild = false;
-      while (next && !next.querySelector('small.text-uppercase')) {
-        if (next.style.display !== 'none') {
-          hasVisibleChild = true;
-          break;
+  if (sidebar) {
+    sidebar.querySelectorAll('.nav-item').forEach(item => {
+      const header = item.querySelector('small.text-uppercase');
+      if (header) {
+        // Check if subsequent items before next header are visible
+        let next = item.nextElementSibling;
+        let hasVisibleChild = false;
+        while (next && !next.querySelector('small.text-uppercase')) {
+          if (next.style.display !== 'none') {
+            hasVisibleChild = true;
+            break;
+          }
+          next = next.nextElementSibling;
         }
-        next = next.nextElementSibling;
+        item.style.display = (!isSuperAdmin && !hasVisibleChild) ? 'none' : '';
       }
-      if (!isSuperAdmin && !hasVisibleChild) {
-        item.style.display = 'none';
-      } else {
-        item.style.display = '';
-      }
-    }
-  });
+    });
+  }
 }
 
 // Global expose helper for easy Alpine template access: x-show="can('products.create')"

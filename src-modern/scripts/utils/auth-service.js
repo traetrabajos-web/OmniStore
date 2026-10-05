@@ -2,9 +2,10 @@
 // OmniStore - Authentication & Session Management Service
 // ==============================================================================
 
+import Swal from 'sweetalert2';
 import { getSupabaseClient } from './supabase.js';
 import { addUser } from './store-data.js';
-import { canAccessPage, applySidebarPermissions, hasPermission, getUserPermissions } from './permissions-service.js';
+import { canAccessPage, applySidebarPermissions, hasPermission, getUserPermissions, MODULES_PERMISSIONS_CONFIG } from './permissions-service.js';
 
 const SESSION_STORAGE_KEY = 'omnistore_user_session';
 
@@ -391,16 +392,58 @@ export function enforceAuthAndRoles() {
     let fallback = './orders.html';
     if (hasPermission('products.view', currentUser)) fallback = './products.html';
     else if (hasPermission('dashboard.view', currentUser)) fallback = './index.html';
+    else if (hasPermission('pos.view', currentUser)) fallback = './pos.html';
     else if (hasPermission('messages.view', currentUser)) fallback = './messages.html';
     else if (hasPermission('help.view', currentUser)) fallback = './help.html';
     else fallback = './marketplace.html';
 
-    alert(`🔒 Acceso Restringido: Tu cuenta de usuario (${currentUser.name}) no tiene permisos asignados por el administrador para acceder al módulo "${pageToCheck}".`);
-    window.location.replace(fallback);
+    const cleanPage = (pageToCheck || '').toLowerCase().replace('.html', '').replace('./', '');
+    const foundModule = MODULES_PERMISSIONS_CONFIG.find(m => m.module === cleanPage || m.pageDataAttr === cleanPage || m.pageFile.includes(cleanPage));
+    const moduleLabel = foundModule ? foundModule.label : cleanPage.toUpperCase();
+    const roleLabel = currentUser.role === 'admin' ? 'SuperAdministrador' : (currentUser.role === 'vendor' ? 'Vendedor / Store Manager' : 'Cliente');
+
+    // Prevent rendering the restricted content while alert is active
+    if (document.body) {
+      document.body.style.display = 'none';
+    }
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Acceso Restringido',
+      html: `
+        <div class="text-center p-2">
+          <div class="mb-3">
+            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 fs-6 rounded-pill">
+              <i class="bi bi-shield-lock-fill me-1"></i> Módulo No Autorizado
+            </span>
+          </div>
+          <h6 class="fw-bold mb-2 text-body">Módulo: ${moduleLabel}</h6>
+          <p class="mb-2 text-body" style="font-size: 0.92rem;">
+            Tu cuenta <strong>${currentUser.name || currentUser.email}</strong> (<span class="text-primary fw-semibold">${roleLabel}</span>) no cuenta con permisos asignados por el administrador para acceder a esta sección.
+          </p>
+          <div class="alert alert-warning py-2 px-3 small mb-0 text-start border-warning-subtle">
+            <i class="bi bi-info-circle-fill me-1 text-warning"></i>
+            Si necesitas utilizar este módulo, comunícate con el SuperAdministrador para que active tus permisos desde el panel de <strong>Usuarios & Roles</strong>.
+          </div>
+        </div>
+      `,
+      confirmButtonText: '<i class="bi bi-arrow-left-circle me-1"></i> Ir a Panel Autorizado',
+      confirmButtonColor: '#ff5722',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      timer: 6000,
+      timerProgressBar: true,
+      customClass: {
+        popup: 'border border-secondary-subtle shadow-lg bg-body text-body rounded-4'
+      }
+    }).then(() => {
+      window.location.replace(fallback);
+    });
+
     return;
   }
 
-  // Apply visual sidebar filtering
+  // Apply visual sidebar & navigation filtering
   applySidebarPermissions(currentUser);
 }
 
