@@ -23,6 +23,7 @@ import { iconManager } from './utils/icon-manager.js';
 
 import Alpine from 'alpinejs';
 import './components/supabase-modal.js';
+import './components/pos.js';
 import { initUserHeaderDropdown, enforceAuthAndRoles } from './utils/auth-service.js';
 import { applySidebarPermissions, hasPermission } from './utils/permissions-service.js';
 

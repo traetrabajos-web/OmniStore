@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" data-bs-theme="light">
+<html lang="es" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +11,13 @@
     <meta name="description" content="Punto de Venta Omnicanal para ventas en mostrador, escaneo de código de barras y facturación DIAN">
     <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
     
-    <!-- Immediate Authentication Guard -->
+    <!-- Immediate Authentication Guard & Theme Initializer -->
     <script>
         (function() {
             try {
+                var theme = localStorage.getItem('theme') || 'dark';
+                document.documentElement.setAttribute('data-bs-theme', theme);
+                
                 var raw = localStorage.getItem('omnistore_user_session');
                 if (!raw) {
                     var p = window.location.pathname + window.location.search;
@@ -31,34 +34,35 @@
 
     <style>
         .pos-grid-container {
-            height: calc(100vh - 70px);
+            height: calc(100vh - 65px);
             overflow-y: auto;
         }
         .pos-product-card {
             transition: all 0.15s ease-in-out;
             cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.08);
+            border: 1px solid var(--bs-border-color);
             border-radius: 12px;
             overflow: hidden;
-            background: #fff;
+            background: var(--bs-card-bg, #1a1d24);
+            color: var(--bs-body-color);
         }
         .pos-product-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 24px rgba(255, 87, 34, 0.18);
             border-color: #ff5722;
         }
         .pos-product-img {
             height: 120px;
             object-fit: cover;
             width: 100%;
-            background: #f8f9fa;
+            background: rgba(125, 125, 125, 0.08);
         }
         .pos-cart-sidebar {
-            height: calc(100vh - 70px);
+            height: calc(100vh - 65px);
             display: flex;
             flex-direction: column;
-            background: #fff;
-            border-left: 1px solid rgba(0,0,0,0.1);
+            background: var(--bs-body-bg);
+            border-left: 1px solid var(--bs-border-color);
         }
         .pos-cart-items {
             flex: 1;
@@ -72,10 +76,10 @@
         /* Thermal Receipt Print Styles */
         @media print {
             body * {
-                visibility: hidden;
+                visibility: hidden !important;
             }
             #thermal-receipt-container, #thermal-receipt-container * {
-                visibility: visible;
+                visibility: visible !important;
             }
             #thermal-receipt-container {
                 position: absolute;
@@ -86,36 +90,37 @@
                 padding: 2mm;
                 font-family: 'Courier New', monospace;
                 font-size: 11px;
-                color: #000 !important;
+                background: #ffffff !important;
+                color: #000000 !important;
             }
         }
     </style>
 </head>
 
-<body data-page="pos" class="pos-screen bg-light" x-data="posApp">
+<body data-page="pos" class="pos-screen bg-body text-body" x-data="posApp">
     <!-- POS Navigation Header -->
-    <header class="navbar navbar-expand-lg navbar-dark bg-dark px-3 py-2 border-bottom shadow-sm">
+    <header class="navbar navbar-expand-lg px-3 py-2 border-bottom shadow-sm bg-body-tertiary">
         <div class="container-fluid px-0">
             <!-- Brand -->
-            <a class="navbar-brand d-flex align-items-center gap-2" href="./index.html">
-                <div class="brand-icon bg-gradient-primary rounded-3 p-1 text-white d-flex align-items-center justify-content-center" style="width: 34px; height: 34px; background: linear-gradient(135deg, #ff5722, #ff9800);">
+            <a class="navbar-brand d-flex align-items-center gap-2 text-decoration-none" href="./index.html">
+                <div class="rounded-3 p-1 text-white d-flex align-items-center justify-content-center" style="width: 34px; height: 34px; background: linear-gradient(135deg, #ff5722, #ff9800);">
                     <i class="bi bi-cart4 fs-5"></i>
                 </div>
                 <div class="lh-1">
-                    <span class="fw-bold fs-5 text-white">OmniStore <span class="badge bg-warning text-dark px-2 py-1 ms-1" style="font-size: 0.68rem; letter-spacing: 0.5px;">POS EXPRESS</span></span>
-                    <div class="small text-white-50" style="font-size: 0.72rem;">Punto de Venta & Caja Mostrador</div>
+                    <span class="fw-bold fs-5 text-body">OmniStore <span class="badge bg-warning text-dark px-2 py-1 ms-1" style="font-size: 0.68rem; letter-spacing: 0.5px;">POS EXPRESS</span></span>
+                    <div class="small text-body-secondary" style="font-size: 0.72rem;">Punto de Venta & Caja Mostrador</div>
                 </div>
             </a>
 
             <!-- Center Barcode Scanner Input -->
             <div class="d-none d-md-flex align-items-center mx-auto" style="max-width: 420px; width: 100%;">
                 <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-secondary border-secondary text-white">
+                    <span class="input-group-text bg-body-secondary border-secondary-subtle text-body">
                         <i class="bi bi-upc-scan"></i>
                     </span>
                     <input type="text" 
                            id="pos-barcode-input"
-                           class="form-control form-control-sm bg-dark text-white border-secondary" 
+                           class="form-control form-control-sm bg-body text-body border-secondary-subtle" 
                            placeholder="Escanear código de barras o ingresar SKU..." 
                            x-model="barcodeInput"
                            @keydown.enter="handleManualBarcodeSubmit()"
@@ -126,16 +131,27 @@
                 </div>
             </div>
 
-            <!-- Right Controls -->
+            <!-- Right Controls: Theme Switch, Arqueo, Dashboard, Marketplace, User -->
             <div class="d-flex align-items-center gap-2">
+                <!-- Theme Toggle Button -->
+                <div x-data="themeSwitch">
+                    <button class="btn btn-outline-secondary btn-sm" 
+                            type="button" 
+                            @click="toggle()"
+                            title="Cambiar Modo Claro / Oscuro">
+                        <i class="bi bi-sun-fill" x-show="currentTheme === 'light'"></i>
+                        <i class="bi bi-moon-fill" x-show="currentTheme === 'dark'"></i>
+                    </button>
+                </div>
+
                 <!-- Arqueo de Caja -->
-                <button class="btn btn-outline-light btn-sm d-flex align-items-center gap-1" @click="openArqueoCajaModal()">
+                <button class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" @click="openArqueoCajaModal()">
                     <i class="bi bi-cash-coin text-warning"></i>
                     <span class="d-none d-lg-inline">Arqueo de Caja</span>
                 </button>
 
                 <!-- Back to Admin Dashboard -->
-                <a href="./index.html" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1" title="Ir al Panel de Administración">
+                <a href="./index.html" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" title="Ir al Panel de Administración">
                     <i class="bi bi-speedometer2"></i>
                     <span class="d-none d-lg-inline">Dashboard</span>
                 </a>
@@ -148,8 +164,8 @@
 
                 <!-- User dropdown -->
                 <div class="dropdown">
-                    <button class="btn btn-sm btn-dark border border-secondary text-white dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
-                        <img src="./assets/images/avatar-placeholder.svg" class="rounded-circle" width="24" height="24" alt="Cajero">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 text-body" type="button" data-bs-toggle="dropdown">
+                        <img src="./assets/images/avatar-placeholder.svg" class="rounded-circle border" width="22" height="22" alt="Cajero">
                         <span class="d-none d-md-inline small" x-text="shift.cashier.split(' ')[0]">Cajero</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow">
@@ -172,12 +188,12 @@
                 <div class="row g-2 mb-3 align-items-center">
                     <div class="col-md-7">
                         <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <span class="input-group-text bg-body-tertiary border-end-0 border-secondary-subtle"><i class="bi bi-search text-body-secondary"></i></span>
                             <input type="text" 
-                                   class="form-control border-start-0 ps-0" 
+                                   class="form-control bg-body text-body border-start-0 ps-0 border-secondary-subtle" 
                                    placeholder="Buscar por nombre, marca o modelo..." 
                                    x-model="searchQuery">
-                            <button class="btn btn-outline-secondary" type="button" x-show="searchQuery" @click="searchQuery = ''">
+                            <button class="btn btn-outline-secondary border-secondary-subtle" type="button" x-show="searchQuery" @click="searchQuery = ''">
                                 <i class="bi bi-x-lg"></i>
                             </button>
                         </div>
@@ -194,7 +210,7 @@
                 <div class="d-flex gap-2 overflow-x-auto pb-2 mb-3">
                     <template x-for="cat in categories" :key="cat.id">
                         <button class="btn btn-sm text-nowrap rounded-pill px-3 py-1 fw-semibold d-flex align-items-center gap-1"
-                                :class="selectedCategory === cat.id ? 'btn-primary shadow-sm text-white' : 'btn-white bg-white border text-dark'"
+                                :class="selectedCategory === cat.id ? 'btn-primary shadow-sm text-white' : 'btn-outline-secondary bg-body-tertiary text-body'"
                                 @click="selectedCategory = cat.id">
                             <i :class="cat.icon"></i>
                             <span x-text="cat.name"></span>
@@ -206,7 +222,7 @@
                 <div class="row row-cols-2 row-cols-sm-3 row-cols-md-3 row-cols-xl-4 g-3">
                     <template x-for="product in filteredProducts" :key="product.id">
                         <div class="col">
-                            <div class="pos-product-card h-100 d-flex flex-direction-column justify-content-between p-2 shadow-sm"
+                            <div class="pos-product-card h-100 d-flex flex-column justify-content-between p-2 shadow-sm rounded-3"
                                  @click="addToCart(product)">
                                 <div>
                                     <div class="position-relative mb-2">
@@ -220,11 +236,11 @@
                                               x-text="product.stock > 0 ? 'Stock: ' + product.stock : 'Agotado'">
                                         </span>
                                     </div>
-                                    <h6 class="fw-bold fs-6 mb-1 text-truncate-2" style="font-size: 0.85rem; height: 2.5em; line-height: 1.25;" x-text="product.name"></h6>
-                                    <div class="small text-muted mb-2" style="font-size: 0.72rem;" x-text="product.sku"></div>
+                                    <h6 class="fw-bold fs-6 mb-1 text-truncate-2 text-body" style="font-size: 0.85rem; height: 2.5em; line-height: 1.25;" x-text="product.name"></h6>
+                                    <div class="small text-body-secondary mb-2" style="font-size: 0.72rem;" x-text="product.sku"></div>
                                 </div>
                                 
-                                <div class="d-flex align-items-center justify-content-between pt-2 border-top mt-auto">
+                                <div class="d-flex align-items-center justify-content-between pt-2 border-top border-secondary-subtle mt-auto">
                                     <span class="fw-bold text-primary fs-6" x-text="formatPrice(product.price)"></span>
                                     <button class="btn btn-sm btn-primary rounded-circle d-flex align-items-center justify-content-center p-0" 
                                             style="width: 28px; height: 28px;" 
@@ -238,9 +254,9 @@
 
                     <!-- Empty Search State -->
                     <div class="col-12 text-center py-5" x-show="filteredProducts.length === 0">
-                        <i class="bi bi-search fs-1 text-muted"></i>
-                        <h5 class="fw-bold text-dark mt-2">No se encontraron productos</h5>
-                        <p class="text-muted small">Intenta buscar con otra palabra clave o selecciona otra categoría.</p>
+                        <i class="bi bi-search fs-1 text-body-secondary"></i>
+                        <h5 class="fw-bold text-body mt-2">No se encontraron productos</h5>
+                        <p class="text-body-secondary small">Intenta buscar con otra palabra clave o selecciona otra categoría.</p>
                         <button class="btn btn-outline-primary btn-sm" @click="searchQuery = ''; selectedCategory = 'all'">Limpiar Filtros</button>
                     </div>
                 </div>
@@ -249,14 +265,14 @@
             <!-- Right Side: POS Cash Register & Active Ticket -->
             <div class="col-lg-5 col-xl-4 pos-cart-sidebar shadow-lg">
                 <!-- Customer Information Header -->
-                <div class="p-3 border-bottom bg-white d-flex align-items-center justify-content-between">
+                <div class="p-3 border-bottom border-secondary-subtle bg-body-tertiary d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-2 overflow-hidden">
                         <div class="bg-primary-subtle text-primary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
                             <i class="bi bi-person-fill fs-5"></i>
                         </div>
                         <div class="overflow-hidden">
-                            <div class="fw-bold text-truncate" style="font-size: 0.9rem;" x-text="customer.name"></div>
-                            <div class="small text-muted" style="font-size: 0.75rem;">
+                            <div class="fw-bold text-truncate text-body" style="font-size: 0.9rem;" x-text="customer.name"></div>
+                            <div class="small text-body-secondary" style="font-size: 0.75rem;">
                                 <span x-text="customer.docType + ': ' + customer.docNumber"></span>
                             </div>
                         </div>
@@ -267,27 +283,27 @@
                 </div>
 
                 <!-- Ticket Items List -->
-                <div class="pos-cart-items p-3">
+                <div class="pos-cart-items p-3 bg-body">
                     <template x-if="cart.length === 0">
-                        <div class="text-center py-5 text-muted">
+                        <div class="text-center py-5 text-body-secondary">
                             <i class="bi bi-cart-x fs-1 opacity-50"></i>
-                            <h6 class="fw-bold mt-2">Ticket Vacío</h6>
+                            <h6 class="fw-bold mt-2 text-body">Ticket Vacío</h6>
                             <p class="small">Escanea un código de barras o haz clic en los productos para agregarlos al ticket.</p>
                         </div>
                     </template>
 
                     <template x-for="(item, idx) in cart" :key="item.id">
-                        <div class="card mb-2 border rounded-3 p-2 shadow-xs">
+                        <div class="card mb-2 border border-secondary-subtle rounded-3 p-2 bg-body-tertiary shadow-sm">
                             <div class="d-flex align-items-center gap-2">
                                 <img :src="item.image" class="rounded-2" width="42" height="42" style="object-fit: cover;" :alt="item.name">
                                 <div class="flex-grow-1 overflow-hidden">
-                                    <div class="fw-semibold text-truncate small" x-text="item.name"></div>
+                                    <div class="fw-semibold text-truncate small text-body" x-text="item.name"></div>
                                     <div class="d-flex align-items-center justify-content-between mt-1">
                                         <span class="text-primary fw-bold small" x-text="formatPrice(item.price)"></span>
                                         <div class="d-flex align-items-center gap-1">
-                                            <button class="btn btn-sm btn-light border py-0 px-2" @click="updateQty(idx, -1)">-</button>
-                                            <span class="fw-bold px-2 small" x-text="item.quantity"></span>
-                                            <button class="btn btn-sm btn-light border py-0 px-2" @click="updateQty(idx, 1)">+</button>
+                                            <button class="btn btn-sm btn-outline-secondary py-0 px-2" @click="updateQty(idx, -1)">-</button>
+                                            <span class="fw-bold px-2 small text-body" x-text="item.quantity"></span>
+                                            <button class="btn btn-sm btn-outline-secondary py-0 px-2" @click="updateQty(idx, 1)">+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -300,16 +316,16 @@
                 </div>
 
                 <!-- Financial Calculation & Checkout Area -->
-                <div class="p-3 border-top bg-light mt-auto">
+                <div class="p-3 border-top border-secondary-subtle bg-body-tertiary mt-auto">
                     <!-- Coupon / Discount input -->
                     <div class="input-group input-group-sm mb-2">
-                        <input type="text" class="form-control" placeholder="Cupón o descuento (ej: CARTAGENA10)" x-model="discountCode" @keydown.enter.prevent="applyDiscountCoupon()">
-                        <button class="btn btn-dark" type="button" @click="applyDiscountCoupon()">Aplicar</button>
+                        <input type="text" class="form-control bg-body text-body border-secondary-subtle" placeholder="Cupón o descuento (ej: CARTAGENA10)" x-model="discountCode" @keydown.enter.prevent="applyDiscountCoupon()">
+                        <button class="btn btn-outline-secondary" type="button" @click="applyDiscountCoupon()">Aplicar</button>
                     </div>
 
                     <!-- Totals Breakdown -->
-                    <div class="bg-white p-2 rounded-3 border mb-2 small">
-                        <div class="d-flex justify-content-between text-muted mb-1">
+                    <div class="bg-body p-2 rounded-3 border border-secondary-subtle mb-2 small text-body">
+                        <div class="d-flex justify-content-between text-body-secondary mb-1">
                             <span>Subtotal:</span>
                             <span x-text="formatPrice(subtotal)"></span>
                         </div>
@@ -317,15 +333,15 @@
                             <span>Descuento (<span x-text="discountPercent"></span>%):</span>
                             <span>-<span x-text="formatPrice(discountAmount)"></span></span>
                         </div>
-                        <div class="d-flex justify-content-between text-muted mb-1">
+                        <div class="d-flex justify-content-between text-body-secondary mb-1">
                             <span>Base Gravable:</span>
                             <span x-text="formatPrice(taxableBase)"></span>
                         </div>
-                        <div class="d-flex justify-content-between text-muted mb-1">
+                        <div class="d-flex justify-content-between text-body-secondary mb-1">
                             <span>IVA (19% DIAN incluido):</span>
                             <span x-text="formatPrice(ivaAmount)"></span>
                         </div>
-                        <div class="d-flex justify-content-between fs-5 fw-bold text-dark pt-1 border-top">
+                        <div class="d-flex justify-content-between fs-5 fw-bold text-body pt-1 border-top border-secondary-subtle">
                             <span>Total a Pagar:</span>
                             <span class="text-primary" x-text="formatPrice(total)"></span>
                         </div>
@@ -347,33 +363,33 @@
                     </div>
 
                     <!-- Cash Calculation (If Cash is selected) -->
-                    <div class="bg-white p-2 rounded-3 border mb-3" x-show="paymentMethod === 'cash'">
+                    <div class="bg-body p-2 rounded-3 border border-secondary-subtle mb-3" x-show="paymentMethod === 'cash'">
                         <div class="d-flex align-items-center justify-content-between mb-1">
-                            <span class="small fw-bold">Efectivo Recibido:</span>
+                            <span class="small fw-bold text-body">Efectivo Recibido:</span>
                             <div class="input-group input-group-sm w-50">
-                                <span class="input-group-text">$</span>
-                                <input type="number" class="form-control fw-bold text-end" x-model="cashTendered" min="0" step="1000">
+                                <span class="input-group-text bg-body-tertiary border-secondary-subtle text-body">$</span>
+                                <input type="number" class="form-control bg-body text-body border-secondary-subtle fw-bold text-end" x-model="cashTendered" min="0" step="1000">
                             </div>
                         </div>
 
                         <!-- Quick Cash Buttons -->
                         <div class="row g-1 mb-2">
                             <div class="col-3">
-                                <button class="btn btn-sm btn-light border w-100 pos-btn-cash-preset" @click="setCashPreset('exact')">Exacto</button>
+                                <button class="btn btn-sm btn-outline-secondary w-100 pos-btn-cash-preset" @click="setCashPreset('exact')">Exacto</button>
                             </div>
                             <div class="col-3">
-                                <button class="btn btn-sm btn-light border w-100 pos-btn-cash-preset" @click="setCashPreset(50000)">$50K</button>
+                                <button class="btn btn-sm btn-outline-secondary w-100 pos-btn-cash-preset" @click="setCashPreset(50000)">$50K</button>
                             </div>
                             <div class="col-3">
-                                <button class="btn btn-sm btn-light border w-100 pos-btn-cash-preset" @click="setCashPreset(100000)">$100K</button>
+                                <button class="btn btn-sm btn-outline-secondary w-100 pos-btn-cash-preset" @click="setCashPreset(100000)">$100K</button>
                             </div>
                             <div class="col-3">
-                                <button class="btn btn-sm btn-light border w-100 pos-btn-cash-preset" @click="setCashPreset(200000)">$200K</button>
+                                <button class="btn btn-sm btn-outline-secondary w-100 pos-btn-cash-preset" @click="setCashPreset(200000)">$200K</button>
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-between align-items-center pt-1 border-top">
-                            <span class="fw-bold small text-muted">Cambio / Vuelto:</span>
+                        <div class="d-flex justify-content-between align-items-center pt-1 border-top border-secondary-subtle">
+                            <span class="fw-bold small text-body-secondary">Cambio / Vuelto:</span>
                             <span class="fw-bold fs-6 text-success" x-text="formatPrice(changeDue)"></span>
                         </div>
                     </div>
@@ -396,23 +412,23 @@
     </div>
 
     <!-- Modal Tirilla Térmica POS (80mm) -->
-    <div class="modal fade" id="receiptModal" tabindex="-1" :class="showReceiptModal ? 'show d-block' : ''" style="background: rgba(0,0,0,0.6);" x-show="showReceiptModal">
+    <div class="modal fade" id="receiptModal" tabindex="-1" :class="showReceiptModal ? 'show d-block' : ''" style="background: rgba(0,0,0,0.75);" x-show="showReceiptModal">
         <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
-            <div class="modal-content shadow-lg border-0">
-                <div class="modal-header bg-dark text-white py-2">
-                    <h6 class="modal-title fw-bold"><i class="bi bi-receipt me-2"></i>Tirilla de Venta POS</h6>
-                    <button type="button" class="btn-close btn-close-white" @click="showReceiptModal = false"></button>
+            <div class="modal-content shadow-lg border border-secondary-subtle bg-body">
+                <div class="modal-header bg-body-tertiary text-body py-2 border-bottom border-secondary-subtle">
+                    <h6 class="modal-title fw-bold"><i class="bi bi-receipt me-2 text-warning"></i>Tirilla de Venta POS</h6>
+                    <button type="button" class="btn-close" @click="showReceiptModal = false"></button>
                 </div>
-                <div class="modal-body p-3 bg-light">
-                    <!-- Thermal Ticket Preview Container -->
-                    <div id="thermal-receipt-container" class="bg-white p-3 border rounded shadow-sm" style="font-family: 'Courier New', Courier, monospace; font-size: 12px;">
+                <div class="modal-body p-3 bg-body-secondary">
+                    <!-- Thermal Ticket Preview Container (White Paper Background) -->
+                    <div id="thermal-receipt-container" class="bg-white text-dark p-3 border rounded shadow-sm mx-auto" style="font-family: 'Courier New', Courier, monospace; font-size: 12px; max-width: 320px;">
                         <div class="text-center">
-                            <h5 class="fw-bold mb-0">OMNISTORE COLOMBIA S.A.S.</h5>
+                            <h5 class="fw-bold mb-0 text-dark">OMNISTORE COLOMBIA S.A.S.</h5>
                             <div class="small fw-bold">NIT: 901.482.910-4</div>
                             <div class="small">Régimen Común - Gran Contribuyente</div>
                             <div class="small">Cra. 3 # 7-15, Bocagrande, Cartagena</div>
                             <div class="small">Tel / WhatsApp: +57 310 845 9210</div>
-                            <div class="border-top border-bottom my-2 py-1 fw-bold">
+                            <div class="border-top border-bottom my-2 py-1 fw-bold border-dark">
                                 FACTURA ELECTRÓNICA DE VENTA POS<br>
                                 <span x-text="lastSale?.invoiceNumber || 'FE-2026-POS001'"></span>
                             </div>
@@ -423,14 +439,14 @@
                             <div><strong>Pedido:</strong> <span x-text="lastSale?.orderNumber"></span></div>
                             <div><strong>Caja / Terminal:</strong> <span x-text="lastSale?.terminal"></span></div>
                             <div><strong>Cajero:</strong> <span x-text="lastSale?.cashier"></span></div>
-                            <div class="border-top pt-1 mt-1">
+                            <div class="border-top border-dark pt-1 mt-1">
                                 <div><strong>Cliente:</strong> <span x-text="lastSale?.customer?.name"></span></div>
                                 <div><strong>Doc / NIT:</strong> <span x-text="lastSale?.customer?.docType + ' ' + lastSale?.customer?.docNumber"></span></div>
                                 <div><strong>Email:</strong> <span x-text="lastSale?.customer?.email"></span></div>
                             </div>
                         </div>
 
-                        <div class="border-top border-bottom py-1 my-2">
+                        <div class="border-top border-bottom border-dark py-1 my-2">
                             <div class="d-flex fw-bold">
                                 <span style="width: 50%;">DESCRIPCIÓN</span>
                                 <span style="width: 20%;" class="text-center">CANT</span>
@@ -446,7 +462,7 @@
                             </div>
                         </template>
 
-                        <div class="border-top my-2 pt-2">
+                        <div class="border-top border-dark my-2 pt-2">
                             <div class="d-flex">
                                 <span>Subtotal:</span>
                                 <span class="fw-bold" x-text="formatPrice(lastSale?.subtotal)"></span>
@@ -463,7 +479,7 @@
                                 <span>IVA (19% DIAN):</span>
                                 <span x-text="formatPrice(lastSale?.ivaAmount)"></span>
                             </div>
-                            <div class="d-flex fw-bold fs-6 border-top border-bottom py-1 my-1">
+                            <div class="d-flex fw-bold fs-6 border-top border-bottom border-dark py-1 my-1">
                                 <span>TOTAL PAGADO:</span>
                                 <span x-text="formatPrice(lastSale?.total)"></span>
                             </div>
@@ -480,23 +496,23 @@
                             </div>
                         </div>
 
-                        <div class="text-center mt-3 pt-2 border-top">
+                        <div class="text-center mt-3 pt-2 border-top border-dark">
                             <div class="small fw-bold mb-1">CÓDIGO ÚNICO DE FACTURA (CUFE DIAN):</div>
-                            <div class="cufe-text font-monospace bg-light p-1 border rounded" style="font-size: 8px; word-break: break-all;" x-text="lastSale?.cufe"></div>
+                            <div class="cufe-text font-monospace bg-light p-1 border border-dark rounded text-dark" style="font-size: 8px; word-break: break-all;" x-text="lastSale?.cufe"></div>
                             
                             <!-- Simulated QR Code -->
                             <div class="my-2 d-flex justify-content-center">
-                                <div class="p-2 border border-dark rounded bg-white text-center" style="width: 100px; height: 100px;">
+                                <div class="p-2 border border-dark rounded bg-white text-center" style="width: 90px; height: 90px;">
                                     <i class="bi bi-qr-code fs-1 text-dark"></i>
                                 </div>
                             </div>
                             
-                            <div class="small fw-bold">¡Gracias por su compra en OmniStore!</div>
+                            <div class="small fw-bold text-dark">¡Gracias por su compra en OmniStore!</div>
                             <div style="font-size: 9px;" class="text-muted">Conserve este comprobante para cambios y garantías dentro de los 30 días calendario.</div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-white py-2 d-flex justify-content-between">
+                <div class="modal-footer bg-body-tertiary border-top border-secondary-subtle py-2 d-flex justify-content-between">
                     <button type="button" class="btn btn-secondary btn-sm" @click="showReceiptModal = false">Cerrar</button>
                     <button type="button" class="btn btn-primary btn-sm d-flex align-items-center gap-1" @click="printThermalTicket()">
                         <i class="bi bi-printer-fill"></i> Imprimir Tirilla
@@ -508,6 +524,5 @@
 
     <!-- Scripts -->
     <script type="module" src="./scripts/main.js"></script>
-    <script type="module" src="./scripts/components/pos.js"></script>
 </body>
 </html>

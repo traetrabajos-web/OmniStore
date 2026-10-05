@@ -27,8 +27,8 @@ function playScanSound() {
   }
 }
 
-document.addEventListener('alpine:init', () => {
-  Alpine.data('posApp', () => ({
+function posAppFactory() {
+  return {
     catalog: [],
     categories: [
       { id: 'all', name: 'Todos los Productos', icon: 'bi-grid' },
@@ -653,5 +653,18 @@ document.addEventListener('alpine:init', () => {
         }
       });
     }
-  }));
+  };
+}
+
+// Register if Alpine already loaded
+if (window.Alpine) {
+  window.Alpine.data('posApp', posAppFactory);
+}
+
+// Also register on alpine:init
+document.addEventListener('alpine:init', () => {
+  Alpine.data('posApp', posAppFactory);
 });
+
+export { posAppFactory };
+
