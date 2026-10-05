@@ -1,0 +1,179 @@
+// ==========================================================================
+// Modal Component Styles - OmniStore Modern UI
+// ==========================================================================
+
+.modal-content {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border: 1px solid var(--bs-border-color-translucent);
+  border-radius: var(--bs-border-radius-lg, 0.75rem);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--bs-border-color);
+  background-color: var(--bs-tertiary-bg);
+  padding: 1rem 1.5rem;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--bs-border-color);
+  background-color: var(--bs-tertiary-bg);
+  padding: 1rem 1.5rem;
+}
+
+// Custom modern scrollbar for all modals
+.modal-body,
+.modal-dialog-scrollable .modal-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bs-border-color) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--bs-border-color);
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: var(--omni-primary, #ff5722);
+    }
+  }
+}
+
+// ==========================================================================
+// Individual Permissions & Access Control Modal (#permissionsModal)
+// ==========================================================================
+#permissionsModal {
+  .modal-dialog {
+    max-width: 1100px;
+  }
+
+  .permissions-header {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .permissions-toolbar-card {
+    background-color: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    transition: background-color 0.2s ease;
+  }
+
+  .permission-module-card {
+    background-color: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    .card-header {
+      background-color: var(--bs-tertiary-bg);
+      border-bottom: 1px solid var(--bs-border-color);
+    }
+  }
+
+  .permission-action-item {
+    padding: 0.625rem 0.75rem;
+    border-radius: var(--bs-border-radius-sm, 0.375rem);
+    border: 1px solid var(--bs-border-color);
+    background-color: var(--bs-tertiary-bg);
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--omni-primary, #ff5722);
+      background-color: var(--bs-secondary-bg);
+    }
+
+    &.active {
+      border-color: var(--omni-primary, #ff5722) !important;
+      background-color: rgba(255, 87, 34, 0.08) !important;
+      box-shadow: 0 0 0 1px rgba(255, 87, 34, 0.25);
+    }
+  }
+}
+
+// Dark theme overrides for permissions modal
+[data-bs-theme="dark"] #permissionsModal {
+  .permissions-header {
+    background: linear-gradient(135deg, #090d16 0%, #111827 100%);
+    border-bottom: 1px solid var(--bs-border-color);
+  }
+
+  .permissions-toolbar-card {
+    background-color: var(--surface-panel, #111827);
+    border-color: var(--bs-border-color);
+  }
+
+  .permission-module-card {
+    background-color: var(--surface-panel, #111827);
+    border-color: var(--bs-border-color);
+
+    .card-header {
+      background-color: var(--surface-sunken, #090d16);
+      border-bottom-color: var(--bs-border-color);
+    }
+  }
+
+  .permission-action-item {
+    background-color: var(--surface-sunken, #090d16);
+    border-color: var(--bs-border-color);
+
+    &:hover {
+      background-color: var(--surface-hover, #1f2937);
+      border-color: var(--omni-primary, #ff5722);
+    }
+
+    &.active {
+      background-color: rgba(255, 87, 34, 0.14) !important;
+      border-color: var(--omni-primary, #ff5722) !important;
+    }
+  }
+}
+
+// Light theme overrides for permissions modal
+[data-bs-theme="light"] #permissionsModal {
+  .permissions-header {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .permissions-toolbar-card {
+    background-color: #ffffff;
+    border-color: var(--bs-border-color);
+  }
+
+  .permission-module-card {
+    background-color: #ffffff;
+    border-color: var(--bs-border-color);
+
+    .card-header {
+      background-color: #f8fafc;
+      border-bottom-color: var(--bs-border-color);
+    }
+  }
+
+  .permission-action-item {
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
+
+    &:hover {
+      background-color: #f1f5f9;
+      border-color: var(--omni-primary, #ff5722);
+    }
+
+    &.active {
+      background-color: #fff7ed !important;
+      border-color: var(--omni-primary, #ff5722) !important;
+    }
+  }
+}

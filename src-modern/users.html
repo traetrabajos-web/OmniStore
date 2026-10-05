@@ -42,7 +42,7 @@
             
             <!-- Header -->
             <header class="admin-header">
-                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+                <nav class="navbar navbar-expand-lg border-bottom">
                     <div class="container-fluid">
                         <!-- Logo/Brand -->
                         <a class="navbar-brand d-flex align-items-center" href="./index.html">
@@ -62,22 +62,22 @@
                         <div class="search-container flex-grow-1 mx-4" x-data="searchComponent">
                             <div class="position-relative">
                                 <input type="search" 
-                                       class="form-control" 
+                                       class="form-control bg-body text-body border-secondary-subtle" 
                                        placeholder="Buscar clientes o usuarios... (Ctrl+K)"
                                        x-model="query"
                                        @input="search()"
                                        data-search-input
                                        aria-label="Search">
-                                <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y me-3"></i>
+                                <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y me-3 text-muted"></i>
                                 
                                 <!-- Search Results Dropdown -->
                                 <div x-show="results.length > 0" 
                                      x-transition:enter="transition ease-out duration-100"
                                      x-transition:enter-start="opacity-0 scale-95"
                                      x-transition:enter-end="opacity-100 scale-100"
-                                     class="position-absolute top-100 start-0 w-100 bg-white border rounded-2 shadow-lg mt-1 z-3">
+                                     class="position-absolute top-100 start-0 w-100 bg-body border border-secondary-subtle rounded-2 shadow-lg mt-1 z-3">
                                     <template x-for="result in results" :key="result.title">
-                                        <a :href="result.url" class="d-block px-3 py-2 text-decoration-none text-dark border-bottom">
+                                        <a :href="result.url" class="d-block px-3 py-2 text-decoration-none text-body border-bottom border-secondary-subtle">
                                             <div class="d-flex align-items-center">
                                                 <i class="bi bi-file-text me-2 text-muted"></i>
                                                 <span x-text="result.title"></span>
@@ -917,7 +917,7 @@
                                                                  height="36"
                                                                  :alt="user.name">
                                                             <div>
-                                                                <div class="fw-medium text-dark" x-text="user.name"></div>
+                                                                <div class="fw-medium text-body" x-text="user.name"></div>
                                                                 <small class="text-muted" x-text="'ID: #' + user.id"></small>
                                                             </div>
                                                         </div>
@@ -1017,13 +1017,13 @@
                         <!-- TAB 2: ROLES & PERMISOS -->
                         <div x-show="activeTab === 'roles'">
                             <!-- User Permissions Control Section -->
-                            <div class="card shadow-sm border mb-4">
-                                <div class="card-header bg-white p-3 p-lg-4 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <div class="card shadow-sm border border-secondary-subtle mb-4 bg-body">
+                                <div class="card-header bg-body-tertiary p-3 p-lg-4 border-bottom border-secondary-subtle d-flex justify-content-between align-items-center flex-wrap gap-2">
                                     <div>
-                                        <h5 class="fw-bold mb-1 text-dark">
+                                        <h5 class="fw-bold mb-1 text-body">
                                             <i class="bi bi-shield-lock-fill text-primary me-2"></i>Asignación Individual de Permisos por Usuario
                                         </h5>
-                                        <p class="text-muted small mb-0">El administrador puede habilitar o denegar módulos, vistas y funcionalidades específicas para cada usuario de manera personalizada.</p>
+                                        <p class="text-body-secondary small mb-0">El administrador puede habilitar o denegar módulos, vistas y funcionalidades específicas para cada usuario de manera personalizada.</p>
                                     </div>
                                     <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2">
                                         <i class="bi bi-person-check-fill me-1"></i>Control de Acceso Basado en Permisos (RBAC)
@@ -1047,13 +1047,13 @@
                                                         <td>
                                                             <div class="d-flex align-items-center">
                                                                 <img :src="user.avatar || './assets/images/avatar-placeholder.svg'" 
-                                                                     class="rounded-circle me-2 border" 
+                                                                     class="rounded-circle me-2 border border-secondary-subtle" 
                                                                      width="36" 
                                                                      height="36" 
                                                                      :alt="user.name">
                                                                 <div>
-                                                                    <div class="fw-bold text-dark" x-text="user.name"></div>
-                                                                    <small class="text-muted" x-text="user.email"></small>
+                                                                    <div class="fw-bold text-body" x-text="user.name"></div>
+                                                                    <small class="text-body-secondary" x-text="user.email"></small>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -1070,16 +1070,16 @@
                                                         </td>
                                                         <td>
                                                             <div class="d-flex align-items-center gap-2">
-                                                                <span class="badge bg-light text-dark border font-monospace" 
+                                                                <span class="badge bg-body-secondary text-body border border-secondary-subtle font-monospace" 
                                                                       x-text="getUserPermissionsCount(user) + ' de ' + totalSystemPermissions + ' acciones'"></span>
-                                                                <span class="badge bg-success-subtle text-success border" x-show="user.role === 'admin'">Acceso Total</span>
-                                                                <span class="badge bg-primary-subtle text-primary border" x-show="Array.isArray(user.permissions) && user.permissions.length > 0 && user.role !== 'admin'">Personalizado</span>
-                                                                <span class="badge bg-secondary-subtle text-secondary border" x-show="(!user.permissions || user.permissions.length === 0) && user.role !== 'admin'">Por Plantilla</span>
+                                                                <span class="badge bg-success-subtle text-success border border-success-subtle" x-show="user.role === 'admin'">Acceso Total</span>
+                                                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle" x-show="Array.isArray(user.permissions) && user.permissions.length > 0 && user.role !== 'admin'">Personalizado</span>
+                                                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle" x-show="(!user.permissions || user.permissions.length === 0) && user.role !== 'admin'">Por Plantilla</span>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div class="d-flex align-items-center gap-2">
-                                                                <div class="progress flex-grow-1" style="height: 8px;">
+                                                                <div class="progress flex-grow-1 bg-body-secondary" style="height: 8px;">
                                                                     <div class="progress-bar" 
                                                                          :class="{
                                                                              'bg-success': getUserPermissionsPercentage(user) >= 80,
@@ -1088,12 +1088,12 @@
                                                                          }"
                                                                          :style="`width: ${getUserPermissionsPercentage(user)}%`"></div>
                                                                 </div>
-                                                                <small class="fw-bold text-muted" style="min-width: 38px;" x-text="getUserPermissionsPercentage(user) + '%'"></small>
+                                                                <small class="fw-bold text-body-secondary" style="min-width: 38px;" x-text="getUserPermissionsPercentage(user) + '%'"></small>
                                                             </div>
                                                         </td>
                                                         <td class="text-end">
                                                             <button type="button" 
-                                                                    class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1"
+                                                                    class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 shadow-sm"
                                                                     @click.prevent="openPermissionsModal(user)">
                                                                 <i class="bi bi-sliders"></i>
                                                                 <span>Configurar Permisos</span>
@@ -1110,9 +1110,9 @@
                             <!-- Role Templates & System Modules Catalog -->
                             <div class="row g-4">
                                 <div class="col-lg-6">
-                                    <div class="card shadow-sm border h-100">
-                                        <div class="card-header bg-white p-3 border-bottom">
-                                            <h6 class="fw-bold mb-0 text-dark">
+                                    <div class="card shadow-sm border border-secondary-subtle h-100 bg-body">
+                                        <div class="card-header bg-body-tertiary p-3 border-bottom border-secondary-subtle">
+                                            <h6 class="fw-bold mb-0 text-body">
                                                 <i class="bi bi-person-badge-fill text-info me-2"></i>Plantillas de Roles Predeterminados
                                             </h6>
                                         </div>
@@ -1120,15 +1120,15 @@
                                             <div class="row g-3">
                                                 <template x-for="r in rolesMatrix" :key="r.id">
                                                     <div class="col-12">
-                                                        <div class="p-3 border rounded bg-light-subtle">
+                                                        <div class="p-3 border rounded border-secondary-subtle bg-body-tertiary">
                                                             <div class="d-flex justify-content-between align-items-center mb-2">
                                                                 <span class="badge" :class="r.badge" x-text="r.name"></span>
-                                                                <span class="badge bg-secondary-subtle text-secondary border" x-text="r.usersCount + ' usuarios con este rol'"></span>
+                                                                <span class="badge bg-body-secondary text-body-secondary border border-secondary-subtle" x-text="r.usersCount + ' usuarios con este rol'"></span>
                                                             </div>
-                                                            <p class="small text-muted mb-2" x-text="r.desc"></p>
+                                                            <p class="small text-body-secondary mb-2" x-text="r.desc"></p>
                                                             <div class="d-flex flex-wrap gap-1">
                                                                 <template x-for="perm in r.permissions" :key="perm">
-                                                                    <span class="badge bg-white text-dark border font-monospace small" x-text="perm"></span>
+                                                                    <span class="badge bg-body text-body border border-secondary-subtle font-monospace small" x-text="perm"></span>
                                                                 </template>
                                                             </div>
                                                         </div>
@@ -1140,9 +1140,9 @@
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <div class="card shadow-sm border h-100">
-                                        <div class="card-header bg-white p-3 border-bottom">
-                                            <h6 class="fw-bold mb-0 text-dark">
+                                    <div class="card shadow-sm border border-secondary-subtle h-100 bg-body">
+                                        <div class="card-header bg-body-tertiary p-3 border-bottom border-secondary-subtle">
+                                            <h6 class="fw-bold mb-0 text-body">
                                                 <i class="bi bi-grid-fill text-success me-2"></i>Módulos y Vistas Disponibles en OmniStore
                                             </h6>
                                         </div>
@@ -1150,16 +1150,16 @@
                                             <div class="row g-2">
                                                 <template x-for="mod in modulesConfig" :key="mod.module">
                                                     <div class="col-12">
-                                                        <div class="p-2 border rounded bg-white d-flex align-items-start gap-2">
-                                                            <div class="p-2 rounded bg-light text-primary">
+                                                        <div class="p-2 border rounded border-secondary-subtle bg-body-tertiary d-flex align-items-start gap-2">
+                                                            <div class="p-2 rounded bg-primary-subtle text-primary">
                                                                 <i :class="'bi ' + mod.icon + ' fs-5'"></i>
                                                             </div>
                                                             <div class="flex-grow-1">
                                                                 <div class="d-flex justify-content-between align-items-center">
-                                                                    <strong class="small text-dark" x-text="mod.label"></strong>
-                                                                    <span class="badge bg-light text-secondary border small" x-text="mod.actions.length + ' acciones'"></span>
+                                                                    <strong class="small text-body" x-text="mod.label"></strong>
+                                                                    <span class="badge bg-body-secondary text-body-secondary border border-secondary-subtle small" x-text="mod.actions.length + ' acciones'"></span>
                                                                 </div>
-                                                                <p class="small text-muted mb-0" style="font-size: 0.78rem;" x-text="mod.description"></p>
+                                                                <p class="small text-body-secondary mb-0" style="font-size: 0.78rem;" x-text="mod.description"></p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1172,31 +1172,31 @@
                         </div>
 
                         <!-- TAB 3: RESEÑAS & CALIFICACIONES -->
-                        <div x-show="activeTab === 'reviews'" class="card shadow-sm border p-4 mb-4">
+                        <div x-show="activeTab === 'reviews'" class="card shadow-sm border border-secondary-subtle p-4 mb-4 bg-body">
                             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                                 <div>
-                                    <h5 class="fw-bold mb-1">Moderación de Reseñas & Calificaciones</h5>
-                                    <p class="text-muted small mb-0">Comentarios reales de compradores verificados en Cartagena de Indias</p>
+                                    <h5 class="fw-bold mb-1 text-body">Moderación de Reseñas & Calificaciones</h5>
+                                    <p class="text-body-secondary small mb-0">Comentarios reales de compradores verificados en Cartagena de Indias</p>
                                 </div>
                             </div>
 
                             <div class="list-group">
                                 <template x-for="rev in reviewsList" :key="rev.id">
-                                    <div class="list-group-item p-3">
+                                    <div class="list-group-item p-3 border-secondary-subtle bg-body">
                                         <div class="d-flex justify-content-between align-items-start mb-2">
                                             <div>
-                                                <h6 class="fw-bold mb-1" x-text="rev.product"></h6>
+                                                <h6 class="fw-bold mb-1 text-body" x-text="rev.product"></h6>
                                                 <div class="text-warning small mb-1">
                                                     <template x-for="i in rev.rating" :key="i">
                                                         <i class="bi bi-star-fill"></i>
                                                     </template>
                                                 </div>
                                             </div>
-                                            <span class="badge bg-success-subtle text-success border"><i class="bi bi-check-circle-fill me-1"></i><span x-text="rev.status"></span></span>
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-check-circle-fill me-1"></i><span x-text="rev.status"></span></span>
                                         </div>
                                         <p class="text-body-secondary mb-2" x-text="`“${rev.comment}”`"></p>
-                                        <div class="d-flex justify-content-between align-items-center small text-muted">
-                                            <span>Por: <strong class="text-dark" x-text="rev.author"></strong> &bull; <span x-text="rev.city"></span></span>
+                                        <div class="d-flex justify-content-between align-items-center small text-body-secondary">
+                                            <span>Por: <strong class="text-body" x-text="rev.author"></strong> &bull; <span x-text="rev.city"></span></span>
                                             <span x-text="rev.date"></span>
                                         </div>
                                     </div>
@@ -1228,9 +1228,9 @@
     <!-- User Modal (Add/Edit) -->
     <div class="modal fade" id="userModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Gestión de Usuario</h5>
+            <div class="modal-content bg-body text-body border border-secondary-subtle shadow-lg">
+                <div class="modal-header bg-body-tertiary border-bottom border-secondary-subtle">
+                    <h5 class="modal-title fw-bold text-body">Gestión de Usuario</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -1238,23 +1238,23 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Nombres</label>
-                                <input type="text" class="form-control" x-model="form.firstName" required placeholder="Ej. Carlos">
+                                <input type="text" class="form-control bg-body text-body border-secondary-subtle" x-model="form.firstName" required placeholder="Ej. Carlos">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Apellidos</label>
-                                <input type="text" class="form-control" x-model="form.lastName" required placeholder="Ej. Mendoza">
+                                <input type="text" class="form-control bg-body text-body border-secondary-subtle" x-model="form.lastName" required placeholder="Ej. Mendoza">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Correo Electrónico</label>
-                                <input type="email" class="form-control" x-model="form.email" required placeholder="carlos.mendoza@email.com">
+                                <input type="email" class="form-control bg-body text-body border-secondary-subtle" x-model="form.email" required placeholder="carlos.mendoza@email.com">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Teléfono Móvil (Colombia)</label>
-                                <input type="tel" class="form-control" x-model="form.phone" placeholder="+57 (310) 123-4567">
+                                <input type="tel" class="form-control bg-body text-body border-secondary-subtle" x-model="form.phone" placeholder="+57 (310) 123-4567">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Rol en el Sistema</label>
-                                <select class="form-select" x-model="form.role" required>
+                                <select class="form-select bg-body text-body border-secondary-subtle" x-model="form.role" required>
                                     <option value="">Seleccionar Rol</option>
                                     <option value="admin">SuperAdmin (Acceso Total)</option>
                                     <option value="vendor">Vendedor / Gestor de Tienda</option>
@@ -1263,7 +1263,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Estado de la Cuenta</label>
-                                <select class="form-select" x-model="form.status" required>
+                                <select class="form-select bg-body text-body border-secondary-subtle" x-model="form.status" required>
                                     <option value="active">Activo</option>
                                     <option value="inactive">Inactivo</option>
                                     <option value="pending">Pendiente de Verificación</option>
@@ -1271,10 +1271,10 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Barrio / Sector (Cartagena)</label>
-                                <input type="text" class="form-control" x-model="form.city" placeholder="Ej. Bocagrande / Manga / Crespo (Cartagena)">
+                                <input type="text" class="form-control bg-body text-body border-secondary-subtle" x-model="form.city" placeholder="Ej. Bocagrande / Manga / Crespo (Cartagena)">
                             </div>
                         </div>
-                        <div class="modal-footer mt-4 px-0 pb-0">
+                        <div class="modal-footer mt-4 px-0 pb-0 border-top border-secondary-subtle pt-3">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-save me-1"></i>Guardar Usuario
@@ -1289,24 +1289,24 @@
     <!-- Import Modal -->
     <div class="modal fade" id="importModal" tabindex="-1">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Importar Usuarios masivos</h5>
+            <div class="modal-content bg-body text-body border border-secondary-subtle shadow-lg">
+                <div class="modal-header bg-body-tertiary border-bottom border-secondary-subtle">
+                    <h5 class="modal-title fw-bold text-body">Importar Usuarios masivos</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Subir archivo CSV</label>
-                        <input type="file" class="form-control" accept=".csv">
-                        <div class="form-text">El archivo debe contener las columnas: nombre, email, rol, estado, telefono, ciudad</div>
+                        <input type="file" class="form-control bg-body text-body border-secondary-subtle" accept=".csv">
+                        <div class="form-text text-body-secondary">El archivo debe contener las columnas: nombre, email, rol, estado, telefono, ciudad</div>
                     </div>
-                    <div class="alert alert-info small">
+                    <div class="alert alert-info small border border-info-subtle">
                         <i class="bi bi-info-circle me-2"></i>
                         <strong>Formato recomendado:</strong> nombre, email, rol, estado, telefono<br>
                         <span>Ejemplo: Carlos Mendoza, carlos@omnistore.com, customer, active, +573108459210</span>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer bg-body-tertiary border-top border-secondary-subtle">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="Swal.fire('Importación exitosa', 'Se procesaron los usuarios correctamente.', 'success')">Importar Datos</button>
                 </div>
@@ -1318,12 +1318,12 @@
     <!-- Individual Permissions & Access Control Modal -->
     <div class="modal fade" id="permissionsModal" tabindex="-1" aria-labelledby="permissionsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content border-0 shadow-lg">
+            <div class="modal-content border border-secondary-subtle shadow-lg bg-body">
                 <!-- Modal Header with User Profile -->
-                <div class="modal-header bg-dark text-white p-3 p-lg-4 border-0">
+                <div class="modal-header permissions-header text-white p-3 p-lg-4 border-0">
                     <div class="d-flex align-items-center gap-3">
                         <img :src="selectedUserForPermissions?.avatar || './assets/images/avatar-placeholder.svg'" 
-                             class="rounded-circle border border-2 border-white" 
+                             class="rounded-circle border border-2 border-white shadow-sm" 
                              width="52" 
                              height="52" 
                              :alt="selectedUserForPermissions?.name || 'Usuario'">
@@ -1347,16 +1347,16 @@
                 </div>
 
                 <!-- Modal Body -->
-                <div class="modal-body p-3 p-lg-4 bg-light">
+                <div class="modal-body p-3 p-lg-4 bg-body-tertiary">
                     <!-- Control Toolbar & Preset Buttons -->
-                    <div class="card border shadow-sm p-3 mb-4 bg-white">
+                    <div class="card permissions-toolbar-card shadow-sm p-3 mb-4">
                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
                             <div class="d-flex align-items-center gap-2">
-                                <span class="badge bg-primary fs-6 px-3 py-2">
+                                <span class="badge bg-primary fs-6 px-3 py-2 text-white shadow-sm">
                                     <i class="bi bi-shield-check me-1"></i>
                                     <span x-text="editingPermissions.length"></span> de <span x-text="totalSystemPermissions"></span> Permisos Habilitados
                                 </span>
-                                <span class="badge bg-light text-dark border px-2 py-2" x-text="Math.round((editingPermissions.length / totalSystemPermissions) * 100) + '% Nivel de Acceso'"></span>
+                                <span class="badge bg-body-secondary text-body border border-secondary-subtle px-3 py-2 font-monospace" x-text="Math.round((editingPermissions.length / totalSystemPermissions) * 100) + '% Nivel de Acceso'"></span>
                             </div>
                             
                             <!-- Fast Templates Buttons -->
@@ -1377,7 +1377,7 @@
                         </div>
 
                         <!-- Access Level Progress Bar -->
-                        <div class="progress" style="height: 8px;">
+                        <div class="progress bg-body-secondary" style="height: 8px;">
                             <div class="progress-bar" 
                                  :class="{
                                      'bg-success': (editingPermissions.length / totalSystemPermissions) >= 0.8,
@@ -1392,18 +1392,18 @@
                     <div class="row g-2 mb-3">
                         <div class="col-md-8">
                             <div class="input-group input-group-sm">
-                                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                                <span class="input-group-text bg-body-secondary text-body-secondary border-secondary-subtle"><i class="bi bi-search"></i></span>
                                 <input type="text" 
-                                       class="form-control" 
+                                       class="form-control bg-body text-body border-secondary-subtle" 
                                        placeholder="Buscar permisos por nombre, acción o descripción..."
                                        x-model="permissionsSearchQuery">
-                                <button class="btn btn-outline-secondary" type="button" x-show="permissionsSearchQuery" @click="permissionsSearchQuery = ''">
+                                <button class="btn btn-outline-secondary border-secondary-subtle" type="button" x-show="permissionsSearchQuery" @click="permissionsSearchQuery = ''">
                                     <i class="bi bi-x"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <select class="form-select form-select-sm" x-model="permissionsFilterModule">
+                            <select class="form-select form-select-sm bg-body text-body border-secondary-subtle" x-model="permissionsFilterModule">
                                 <option value="">Todos los Módulos</option>
                                 <template x-for="m in modulesConfig" :key="m.module">
                                     <option :value="m.module" x-text="m.label"></option>
@@ -1420,16 +1420,16 @@
                                          (permissionsSearchQuery === '' || 
                                           mod.label.toLowerCase().includes(permissionsSearchQuery.toLowerCase()) || 
                                           mod.actions.some(a => a.label.toLowerCase().includes(permissionsSearchQuery.toLowerCase()) || a.description.toLowerCase().includes(permissionsSearchQuery.toLowerCase())))">
-                                <div class="card h-100 border shadow-sm">
+                                <div class="card permission-module-card h-100 shadow-sm">
                                     <!-- Module Header -->
-                                    <div class="card-header bg-white p-3 border-bottom d-flex justify-content-between align-items-center">
+                                    <div class="card-header p-3 d-flex justify-content-between align-items-center">
                                         <div class="d-flex align-items-center gap-2">
-                                            <div class="p-2 rounded bg-light text-primary">
+                                            <div class="p-2 rounded bg-primary-subtle text-primary">
                                                 <i :class="'bi ' + mod.icon + ' fs-6'"></i>
                                             </div>
                                             <div>
-                                                <h6 class="fw-bold mb-0 text-dark" x-text="mod.label"></h6>
-                                                <small class="text-muted" style="font-size: 0.75rem;" x-text="mod.description"></small>
+                                                <h6 class="fw-bold mb-0 text-body" x-text="mod.label"></h6>
+                                                <small class="text-body-secondary" style="font-size: 0.75rem;" x-text="mod.description"></small>
                                             </div>
                                         </div>
 
@@ -1441,18 +1441,18 @@
                                                    :id="'switch-mod-' + mod.module"
                                                    :checked="isModuleAllChecked(mod)"
                                                    @change="toggleEntireModule(mod)">
-                                            <label class="form-check-label small fw-semibold text-muted" :for="'switch-mod-' + mod.module">
+                                            <label class="form-check-label small fw-semibold text-body-secondary" :for="'switch-mod-' + mod.module">
                                                 Todos
                                             </label>
                                         </div>
                                     </div>
 
                                     <!-- Module Actions List -->
-                                    <div class="card-body p-3">
+                                    <div class="card-body p-3 bg-body">
                                         <div class="d-flex flex-column gap-2">
                                             <template x-for="act in mod.actions" :key="act.id">
-                                                <div class="p-2 border rounded bg-light-subtle d-flex align-items-start gap-2"
-                                                     :class="{ 'border-primary bg-primary bg-opacity-10': isPermissionChecked(act.id) }">
+                                                <div class="permission-action-item d-flex align-items-start gap-2"
+                                                     :class="{ 'active': isPermissionChecked(act.id) }">
                                                     <div class="form-check form-switch mt-1">
                                                         <input class="form-check-input" 
                                                                type="checkbox" 
@@ -1463,10 +1463,10 @@
                                                     </div>
                                                     <label class="form-check-label flex-grow-1 cursor-pointer" :for="'perm-' + act.id">
                                                         <div class="d-flex justify-content-between align-items-center">
-                                                            <strong class="small text-dark" x-text="act.label"></strong>
-                                                            <span class="badge bg-light text-muted border font-monospace" style="font-size: 0.68rem;" x-text="act.id"></span>
+                                                            <strong class="small text-body" x-text="act.label"></strong>
+                                                            <span class="badge bg-body-secondary text-body-secondary border border-secondary-subtle font-monospace" style="font-size: 0.68rem;" x-text="act.id"></span>
                                                         </div>
-                                                        <div class="text-muted" style="font-size: 0.75rem;" x-text="act.description"></div>
+                                                        <div class="text-body-secondary" style="font-size: 0.75rem;" x-text="act.description"></div>
                                                     </label>
                                                 </div>
                                             </template>
@@ -1479,13 +1479,13 @@
                 </div>
 
                 <!-- Modal Footer -->
-                <div class="modal-footer bg-white p-3 border-top d-flex justify-content-between align-items-center">
-                    <div class="small text-muted">
-                        <i class="bi bi-info-circle me-1"></i>Los cambios se aplican de inmediato en la sesión del usuario.
+                <div class="modal-footer bg-body-tertiary p-3 border-top border-secondary-subtle d-flex justify-content-between align-items-center">
+                    <div class="small text-body-secondary">
+                        <i class="bi bi-info-circle me-1 text-primary"></i>Los cambios se aplican de inmediato en la sesión del usuario.
                     </div>
                     <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-primary px-4 fw-bold" @click="savePermissions()">
+                        <button type="button" class="btn btn-secondary border-0" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary px-4 fw-bold shadow-sm" @click="savePermissions()">
                             <i class="bi bi-shield-fill-check me-1"></i>Guardar Permisos del Usuario
                         </button>
                     </div>
