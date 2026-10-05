@@ -579,7 +579,27 @@ document.addEventListener('alpine:init', () => {
       return Math.ceil(this.filteredUsers.length / this.itemsPerPage) || 1;
     },
 
+    get visiblePages() {
+      const delta = 2;
+      const range = [];
+      for (let i = Math.max(2, this.currentPage - delta); i <= Math.min(this.totalPages - 1, this.currentPage + delta); i++) {
+        range.push(i);
+      }
+      if (this.currentPage - delta > 2) {
+        range.unshift('...');
+      }
+      if (this.currentPage + delta < this.totalPages - 1) {
+        range.push('...');
+      }
+      range.unshift(1);
+      if (this.totalPages > 1) {
+        range.push(this.totalPages);
+      }
+      return range;
+    },
+
     goToPage(page) {
+      if (page === '...') return;
       if (page >= 1 && page <= this.totalPages) {
         this.currentPage = page;
       }
