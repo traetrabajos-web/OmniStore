@@ -4,6 +4,7 @@
 
 import { getSupabaseClient } from './supabase.js';
 import { addUser } from './store-data.js';
+import { canAccessPage, applySidebarPermissions, hasPermission, getUserPermissions } from './permissions-service.js';
 
 const SESSION_STORAGE_KEY = 'omnistore_user_session';
 
@@ -346,14 +347,15 @@ async function updateLastLogin(userId) {
 }
 
 /**
- * Enforce authentication and role permissions on protected admin pages
+ * Enforce authentication and granular permissions on protected admin pages
  */
 export function enforceAuthAndRoles() {
   const currentPage = document.body?.dataset?.page || '';
   const publicPages = ['login', 'register', 'forgot-password', 'reset-password', 'two-factor', 'lock-screen', '404', '500', 'maintenance', 'marketplace'];
   
   const path = (window.location.pathname || '').toLowerCase();
-  const isPublicPage = publicPages.some(p => path.includes(p)) || publicPages.includes(currentPage);
+  const currentFile = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+  const isPublicPage = publicPages.some(p => path.includes(p)) || publicPages.includes(currentPage) || currentFile === 'marketplace.html';
   
   if (isPublicPage) {
     return;
@@ -374,25 +376,32 @@ export function enforceAuthAndRoles() {
     return;
   }
 
-  // If role is 'vendor', enforce role restrictions (no access to system security or root database config)
-  if (currentUser.role === 'vendor') {
-    const currentPath = window.location.pathname;
-    const currentFile = currentPath.substring(currentPath.lastIndexOf('/') + 1) || 'index.html';
-    const restrictedForVendor = ['security.html'];
-    
-    if (restrictedForVendor.includes(currentFile)) {
-      alert('🔒 Acceso Restringido: Tu cuenta de Vendedor no tiene permisos para acceder al módulo de Seguridad y Base de Datos.');
-      window.location.replace('./orders.html');
-      return;
-    }
-
-    // Adapt sidebar for vendor by hiding system-level admin sections
-    const securityLink = document.querySelector('a[href="./security.html"]');
-    if (securityLink) {
-      const li = securityLink.closest('.nav-item');
-      if (li) li.style.display = 'none';
-    }
+  // SuperAdmin has unrestricted access to all pages
+  if (currentUser.role === 'admin') {
+    applySidebarPermissions(currentUser);
+    return;
   }
+
+  // Check granular page permission
+  const pageToCheck = currentPage || currentFile;
+  const hasAccess = canAccessPage(pageToCheck, currentUser);
+
+  if (!hasAccess) {
+    // Find first permitted page fallback
+    let fallback = './orders.html';
+    if (hasPermission('products.view', currentUser)) fallback = './products.html';
+    else if (hasPermission('dashboard.view', currentUser)) fallback = './index.html';
+    else if (hasPermission('messages.view', currentUser)) fallback = './messages.html';
+    else if (hasPermission('help.view', currentUser)) fallback = './help.html';
+    else fallback = './marketplace.html';
+
+    alert(`🔒 Acceso Restringido: Tu cuenta de usuario (${currentUser.name}) no tiene permisos asignados por el administrador para acceder al módulo "${pageToCheck}".`);
+    window.location.replace(fallback);
+    return;
+  }
+
+  // Apply visual sidebar filtering
+  applySidebarPermissions(currentUser);
 }
 
 // Automatic reactive listeners for bfcache and history back/forward navigation

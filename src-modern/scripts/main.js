@@ -24,6 +24,7 @@ import { iconManager } from './utils/icon-manager.js';
 import Alpine from 'alpinejs';
 import './components/supabase-modal.js';
 import { initUserHeaderDropdown, enforceAuthAndRoles } from './utils/auth-service.js';
+import { applySidebarPermissions, hasPermission } from './utils/permissions-service.js';
 
 // Immediately enforce authentication and role access before any execution
 enforceAuthAndRoles();
@@ -95,6 +96,11 @@ class AdminApp {
 
       // Initialize authenticated user profile dropdown & logout listeners
       initUserHeaderDropdown();
+
+      // Apply granular permissions to navigation and sidebar
+      applySidebarPermissions();
+      window.addEventListener('omnistore:permissions-updated', () => applySidebarPermissions());
+      window.addEventListener('omnistore:auth-changed', () => applySidebarPermissions());
 
       this.isInitialized = true;
 

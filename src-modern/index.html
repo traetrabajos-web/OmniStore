@@ -524,9 +524,9 @@
                     </div>
                 </div>
 
-                <!-- Stats Cards with Alpine.js -->
+                <!-- Stats Cards (Real Database Synced) -->
                 <div class="row g-3 g-lg-4 mb-4">
-                    <div class="col-sm-6 col-xl-3" x-data="statsCounter(12426, 5)">
+                    <div class="col-sm-6 col-xl-3">
                         <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
@@ -537,9 +537,9 @@
                                     </div>
                                     <div class="flex-grow-1 ms-3">
                                         <p class="h6 mb-0 text-muted">Total Clientes</p>
-                                        <div class="h3 mb-0" aria-live="polite"><span x-text="formatted">12.426</span></div>
+                                        <div class="h3 mb-0" id="stat-total-users">4</div>
                                         <small class="text-success-emphasis">
-                                            <i class="bi bi-arrow-up"></i> +12.5% este mes
+                                            <i class="bi bi-check-circle"></i> Sincronizado con PostgreSQL
                                         </small>
                                     </div>
                                 </div>
@@ -557,10 +557,10 @@
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <p class="h6 mb-0 text-muted">Ventas del Mes (COP)</p>
-                                        <h3 class="mb-0 text-success">$ 54.320.000</h3>
+                                        <p class="h6 mb-0 text-muted">Ventas Registradas (COP)</p>
+                                        <h3 class="mb-0 text-success" id="stat-total-revenue">$ 11.472.000</h3>
                                         <small class="text-success-emphasis">
-                                            <i class="bi bi-arrow-up"></i> +8.2% vs mes anterior
+                                            <i class="bi bi-arrow-up"></i> Pedidos en Base de Datos
                                         </small>
                                     </div>
                                 </div>
@@ -579,9 +579,9 @@
                                     </div>
                                     <div class="flex-grow-1 ms-3">
                                         <p class="h6 mb-0 text-muted">Total Pedidos</p>
-                                        <h3 class="mb-0">1.852</h3>
+                                        <h3 class="mb-0" id="stat-total-orders">3</h3>
                                         <small class="text-success-emphasis">
-                                            <i class="bi bi-check-circle"></i> 94% entregados a tiempo
+                                            <i class="bi bi-check-circle"></i> Órdenes activas en DB
                                         </small>
                                     </div>
                                 </div>
@@ -595,14 +595,14 @@
                                 <div class="d-flex align-items-center">
                                     <div class="flex-shrink-0">
                                         <div class="stats-icon bg-info bg-opacity-10 text-info">
-                                            <i class="bi bi-truck"></i>
+                                            <i class="bi bi-box-seam"></i>
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <p class="h6 mb-0 text-muted">Tiempo Promedio Envío</p>
-                                        <h3 class="mb-0">24-48 hrs</h3>
+                                        <p class="h6 mb-0 text-muted">Productos en Catálogo</p>
+                                        <h3 class="mb-0" id="stat-total-products">6</h3>
                                         <small class="text-info-emphasis">
-                                            <i class="bi bi-geo-alt"></i> Cobertura Nacional
+                                            <i class="bi bi-database"></i> Supabase PostgreSQL
                                         </small>
                                     </div>
                                 </div>

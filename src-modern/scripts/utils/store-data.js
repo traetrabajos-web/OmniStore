@@ -15,6 +15,27 @@ import {
   initSupabaseRealtime
 } from './supabase.js';
 
+export const CATEGORY_DEFAULT_IMAGES = {
+  electronics: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80',
+  audio: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80',
+  gaming: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=600&auto=format&fit=crop&q=80',
+  home: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600&auto=format&fit=crop&q=80',
+  shoes: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop&q=80',
+  clothing: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600&auto=format&fit=crop&q=80',
+  beauty: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&auto=format&fit=crop&q=80',
+  tools: 'https://images.unsplash.com/photo-1581147036324-c17ac41dfa6c?w=600&auto=format&fit=crop&q=80',
+  books: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80'
+};
+
+export function resolveProductImage(product) {
+  if (!product) return CATEGORY_DEFAULT_IMAGES.electronics;
+  if (product.image && typeof product.image === 'string' && !product.image.includes('placeholder') && (product.image.startsWith('http') || product.image.startsWith('data:'))) {
+    return product.image;
+  }
+  const cat = (product.category || product.categorySlug || 'electronics').toLowerCase();
+  return CATEGORY_DEFAULT_IMAGES[cat] || CATEGORY_DEFAULT_IMAGES.electronics;
+}
+
 export const INITIAL_CATALOG = [
   {
     id: 101,
@@ -1170,21 +1191,31 @@ export async function initSupabaseDataSync() {
   isSyncing = true;
 
   try {
+    // 1. Products Catalog from PostgreSQL
     const prodRes = await fetch('/api/products').catch(() => null);
     if (prodRes && prodRes.ok) {
       const prodJson = await prodRes.json();
       if (prodJson.success && Array.isArray(prodJson.data) && prodJson.data.length > 0) {
-        localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify(prodJson.data));
-        window.dispatchEvent(new CustomEvent('omnistore:catalog-updated', { detail: prodJson.data }));
+        const cleaned = prodJson.data.map(p => ({
+          ...p,
+          image: resolveProductImage(p)
+        }));
+        localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify(cleaned));
+        window.dispatchEvent(new CustomEvent('omnistore:catalog-updated', { detail: cleaned }));
       }
     } else if (isSupabaseConnected()) {
       const remoteProducts = await fetchProductsSupabase();
       if (remoteProducts && remoteProducts.length > 0) {
-        localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify(remoteProducts));
-        window.dispatchEvent(new CustomEvent('omnistore:catalog-updated', { detail: remoteProducts }));
+        const cleaned = remoteProducts.map(p => ({
+          ...p,
+          image: resolveProductImage(p)
+        }));
+        localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify(cleaned));
+        window.dispatchEvent(new CustomEvent('omnistore:catalog-updated', { detail: cleaned }));
       }
     }
 
+    // 2. Orders from PostgreSQL
     const ordRes = await fetch('/api/orders').catch(() => null);
     if (ordRes && ordRes.ok) {
       const ordJson = await ordRes.json();
@@ -1197,6 +1228,46 @@ export async function initSupabaseDataSync() {
       if (remoteOrders && remoteOrders.length > 0) {
         localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(remoteOrders));
         window.dispatchEvent(new CustomEvent('omnistore:orders-updated', { detail: remoteOrders }));
+      }
+    }
+
+    // 3. Users & Team Accounts from PostgreSQL
+    const userRes = await fetch('/api/users').catch(() => null);
+    if (userRes && userRes.ok) {
+      const userJson = await userRes.json();
+      if (userJson.success && Array.isArray(userJson.data) && userJson.data.length > 0) {
+        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(userJson.data));
+        window.dispatchEvent(new CustomEvent('omnistore:users-updated', { detail: userJson.data }));
+      }
+    }
+
+    // 4. Customer Reviews from PostgreSQL
+    const revRes = await fetch('/api/reviews').catch(() => null);
+    if (revRes && revRes.ok) {
+      const revJson = await revRes.json();
+      if (revJson.success && Array.isArray(revJson.data) && revJson.data.length > 0) {
+        localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(revJson.data));
+        window.dispatchEvent(new CustomEvent('omnistore:reviews-updated', { detail: revJson.data }));
+      }
+    }
+
+    // 5. Promotional Coupons from PostgreSQL
+    const coupRes = await fetch('/api/coupons').catch(() => null);
+    if (coupRes && coupRes.ok) {
+      const coupJson = await coupRes.json();
+      if (coupJson.success && Array.isArray(coupJson.data) && coupJson.data.length > 0) {
+        localStorage.setItem(COUPONS_STORAGE_KEY, JSON.stringify(coupJson.data));
+        window.dispatchEvent(new CustomEvent('omnistore:coupons-updated', { detail: coupJson.data }));
+      }
+    }
+
+    // 6. Shipping Zones from PostgreSQL
+    const zoneRes = await fetch('/api/shipping-zones').catch(() => null);
+    if (zoneRes && zoneRes.ok) {
+      const zoneJson = await zoneRes.json();
+      if (zoneJson.success && Array.isArray(zoneJson.data) && zoneJson.data.length > 0) {
+        localStorage.setItem(ZONES_STORAGE_KEY, JSON.stringify(zoneJson.data));
+        window.dispatchEvent(new CustomEvent('omnistore:shipping-zones-updated', { detail: zoneJson.data }));
       }
     }
 
@@ -1222,7 +1293,7 @@ export async function initSupabaseDataSync() {
 if (typeof window !== 'undefined') {
   setTimeout(() => {
     initSupabaseDataSync();
-  }, 100);
+  }, 50);
 
   window.addEventListener('omnistore:supabase-status', (e) => {
     if (e.detail?.connected) {
@@ -1241,7 +1312,10 @@ export function getProductsCatalog() {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        return parsed.map(p => ({
+          ...p,
+          image: resolveProductImage(p)
+        }));
       }
     }
   } catch (e) {
@@ -1648,6 +1722,13 @@ export function addUser(userData) {
   };
   users.unshift(newUser);
   saveUsersList(users);
+
+  fetch('/api/users', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newUser)
+  }).catch(() => {});
+
   return newUser;
 }
 
@@ -1657,6 +1738,13 @@ export function updateUser(id, updatedFields) {
   if (index !== -1) {
     users[index] = { ...users[index], ...updatedFields };
     saveUsersList(users);
+
+    fetch(`/api/users/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedFields)
+    }).catch(() => {});
+
     return users[index];
   }
   return null;
@@ -1666,6 +1754,9 @@ export function deleteUser(id) {
   const users = getUsersList();
   const filtered = users.filter(u => u.id !== id);
   saveUsersList(filtered);
+
+  fetch(`/api/users/${id}`, { method: 'DELETE' }).catch(() => {});
+
   return filtered;
 }
 
@@ -1748,6 +1839,13 @@ export function addCoupon(data) {
   };
   coupons.unshift(newCoupon);
   saveCouponsList(coupons);
+
+  fetch('/api/coupons', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newCoupon)
+  }).catch(() => {});
+
   return newCoupon;
 }
 
@@ -1757,6 +1855,13 @@ export function updateCoupon(id, data) {
   if (idx !== -1) {
     coupons[idx] = { ...coupons[idx], ...data };
     saveCouponsList(coupons);
+
+    fetch(`/api/coupons/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).catch(() => {});
+
     return coupons[idx];
   }
   return null;
@@ -1766,6 +1871,9 @@ export function deleteCoupon(id) {
   const coupons = getCouponsList();
   const filtered = coupons.filter(c => c.id !== id);
   saveCouponsList(filtered);
+
+  fetch(`/api/coupons/${id}`, { method: 'DELETE' }).catch(() => {});
+
   return filtered;
 }
 
@@ -2029,6 +2137,13 @@ export function addReview(data) {
   };
   reviews.unshift(newRev);
   saveReviewsList(reviews);
+
+  fetch('/api/reviews', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newRev)
+  }).catch(() => {});
+
   return newRev;
 }
 
@@ -2038,6 +2153,13 @@ export function updateReviewStatus(id, status) {
   if (found) {
     found.status = status;
     saveReviewsList(reviews);
+
+    fetch(`/api/reviews/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    }).catch(() => {});
+
     return found;
   }
   return null;
@@ -2047,6 +2169,9 @@ export function deleteReview(id) {
   const reviews = getReviewsList();
   const filtered = reviews.filter(r => r.id !== id);
   saveReviewsList(filtered);
+
+  fetch(`/api/reviews/${id}`, { method: 'DELETE' }).catch(() => {});
+
   return filtered;
 }
 

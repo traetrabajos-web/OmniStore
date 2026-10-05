@@ -80,6 +80,7 @@ export function supabaseApiMiddleware() {
               const oCount = await client.query('SELECT COUNT(*) FROM public.orders');
               const uCount = await client.query('SELECT COUNT(*) FROM public.users');
               const cCount = await client.query('SELECT COUNT(*) FROM public.coupons');
+              const rCount = await client.query('SELECT COUNT(*) FROM public.reviews');
               return sendJson(res, 200, {
                 success: true,
                 connected: true,
@@ -90,7 +91,8 @@ export function supabaseApiMiddleware() {
                   products: parseInt(pCount.rows[0].count, 10),
                   orders: parseInt(oCount.rows[0].count, 10),
                   users: parseInt(uCount.rows[0].count, 10),
-                  coupons: parseInt(cCount.rows[0].count, 10)
+                  coupons: parseInt(cCount.rows[0].count, 10),
+                  reviews: parseInt(rCount.rows[0].count, 10)
                 }
               });
             } finally {
@@ -107,13 +109,18 @@ export function supabaseApiMiddleware() {
               if (req.method === 'GET') {
                 const result = await client.query(`
                   SELECT 
-                    id, name, sku, category, category_label as "categoryLabel", category_id as "categoryId",
+                    id, name, sku, 
+                    COALESCE(category_slug, 'electronics') as "category",
+                    category_slug as "categorySlug",
+                    COALESCE(category_label, 'Tecnología') as "categoryLabel",
+                    category_id as "categoryId",
                     price, original_price as "originalPrice", discount_percent as "discountPercent",
                     stock, stock_left as "stockLeft", stock_total as "stockTotal", status,
                     rating, reviews_count as "reviewsCount", sales_count as "salesCount",
                     is_flash_deal as "isFlashDeal", is_best_seller as "isBestSeller",
-                    has_free_shipping as "hasFreeShipping", is_full_shipping as "isFullShipping",
-                    badge_text as "badgeText", image, colors, sizes, description, tags, created_at as "createdAt"
+                    has_free_shipping as "hasFreeShipping",
+                    badge_text as "badgeText", image, images, colors, sizes, description, tags, 
+                    created_at as "createdAt"
                   FROM public.products
                   ORDER BY id DESC;
                 `);
@@ -124,19 +131,20 @@ export function supabaseApiMiddleware() {
                 const body = await parseBody(req);
                 const query = `
                   INSERT INTO public.products (
-                    name, sku, category, category_label, category_id,
+                    name, sku, category_slug, category_label, category_id,
                     price, original_price, discount_percent, stock, stock_left, stock_total,
                     status, rating, reviews_count, sales_count,
-                    is_flash_deal, is_best_seller, has_free_shipping, is_full_shipping,
+                    is_flash_deal, is_best_seller, has_free_shipping,
                     badge_text, image, colors, sizes, description, tags
                   ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24
                   )
                   ON CONFLICT (sku) DO UPDATE SET
                     name = EXCLUDED.name,
                     price = EXCLUDED.price,
                     stock = EXCLUDED.stock,
-                    category = EXCLUDED.category,
+                    category_slug = EXCLUDED.category_slug,
+                    category_label = EXCLUDED.category_label,
                     status = EXCLUDED.status,
                     description = EXCLUDED.description
                   RETURNING *;
@@ -144,8 +152,8 @@ export function supabaseApiMiddleware() {
                 const values = [
                   body.name || 'Nuevo Producto',
                   body.sku || ('SKU-' + Date.now()),
-                  body.category || 'electronics',
-                  body.categoryLabel || 'General',
+                  body.categorySlug || body.category || 'electronics',
+                  body.categoryLabel || 'Tecnología',
                   body.categoryId || 1,
                   body.price || 0.00,
                   body.originalPrice || body.price || 0.00,
@@ -154,19 +162,18 @@ export function supabaseApiMiddleware() {
                   body.stockLeft || body.stock || 0,
                   body.stockTotal || body.stock || 0,
                   body.status || 'published',
-                  body.rating || 4.8,
+                  body.rating || 5.0,
                   body.reviewsCount || 0,
                   body.salesCount || 0,
                   Boolean(body.isFlashDeal),
                   Boolean(body.isBestSeller),
                   body.hasFreeShipping !== false,
-                  body.isFullShipping !== false,
                   body.badgeText || null,
                   body.image || './assets/images/product-placeholder.svg',
                   JSON.stringify(body.colors || ['Predeterminado']),
                   JSON.stringify(body.sizes || []),
                   body.description || '',
-                  JSON.stringify(body.tags || ['omnistore'])
+                  JSON.stringify(body.tags || ['omnistore', 'cartagena'])
                 ];
                 const inserted = await client.query(query, values);
                 return sendJson(res, 201, { success: true, product: inserted.rows[0] });
@@ -191,7 +198,7 @@ export function supabaseApiMiddleware() {
                     original_price = COALESCE($3, original_price),
                     stock = COALESCE($4, stock),
                     status = COALESCE($5, status),
-                    category = COALESCE($6, category),
+                    category_slug = COALESCE($6, category_slug),
                     category_label = COALESCE($7, category_label),
                     description = COALESCE($8, description),
                     badge_text = COALESCE($9, badge_text),
@@ -207,7 +214,7 @@ export function supabaseApiMiddleware() {
                   body.originalPrice,
                   body.stock,
                   body.status,
-                  body.category,
+                  body.categorySlug || body.category,
                   body.categoryLabel,
                   body.description,
                   body.badgeText,
@@ -240,11 +247,19 @@ export function supabaseApiMiddleware() {
                   SELECT 
                     id, order_number as "orderNumber", user_id as "userId",
                     customer_name as "customerName", customer_email as "customerEmail",
-                    customer_phone as "customerPhone", shipping_address as "shippingAddress",
-                    shipping_city as "shippingCity", shipping_zip as "shippingZip",
-                    payment_method as "paymentMethod", item_count as "itemCount",
+                    customer_phone as "customerPhone", customer_doc as "customerDoc",
+                    shipping_address as "shippingAddress",
+                    COALESCE(shipping_neighborhood, 'Cartagena') as "shippingNeighborhood",
+                    COALESCE(shipping_neighborhood, 'Cartagena') as "shippingZip",
+                    COALESCE(shipping_city, 'Cartagena de Indias') as "shippingCity",
+                    COALESCE(shipping_department, 'Bolívar') as "shippingDepartment",
+                    shipping_country as "shippingCountry",
+                    payment_method as "paymentMethod", payment_status as "paymentStatus",
+                    item_count as "itemCount",
                     subtotal, discount_amount as "discountAmount", shipping_cost as "shippingCost",
-                    total, coupon_code as "couponCode", status, order_date as "orderDate",
+                    total, coupon_code as "couponCode", status, 
+                    to_char(order_date, 'YYYY-MM-DD') as "orderDate",
+                    tracking_number as "trackingNumber", notes,
                     items, created_at as "createdAt"
                   FROM public.orders
                   ORDER BY id DESC;
@@ -257,12 +272,12 @@ export function supabaseApiMiddleware() {
                 const orderNumber = body.orderNumber || `OMNI-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
                 const query = `
                   INSERT INTO public.orders (
-                    order_number, user_id, customer_name, customer_email, customer_phone,
-                    shipping_address, shipping_city, shipping_zip, payment_method,
-                    item_count, subtotal, discount_amount, shipping_cost, total,
+                    order_number, user_id, customer_name, customer_email, customer_phone, customer_doc,
+                    shipping_address, shipping_neighborhood, shipping_city, shipping_department, shipping_country,
+                    payment_method, payment_status, item_count, subtotal, discount_amount, shipping_cost, total,
                     coupon_code, status, order_date, items
                   ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, CURRENT_DATE, $17
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, CURRENT_DATE, $21
                   )
                   RETURNING *;
                 `;
@@ -271,11 +286,15 @@ export function supabaseApiMiddleware() {
                   body.userId || null,
                   body.customerName || 'Cliente Marketplace',
                   body.customerEmail || 'cliente@omnistore.com',
-                  body.customerPhone || '',
+                  body.customerPhone || '+57 300 000 0000',
+                  body.customerDoc || '',
                   body.shippingAddress || 'Dirección de Entrega',
-                  body.shippingCity || 'Madrid',
-                  body.shippingZip || '28001',
-                  body.paymentMethod || 'card',
+                  body.shippingNeighborhood || body.shippingZip || 'Bocagrande',
+                  body.shippingCity || 'Cartagena de Indias',
+                  body.shippingDepartment || 'Bolívar',
+                  body.shippingCountry || 'Colombia',
+                  body.paymentMethod || 'nequi',
+                  body.paymentStatus || 'approved',
                   body.itemCount || (body.items ? body.items.length : 1),
                   body.subtotal || body.total || 0,
                   body.discountAmount || 0,
@@ -306,7 +325,7 @@ export function supabaseApiMiddleware() {
                     status = COALESCE($1, status),
                     shipping_address = COALESCE($2, shipping_address),
                     shipping_city = COALESCE($3, shipping_city),
-                    shipping_zip = COALESCE($4, shipping_zip),
+                    shipping_neighborhood = COALESCE($4, shipping_neighborhood),
                     tracking_number = COALESCE($5, tracking_number),
                     notes = COALESCE($6, notes)
                   WHERE id = $7
@@ -316,7 +335,7 @@ export function supabaseApiMiddleware() {
                   body.status,
                   body.shippingAddress,
                   body.shippingCity,
-                  body.shippingZip,
+                  body.shippingNeighborhood || body.shippingZip,
                   body.trackingNumber,
                   body.notes,
                   orderId
@@ -342,12 +361,12 @@ export function supabaseApiMiddleware() {
             const client = await pool.connect();
             try {
               const resUser = await client.query(
-                'SELECT id, name, email, password_hash, role, avatar, phone, address, city, country, status FROM public.users WHERE LOWER(email) = LOWER($1) LIMIT 1',
+                'SELECT id, name, email, password_hash, role, avatar, phone, address, neighborhood, city, department, country, status, permissions FROM public.users WHERE LOWER(email) = LOWER($1) LIMIT 1',
                 [email.trim()]
               );
 
               if (resUser.rows.length === 0) {
-                return sendJson(res, 401, { success: false, error: 'Usuario no encontrado. Verifica el correo.' });
+                return sendJson(res, 401, { success: false, error: 'Usuario no encontrado en la base de datos.' });
               }
 
               const user = resUser.rows[0];
@@ -380,13 +399,13 @@ export function supabaseApiMiddleware() {
             try {
               const existing = await client.query('SELECT id FROM public.users WHERE LOWER(email) = LOWER($1)', [email.trim()]);
               if (existing.rows.length > 0) {
-                return sendJson(res, 400, { success: false, error: 'Ya existe una cuenta con este correo.' });
+                return sendJson(res, 400, { success: false, error: 'Ya existe una cuenta con este correo en la base de datos.' });
               }
 
               const inserted = await client.query(
-                `INSERT INTO public.users (name, email, password_hash, role, avatar, status)
-                 VALUES ($1, $2, $3, $4, './assets/images/avatar-placeholder.svg', 'active')
-                 RETURNING id, name, email, role, avatar, status;`,
+                `INSERT INTO public.users (name, email, password_hash, role, avatar, city, department, country, status, permissions)
+                 VALUES ($1, $2, $3, $4, './assets/images/avatar-placeholder.svg', 'Cartagena de Indias', 'Bolívar', 'Colombia', 'active', '[]'::jsonb)
+                 RETURNING id, name, email, role, avatar, status, permissions;`,
                 [name.trim(), email.trim().toLowerCase(), password, role]
               );
 
@@ -413,7 +432,10 @@ export function supabaseApiMiddleware() {
             try {
               if (req.method === 'GET') {
                 const result = await client.query(`
-                  SELECT id, name, email, role, avatar, phone, address, city, country, status, last_login as "lastLogin", created_at as "createdAt"
+                  SELECT 
+                    id, name, email, role, avatar, phone, address, neighborhood, city, department, country, status,
+                    COALESCE(permissions, '[]'::jsonb) as "permissions",
+                    last_login as "lastLogin", created_at as "createdAt"
                   FROM public.users
                   ORDER BY id ASC;
                 `);
@@ -423,9 +445,9 @@ export function supabaseApiMiddleware() {
               if (req.method === 'POST') {
                 const body = await parseBody(req);
                 const query = `
-                  INSERT INTO public.users (name, email, password_hash, role, avatar, phone, address, city, country, status)
-                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-                  RETURNING id, name, email, role, avatar, phone, address, city, country, status, created_at as "createdAt";
+                  INSERT INTO public.users (name, email, password_hash, role, avatar, phone, address, city, department, country, status, permissions)
+                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+                  RETURNING id, name, email, role, avatar, phone, address, city, department, country, status, permissions, created_at as "createdAt";
                 `;
                 const values = [
                   body.name || 'Nuevo Usuario',
@@ -434,13 +456,41 @@ export function supabaseApiMiddleware() {
                   body.role || 'customer',
                   body.avatar || './assets/images/avatar-placeholder.svg',
                   body.phone || '+57 300 000 0000',
-                  body.address || 'Cra 15 # 93-45',
-                  body.city || 'Bogotá D.C.',
+                  body.address || 'Cra 3 # 7-15',
+                  body.city || 'Cartagena de Indias',
+                  body.department || 'Bolívar',
                   body.country || 'Colombia',
-                  body.status || 'active'
+                  body.status || 'active',
+                  JSON.stringify(body.permissions || [])
                 ];
                 const inserted = await client.query(query, values);
                 return sendJson(res, 201, { success: true, user: inserted.rows[0] });
+              }
+            } finally {
+              client.release();
+            }
+          }
+
+          // User Permissions by ID (GET / PUT)
+          const userPermsMatch = pathname.match(/^\/api\/users\/(\d+)\/permissions$/);
+          if (userPermsMatch) {
+            const userId = parseInt(userPermsMatch[1], 10);
+            const client = await pool.connect();
+            try {
+              if (req.method === 'GET') {
+                const resUser = await client.query('SELECT id, name, role, COALESCE(permissions, \'[]\'::jsonb) as permissions FROM public.users WHERE id = $1', [userId]);
+                if (resUser.rows.length === 0) {
+                  return sendJson(res, 404, { success: false, error: 'Usuario no encontrado' });
+                }
+                return sendJson(res, 200, { success: true, permissions: resUser.rows[0].permissions || [] });
+              }
+              if (req.method === 'PUT') {
+                const body = await parseBody(req);
+                const updated = await client.query(
+                  'UPDATE public.users SET permissions = $1::jsonb WHERE id = $2 RETURNING id, name, email, role, permissions',
+                  [JSON.stringify(body.permissions || []), userId]
+                );
+                return sendJson(res, 200, { success: true, user: updated.rows[0] });
               }
             } finally {
               client.release();
@@ -462,17 +512,27 @@ export function supabaseApiMiddleware() {
                     status = COALESCE($3, status),
                     phone = COALESCE($4, phone),
                     city = COALESCE($5, city),
-                    address = COALESCE($6, address)
-                  WHERE id = $7
-                  RETURNING id, name, email, role, avatar, phone, address, city, country, status;
+                    address = COALESCE($6, address),
+                    permissions = COALESCE($7, permissions)
+                  WHERE id = $8
+                  RETURNING id, name, email, role, avatar, phone, address, city, department, country, status, permissions;
                 `;
-                const updated = await client.query(query, [body.name, body.role, body.status, body.phone, body.city, body.address, userId]);
+                const updated = await client.query(query, [
+                  body.name, 
+                  body.role, 
+                  body.status, 
+                  body.phone, 
+                  body.city, 
+                  body.address,
+                  body.permissions ? JSON.stringify(body.permissions) : null,
+                  userId
+                ]);
                 return sendJson(res, 200, { success: true, user: updated.rows[0] });
               }
 
               if (req.method === 'DELETE') {
                 await client.query('DELETE FROM public.users WHERE id = $1', [userId]);
-                return sendJson(res, 200, { success: true, message: 'Usuario eliminado con éxito.' });
+                return sendJson(res, 200, { success: true, message: 'Usuario eliminado con éxito de la base de datos.' });
               }
             } finally {
               client.release();
@@ -612,7 +672,105 @@ export function supabaseApiMiddleware() {
           }
 
           // -------------------------------------------------------------
-          // 8. Dynamic Dashboard Stats API
+          // 8. Reviews API (GET, POST, PUT, DELETE)
+          // -------------------------------------------------------------
+          if (pathname === '/api/reviews') {
+            const client = await pool.connect();
+            try {
+              if (req.method === 'GET') {
+                const resRev = await client.query(`
+                  SELECT 
+                    r.id, r.product_id as "productId", 
+                    COALESCE(p.name, 'Producto OmniStore') as "product",
+                    r.user_id as "userId",
+                    r.author_name as "author",
+                    r.author_city as "city",
+                    r.rating, r.title, r.comment,
+                    r.is_verified_purchase as "isVerifiedPurchase",
+                    r.helpful_count as "helpfulCount",
+                    r.status,
+                    to_char(r.created_at, 'YYYY-MM-DD') as "date"
+                  FROM public.reviews r
+                  LEFT JOIN public.products p ON r.product_id = p.id
+                  ORDER BY r.id DESC;
+                `);
+                return sendJson(res, 200, { success: true, data: resRev.rows });
+              }
+
+              if (req.method === 'POST') {
+                const body = await parseBody(req);
+                const query = `
+                  INSERT INTO public.reviews (
+                    product_id, user_id, author_name, author_email, author_city,
+                    rating, title, comment, is_verified_purchase, helpful_count, status
+                  ) VALUES (
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+                  )
+                  RETURNING *;
+                `;
+                const values = [
+                  body.productId || null,
+                  body.userId || null,
+                  body.author || body.author_name || 'Cliente Verificado',
+                  body.email || body.author_email || 'cliente@omnistore.com',
+                  body.city || body.author_city || 'Cartagena de Indias',
+                  body.rating || 5,
+                  body.title || '',
+                  body.comment || '',
+                  body.isVerifiedPurchase !== false,
+                  body.helpfulCount || 0,
+                  body.status || 'Aprobada'
+                ];
+                const inserted = await client.query(query, values);
+                return sendJson(res, 201, { success: true, review: inserted.rows[0] });
+              }
+            } finally {
+              client.release();
+            }
+          }
+
+          const revMatch = pathname.match(/^\/api\/reviews\/(\d+)$/);
+          if (revMatch) {
+            const revId = parseInt(revMatch[1], 10);
+            const client = await pool.connect();
+            try {
+              if (req.method === 'PUT') {
+                const body = await parseBody(req);
+                const query = `
+                  UPDATE public.reviews SET
+                    status = COALESCE($1, status),
+                    comment = COALESCE($2, comment),
+                    rating = COALESCE($3, rating)
+                  WHERE id = $4
+                  RETURNING *;
+                `;
+                const updated = await client.query(query, [body.status, body.comment, body.rating, revId]);
+                return sendJson(res, 200, { success: true, review: updated.rows[0] });
+              }
+              if (req.method === 'DELETE') {
+                await client.query('DELETE FROM public.reviews WHERE id = $1', [revId]);
+                return sendJson(res, 200, { success: true, message: 'Reseña eliminada con éxito.' });
+              }
+            } finally {
+              client.release();
+            }
+          }
+
+          // -------------------------------------------------------------
+          // 9. Shipping Zones API (GET)
+          // -------------------------------------------------------------
+          if (pathname === '/api/shipping-zones' && req.method === 'GET') {
+            const client = await pool.connect();
+            try {
+              const resZones = await client.query('SELECT * FROM public.shipping_zones ORDER BY id ASC');
+              return sendJson(res, 200, { success: true, data: resZones.rows });
+            } finally {
+              client.release();
+            }
+          }
+
+          // -------------------------------------------------------------
+          // 10. Dynamic Dashboard Stats API
           // -------------------------------------------------------------
           if (pathname === '/api/dashboard/stats' && req.method === 'GET') {
             const client = await pool.connect();

@@ -15,6 +15,14 @@ import {
   updateReviewStatus,
   deleteReview
 } from '../utils/store-data.js';
+import {
+  MODULES_PERMISSIONS_CONFIG,
+  ROLE_DEFAULT_PERMISSIONS,
+  getUserPermissions,
+  saveUserPermissions,
+  hasPermission,
+  getAllAvailablePermissionIds
+} from '../utils/permissions-service.js';
 
 const DEMO_COLOMBIAN_USERS = [
   {
@@ -153,13 +161,157 @@ document.addEventListener('alpine:init', () => {
     // Tab state
     activeTab: 'users', // 'users' | 'roles' | 'reviews'
 
-    // Cartagena Roles & Permissions Matrix
+    // Granular Permissions System
+    modulesConfig: MODULES_PERMISSIONS_CONFIG,
+    selectedUserForPermissions: null,
+    editingPermissions: [],
+    permissionsSearchQuery: '',
+    permissionsFilterModule: '',
+    permissionsModalInstance: null,
+    totalSystemPermissions: getAllAvailablePermissionIds().length,
+
+    // Roles Matrix with granular permissions mapping
     rolesMatrix: [
-      { id: 'admin', name: 'SuperAdmin / Propietario', badge: 'bg-primary', usersCount: 2, desc: 'Acceso total sin restricciones, base de datos PostgreSQL, configuración financiera y pasarelas.', permissions: ['dashboard:all', 'orders:write', 'products:write', 'users:write', 'settings:write', 'security:full'] },
-      { id: 'vendor', name: 'Vendedor / Store Manager', badge: 'bg-info', usersCount: 5, desc: 'Gestión de catálogo de productos, control de stock, despacho de órdenes y visualización de ventas.', permissions: ['dashboard:read', 'orders:write', 'products:write', 'users:read', 'settings:none', 'security:none'] },
-      { id: 'support', name: 'Soporte & Atención al Cliente', badge: 'bg-warning text-dark', usersCount: 8, desc: 'Atención de tickets PQRS, seguimiento de guías de entrega local en Cartagena y moderación de reseñas.', permissions: ['dashboard:read', 'orders:read', 'products:read', 'users:read', 'reviews:moderate'] },
-      { id: 'accountant', name: 'Contador / Facturación DIAN', badge: 'bg-success', usersCount: 3, desc: 'Descarga de reportes fiscales, control de retenciones en la fuente e IVA 19% en Colombia.', permissions: ['dashboard:read', 'orders:read', 'reports:export', 'invoices:manage'] }
+      { id: 'admin', name: 'SuperAdmin / Propietario', badge: 'bg-primary', usersCount: 2, desc: 'Acceso total sin restricciones a todos los módulos, ajustes, finanzas y base de datos.', permissions: ['dashboard.*', 'products.*', 'orders.*', 'users.*', 'analytics.*', 'reports.*', 'messages.*', 'calendar.*', 'settings.*', 'security.*', 'files.*', 'help.*'] },
+      { id: 'vendor', name: 'Vendedor / Store Manager', badge: 'bg-info', usersCount: 5, desc: 'Gestión de catálogo de productos, stock, despacho de órdenes, atención de mensajes y agenda.', permissions: ['dashboard.view', 'products.view', 'products.create', 'products.edit', 'products.kardex', 'products.suppliers', 'products.export', 'orders.view', 'orders.edit_status', 'orders.shipping', 'orders.export', 'messages.*', 'calendar.*', 'help.view'] },
+      { id: 'support', name: 'Soporte & Atención al Cliente', badge: 'bg-warning text-dark', usersCount: 8, desc: 'Atención de tickets PQRS, chat en directo con clientes, seguimiento de órdenes y moderación de reseñas.', permissions: ['dashboard.view', 'orders.view', 'users.view', 'users.reviews', 'messages.*', 'calendar.view', 'help.*'] },
+      { id: 'accountant', name: 'Contador / Facturación DIAN', badge: 'bg-success', usersCount: 3, desc: 'Descarga de reportes fiscales, facturación electrónica DIAN con CUFE, IVA del 19% y exportación contable.', permissions: ['dashboard.view', 'orders.view', 'orders.payments', 'orders.export', 'reports.*', 'help.view'] }
     ],
+
+    openPermissionsModal(user) {
+      this.selectedUserForPermissions = { ...user };
+      const currentPerms = getUserPermissions(user);
+      if (currentPerms.includes('*')) {
+        this.editingPermissions = getAllAvailablePermissionIds();
+      } else {
+        this.editingPermissions = [...currentPerms];
+      }
+      this.permissionsSearchQuery = '';
+      this.permissionsFilterModule = '';
+      const modalEl = document.getElementById('permissionsModal');
+      if (modalEl) {
+        this.permissionsModalInstance = Modal.getOrCreateInstance(modalEl);
+        this.permissionsModalInstance.show();
+      }
+    },
+
+    getUserPermissionsCount(user) {
+      const perms = getUserPermissions(user);
+      return perms.includes('*') ? this.totalSystemPermissions : perms.length;
+    },
+
+    getUserPermissionsPercentage(user) {
+      return Math.round((this.getUserPermissionsCount(user) / this.totalSystemPermissions) * 100);
+    },
+
+    isPermissionChecked(permId) {
+      return this.editingPermissions.includes('*') || this.editingPermissions.includes(permId);
+    },
+
+    togglePermission(permId) {
+      if (this.editingPermissions.includes('*')) {
+        this.editingPermissions = getAllAvailablePermissionIds();
+      }
+      const idx = this.editingPermissions.indexOf(permId);
+      if (idx > -1) {
+        this.editingPermissions.splice(idx, 1);
+      } else {
+        this.editingPermissions.push(permId);
+      }
+    },
+
+    isModuleAllChecked(moduleConfig) {
+      if (this.editingPermissions.includes('*')) return true;
+      if (!moduleConfig || !moduleConfig.actions) return false;
+      return moduleConfig.actions.every(act => this.editingPermissions.includes(act.id));
+    },
+
+    toggleEntireModule(moduleConfig) {
+      if (this.editingPermissions.includes('*')) {
+        this.editingPermissions = getAllAvailablePermissionIds();
+      }
+      const allChecked = this.isModuleAllChecked(moduleConfig);
+      const actionIds = moduleConfig.actions.map(a => a.id);
+      if (allChecked) {
+        this.editingPermissions = this.editingPermissions.filter(id => !actionIds.includes(id));
+      } else {
+        actionIds.forEach(id => {
+          if (!this.editingPermissions.includes(id)) {
+            this.editingPermissions.push(id);
+          }
+        });
+      }
+    },
+
+    grantAllPermissions() {
+      this.editingPermissions = getAllAvailablePermissionIds();
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Acceso Total Concedido',
+        text: 'Todos los módulos y acciones habilitados',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    },
+
+    revokeAllPermissions() {
+      this.editingPermissions = [];
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'info',
+        title: 'Permisos Revocados',
+        text: 'Se han desmarcado todos los módulos',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    },
+
+    resetToRoleDefault() {
+      if (!this.selectedUserForPermissions) return;
+      const role = this.selectedUserForPermissions.role || 'customer';
+      const defaults = ROLE_DEFAULT_PERMISSIONS[role] || [];
+      if (defaults.includes('*')) {
+        this.editingPermissions = getAllAvailablePermissionIds();
+      } else {
+        this.editingPermissions = [...defaults];
+      }
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: `Plantilla del Rol Aplicada`,
+        text: `Se cargaron los permisos por defecto para "${role}"`,
+        showConfirmButton: false,
+        timer: 1500
+      });
+    },
+
+    savePermissions() {
+      if (!this.selectedUserForPermissions) return;
+      
+      saveUserPermissions(this.selectedUserForPermissions.id, this.editingPermissions);
+      
+      const uIdx = this.users.findIndex(u => u.id === this.selectedUserForPermissions.id);
+      if (uIdx !== -1) {
+        this.users[uIdx].permissions = [...this.editingPermissions];
+      }
+      this.filterUsers();
+
+      if (this.permissionsModalInstance) {
+        this.permissionsModalInstance.hide();
+      }
+
+      Swal.fire({
+        icon: 'success',
+        title: '¡Permisos Guardados con Éxito!',
+        html: `Se han configurado <b>${this.editingPermissions.length} de ${this.totalSystemPermissions}</b> permisos para <b>${this.selectedUserForPermissions.name}</b>.`,
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#ff5722'
+      });
+    },
 
     // Product Customer Reviews in Cartagena
     reviewsList: [

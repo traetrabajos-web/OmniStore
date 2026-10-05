@@ -19,7 +19,7 @@ export default defineConfig({
     sourcemap: false,
     target: 'es2020',
     cssCodeSplit: true,
-    cssMinify: 'lightningcss',
+    cssMinify: false,
     minify: true,
     reportCompressedSize: false,
     chunkSizeWarningLimit: 600,
