@@ -20,7 +20,7 @@ export default defineConfig({
     target: 'es2020',
     cssCodeSplit: true,
     cssMinify: false,
-    minify: true,
+    minify: false,
     reportCompressedSize: false,
     chunkSizeWarningLimit: 600,
 
@@ -62,19 +62,6 @@ export default defineConfig({
       },
 
       output: {
-        // Manual chunk splitting for better caching
-        manualChunks(id) {
-          if (id.includes('node_modules/bootstrap/') || id.includes('node_modules/@popperjs/core/')) {
-            return 'vendor-bootstrap';
-          }
-          if (id.includes('node_modules/apexcharts/')) {
-            return 'vendor-charts';
-          }
-          if (id.includes('node_modules/alpinejs/') || id.includes('node_modules/sweetalert2/')) {
-            return 'vendor-ui';
-          }
-        },
-        // Asset naming for better caching
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]',
@@ -99,7 +86,7 @@ export default defineConfig({
     devSourcemap: true,
     preprocessorOptions: {
       scss: {
-        api: 'modern-compiler',
+        api: 'modern',
         silenceDeprecations: ['legacy-js-api', 'import', 'global-builtin', 'color-functions', 'if-function'],
       },
     },

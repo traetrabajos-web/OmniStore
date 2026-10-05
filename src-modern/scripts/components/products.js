@@ -420,6 +420,50 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    isUploadingImage: false,
+
+    uploadProductImage(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      this.processImageFile(file);
+    },
+
+    async processImageFile(file) {
+      if (!file.type.startsWith('image/')) {
+        Swal.fire('Formato Inválido', 'Por favor selecciona un archivo de imagen (PNG, JPG, WebP).', 'warning');
+        return;
+      }
+
+      this.isUploadingImage = true;
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64 = e.target.result;
+        this.productForm.image = base64; // Instant live preview
+
+        try {
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              file: base64,
+              filename: file.name,
+              mimeType: file.type
+            })
+          });
+          const data = await res.json();
+          if (data.success && data.url) {
+            this.productForm.image = data.url;
+            this.showNotification('Fotografía del producto subida exitosamente al servidor', 'success');
+          }
+        } catch (err) {
+          console.warn('Upload fallback to local base64:', err);
+        } finally {
+          this.isUploadingImage = false;
+        }
+      };
+      reader.readAsDataURL(file);
+    },
+
     // Modal Add / Edit Operations
     openCreateModal() {
       this.modalMode = 'create';
@@ -433,6 +477,7 @@ document.addEventListener('alpine:init', () => {
         stock: 25,
         status: 'published',
         description: '',
+        image: '',
         isFlashDeal: false,
         isBestSeller: false,
         hasFreeShipping: true,
@@ -455,6 +500,7 @@ document.addEventListener('alpine:init', () => {
         stock: product.stock !== undefined ? product.stock : 10,
         status: product.status || 'published',
         description: product.description || '',
+        image: product.image || '',
         isFlashDeal: Boolean(product.isFlashDeal),
         isBestSeller: Boolean(product.isBestSeller),
         hasFreeShipping: product.hasFreeShipping !== undefined ? Boolean(product.hasFreeShipping) : true,

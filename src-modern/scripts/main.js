@@ -102,6 +102,11 @@ class AdminApp {
       window.addEventListener('omnistore:permissions-updated', () => applySidebarPermissions());
       window.addEventListener('omnistore:auth-changed', () => applySidebarPermissions());
 
+      // Register PWA Service Worker for offline support & fast caching
+      if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+        navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+      }
+
       this.isInitialized = true;
 
       // Deliberately no "loaded successfully" toast here. Every one of the 21

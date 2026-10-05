@@ -1132,6 +1132,38 @@
                                                 <option value="pending">Pendiente de Revisión</option>
                                             </select>
                                         </div>
+                                        <!-- Product Image Upload & Preview -->
+                                        <div class="col-12">
+                                            <label class="form-label fw-medium">Fotografía del Producto</label>
+                                            <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3 border">
+                                                <div class="position-relative flex-shrink-0">
+                                                    <img :src="productForm.image || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80'" 
+                                                         class="rounded-3 border object-fit-cover shadow-sm bg-white" 
+                                                         width="72" 
+                                                         height="72"
+                                                         :alt="productForm.name || 'Preview'">
+                                                    <div class="position-absolute top-0 end-0 p-1" x-show="isUploadingImage">
+                                                        <span class="spinner-border spinner-border-sm text-primary"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex gap-2 mb-2 flex-wrap">
+                                                        <label class="btn btn-sm btn-outline-primary cursor-pointer mb-0">
+                                                            <i class="bi bi-cloud-arrow-up me-1"></i>Subir desde Mi Equipo
+                                                            <input type="file" class="d-none" accept="image/*" @change="uploadProductImage($event)">
+                                                        </label>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary" x-show="productForm.image" @click="productForm.image = ''">
+                                                            <i class="bi bi-x-circle me-1"></i>Limpiar
+                                                        </button>
+                                                    </div>
+                                                    <input type="url" 
+                                                           class="form-control form-control-sm" 
+                                                           placeholder="O pega una URL de imagen (https://...)" 
+                                                           x-model="productForm.image">
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="col-12">
                                             <label class="form-label fw-medium">Descripción del Producto</label>
                                             <textarea class="form-control" placeholder="Detalles, especificaciones y beneficios del producto..." x-model="productForm.description" rows="3"></textarea>
