@@ -321,6 +321,12 @@ document.addEventListener('alpine:init', () => {
       { id: 4, product: 'Sony PlayStation 5 Slim 1TB', rating: 5, author: 'Valeria Restrepo', city: 'Castillogrande, Cartagena', comment: 'Envío ultra rápido, empaque impecable con sello de garantía. Muy contenta con la compra en OmniStore.', date: '2026-09-28', status: 'Aprobada' }
     ],
 
+    systemAlerts: [
+      { id: 1, type: 'warning', title: 'Intentos de inicio de sesión fallidos', message: '2 intentos bloqueados por Rate Limiting', time: 'Hace 15 min' },
+      { id: 2, type: 'info', title: 'Sincronización PostgreSQL Activa', message: 'Conexión a Supabase estable (AWS us-east-1)', time: 'Hace 1 hora' },
+      { id: 3, type: 'success', title: 'Facturación Electrónica DIAN OK', message: 'Resolución 18764000001 vigente para 2026', time: 'Hoy' }
+    ],
+
     setTab(tab) {
       this.activeTab = tab;
       const url = new URL(window.location.href);
