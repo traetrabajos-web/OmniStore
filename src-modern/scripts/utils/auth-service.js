@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { getSupabaseClient } from './supabase.js';
 import { addUser, getUsersList, saveUsersList } from './store-data.js';
 import { canAccessPage, applySidebarPermissions, hasPermission, getUserPermissions, MODULES_PERMISSIONS_CONFIG } from './permissions-service.js';
+import { recordLoginEvent, syncCurrentSession } from './session-tracker.js';
 
 const SESSION_STORAGE_KEY = 'omnistore_user_session';
 
@@ -111,6 +112,7 @@ export async function loginUser(email, password, remember = true) {
           source: 'postgresql_db'
         };
         saveSession(userSession, remember);
+        recordLoginEvent(userSession, false).catch(() => {});
         return {
           success: true,
           user: userSession,
@@ -158,6 +160,7 @@ export async function loginUser(email, password, remember = true) {
 
           saveSession(userSession, remember);
           updateLastLogin(data.id);
+          recordLoginEvent(userSession, false).catch(() => {});
 
           return {
             success: true,
@@ -194,6 +197,7 @@ export async function loginUser(email, password, remember = true) {
     };
 
     saveSession(userSession, remember);
+    recordLoginEvent(userSession, false).catch(() => {});
     return {
       success: true,
       user: userSession,
@@ -272,6 +276,7 @@ export async function registerUser({ name, email, password, role = 'customer' })
       } catch {}
 
       saveSession(userSession, true);
+      recordLoginEvent(userSession, false).catch(() => {});
       return {
         success: true,
         user: userSession,
@@ -306,6 +311,7 @@ export async function registerUser({ name, email, password, role = 'customer' })
   } catch {}
 
   saveSession(userSession, true);
+  recordLoginEvent(userSession, false).catch(() => {});
   return {
     success: true,
     user: userSession,

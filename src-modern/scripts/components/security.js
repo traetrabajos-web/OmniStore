@@ -1,6 +1,14 @@
 import Alpine from 'alpinejs';
 import Swal from 'sweetalert2';
 import { createSearchComponent } from '../utils/search-component.js';
+import { getCurrentUser } from '../utils/auth-service.js';
+import {
+  getStoredSessions,
+  syncCurrentSession,
+  revokeSessionById,
+  revokeAllOtherSessions as revokeOthers,
+  getStoredAuditLogs
+} from '../utils/session-tracker.js';
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('securityComponent', () => ({
@@ -10,8 +18,8 @@ document.addEventListener('alpine:init', () => {
     sidebarVisible: false,
     
     // Security Overview Data
-    securityScore: 96,
-    lastSecurityAudit: '2026-02-15',
+    securityScore: 98,
+    lastSecurityAudit: '2026-03-01',
     activeThreats: 0,
     blockedAttempts: 47,
     
@@ -28,39 +36,8 @@ document.addEventListener('alpine:init', () => {
       requireUppercase: true
     },
     
-    // Session Management (Cartagena)
-    activeSessions: [
-      {
-        id: 1,
-        device: 'Computador Windows - Chrome',
-        deviceIcon: 'bi-laptop',
-        location: 'Bocagrande, Cartagena, Colombia',
-        ip: '181.129.45.12',
-        lastActive: 'Hace 2 minutos',
-        current: true,
-        isCurrent: true
-      },
-      {
-        id: 2,
-        device: 'iPhone 15 Pro - Safari',
-        deviceIcon: 'bi-phone',
-        location: 'Manga, Cartagena, Colombia',
-        ip: '190.27.88.34',
-        lastActive: 'Hace 1 hora',
-        current: false,
-        isCurrent: false
-      },
-      {
-        id: 3,
-        device: 'iPad Air - Safari',
-        deviceIcon: 'bi-tablet',
-        location: 'Crespo, Cartagena, Colombia',
-        ip: '186.154.21.90',
-        lastActive: 'Hace 2 días',
-        current: false,
-        isCurrent: false
-      }
-    ],
+    // Active Sessions (real-time synchronized)
+    activeSessions: [],
     
     // Access Control
     permissions: {
@@ -94,43 +71,57 @@ document.addEventListener('alpine:init', () => {
       { id: 'activity', name: 'Historial de Auditoría', icon: 'bi-activity' }
     ],
     
-    // Security activity for the log
-    securityActivity: [
-      {
-        id: 1,
-        type: 'login_success',
-        message: 'Inicio de sesión exitoso como SuperAdmin',
-        timestamp: '2026-02-28 14:30:00',
-        severity: 'info',
-        icon: 'bi-check-circle',
-        details: 'Chrome en Windows desde Bocagrande, Cartagena (Fibra Óptica)'
-      },
-      {
-        id: 2,
-        type: 'password_change',
-        message: 'Contraseña y token JWT actualizados',
-        timestamp: '2026-02-25 09:15:00',
-        severity: 'success',
-        icon: 'bi-shield-lock',
-        details: 'Sincronizado con Supabase PostgreSQL Auth'
-      },
-      {
-        id: 3,
-        type: 'failed_login',
-        message: 'Intento de acceso bloqueado por firewall',
-        timestamp: '2026-02-20 16:45:00',
-        severity: 'warning',
-        icon: 'bi-exclamation-triangle',
-        details: 'IP desconocida bloqueada tras 3 intentos'
-      }
-    ],
+    // Security activity audit log
+    securityActivity: [],
 
-    init() {
-      // Initialize security state
+    async init() {
+      // Check query parameter tab (e.g. ?tab=sessions)
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab');
+      if (tabParam && this.sections.some(s => s.id === tabParam)) {
+        this.activeSection = tabParam;
+      }
+
+      // Load initial stored sessions and audit logs
+      this.activeSessions = getStoredSessions();
+      this.securityActivity = getStoredAuditLogs();
+
+      // Retrieve current user and sync session with real-time client hardware & geolocation
+      const currentUser = getCurrentUser();
+      if (currentUser) {
+        if (currentUser.email) {
+          this.securityData.recoveryEmail = currentUser.email;
+        }
+        try {
+          const synced = await syncCurrentSession(currentUser);
+          if (synced && synced.length > 0) {
+            this.activeSessions = synced;
+          }
+        } catch (e) {
+          console.warn('Real-time session sync warning:', e);
+        }
+      }
+
+      // Listen for session and audit events in real time
+      window.addEventListener('omnistore:sessions-updated', (e) => {
+        if (e.detail) {
+          this.activeSessions = e.detail;
+        }
+      });
+
+      window.addEventListener('omnistore:audit-logs-updated', (e) => {
+        if (e.detail) {
+          this.securityActivity = e.detail;
+        }
+      });
     },
 
     setActiveSection(sectionId) {
       this.activeSection = sectionId;
+      // Update URL without reloading
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', sectionId);
+      window.history.replaceState({}, '', url);
     },
 
     changePassword() {
@@ -183,16 +174,23 @@ document.addEventListener('alpine:init', () => {
 
     revokeSession(session) {
       Swal.fire({
-        title: '¿Cerrar sesión?',
-        text: `¿Cerrar sesión remota en ${session.device}?`,
+        title: '¿Cerrar sesión remota?',
+        text: `¿Deseas desconectar la sesión activa en ${session.device}?`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Sí, cerrar sesión',
-        cancelButtonText: 'Cancelar'
+        confirmButtonText: 'Sí, desconectar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#d33'
       }).then((result) => {
         if (result.isConfirmed) {
-          this.activeSessions = this.activeSessions.filter(s => s.id !== session.id);
-          Swal.fire('Sesión cerrada', 'El dispositivo ha sido desconectado.', 'success');
+          this.activeSessions = revokeSessionById(session.id);
+          Swal.fire({
+            icon: 'success',
+            title: 'Sesión Desconectada',
+            text: `El dispositivo ${session.device} ha sido revocado correctamente.`,
+            timer: 2000,
+            showConfirmButton: false
+          });
         }
       });
     },
@@ -200,27 +198,44 @@ document.addEventListener('alpine:init', () => {
     revokeAllOtherSessions() {
       Swal.fire({
         title: '¿Cerrar todas las demás sesiones?',
-        text: 'Se cerrará la sesión en todos los demás teléfonos y computadores.',
+        text: 'Se cerrará la sesión en todos los demás dispositivos, teléfonos y computadores.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Cerrar otras sesiones',
-        cancelButtonText: 'Cancelar'
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#d33'
       }).then((result) => {
         if (result.isConfirmed) {
-          this.activeSessions = this.activeSessions.filter(s => s.isCurrent || s.current);
-          Swal.fire('Completado', 'Solo tu sesión actual permanece activa.', 'success');
+          this.activeSessions = revokeOthers();
+          Swal.fire({
+            icon: 'success',
+            title: 'Completado',
+            text: 'Solo tu sesión actual permanece activa y protegida.',
+            timer: 2500,
+            showConfirmButton: false
+          });
         }
       });
     },
 
+    loadMoreActivity() {
+      Swal.fire({
+        icon: 'info',
+        title: 'Historial de Auditoría Completo',
+        text: 'Todos los eventos de seguridad y conexiones recientes están cargados en pantalla.',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    },
+
     viewSecurityLog() {
-      this.activeSection = 'activity';
+      this.setActiveSection('activity');
     },
 
     emergencyLockdown() {
       Swal.fire({
         title: 'Bloqueo de Emergencia',
-        text: '¿Deseas bloquear el acceso a la tienda y congelar transacciones sospechosas?',
+        text: '¿Deseas activar el escudo de protección y revocar todas las sesiones sospechosas?',
         icon: 'error',
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -228,7 +243,12 @@ document.addEventListener('alpine:init', () => {
         cancelButtonText: 'Cancelar'
       }).then((result) => {
         if (result.isConfirmed) {
-          Swal.fire('Bloqueo Activado', 'El sistema ha restringido accesos temporales.', 'warning');
+          this.activeSessions = revokeOthers();
+          Swal.fire({
+            title: 'Bloqueo de Seguridad Activado',
+            text: 'El sistema ha restringido accesos temporales y finalizado sesiones remotas.',
+            icon: 'success'
+          });
         }
       });
     }

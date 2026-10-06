@@ -24,8 +24,9 @@ import { iconManager } from './utils/icon-manager.js';
 import Alpine from 'alpinejs';
 import './components/supabase-modal.js';
 import './components/pos.js';
-import { initUserHeaderDropdown, enforceAuthAndRoles } from './utils/auth-service.js';
+import { initUserHeaderDropdown, enforceAuthAndRoles, getCurrentUser } from './utils/auth-service.js';
 import { applySidebarPermissions, hasPermission } from './utils/permissions-service.js';
+import { initTopBarNotifications, syncCurrentSession } from './utils/session-tracker.js';
 
 // Immediately enforce authentication and role access before any execution
 enforceAuthAndRoles();
@@ -97,6 +98,15 @@ class AdminApp {
 
       // Initialize authenticated user profile dropdown & logout listeners
       initUserHeaderDropdown();
+
+      // Initialize dynamic topbar security and login notifications
+      initTopBarNotifications();
+
+      // Synchronize real-time client session details (device, geolocation & public IP)
+      const currentUser = getCurrentUser();
+      if (currentUser) {
+        syncCurrentSession(currentUser).catch(() => {});
+      }
 
       // Apply granular permissions to navigation and sidebar
       applySidebarPermissions();
