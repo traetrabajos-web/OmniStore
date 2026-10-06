@@ -1,7 +1,7 @@
 import Alpine from 'alpinejs';
 import Swal from 'sweetalert2';
 import ApexCharts from '../utils/apex.js';
-import { categorical, STATUS } from '../utils/chart-palette.js';
+import { categorical, STATUS, axisInk, gridLine } from '../utils/chart-palette.js';
 import { createSearchComponent } from '../utils/search-component.js';
 import {
   getOrdersList,
@@ -17,6 +17,10 @@ import {
   createStoreOrder,
   getProductsCatalog
 } from '../utils/store-data.js';
+
+function isDarkMode() {
+  return document.documentElement.getAttribute('data-bs-theme') === 'dark';
+}
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('orderTable', () => ({
@@ -118,6 +122,13 @@ document.addEventListener('alpine:init', () => {
         if (e.detail && Array.isArray(e.detail)) {
           this.shippingList = e.detail;
         }
+      });
+
+      window.addEventListener('omnistore:theme-change', () => {
+        this.destroyCharts();
+        setTimeout(() => {
+          this.initCharts();
+        }, 50);
       });
       
       // Delay chart initialization to ensure DOM is fully ready
@@ -729,6 +740,20 @@ document.addEventListener('alpine:init', () => {
 
     charts: {},
 
+    destroyCharts() {
+      Object.keys(this.charts).forEach(key => {
+        if (this.charts[key]) {
+          try {
+            this.charts[key].destroy();
+          } catch (e) {
+            // ignore
+          }
+          this.charts[key] = null;
+        }
+      });
+      this.chartsInitialized = false;
+    },
+
     initCharts() {
       if (this.chartsInitialized) return;
 
@@ -781,6 +806,7 @@ document.addEventListener('alpine:init', () => {
       }
 
       chartElement.innerHTML = '';
+      const isDark = isDarkMode();
 
       try {
         const trendsData = {
@@ -795,45 +821,66 @@ document.addEventListener('alpine:init', () => {
             type: 'area',
             height: 300,
             width: '100%',
-            toolbar: { show: false }
+            toolbar: { show: false },
+            background: 'transparent',
+            fontFamily: 'inherit'
+          },
+          theme: {
+            mode: isDark ? 'dark' : 'light'
           },
           colors: categorical(2),
           fill: {
             type: 'gradient',
             gradient: {
               shadeIntensity: 1,
-              opacityFrom: 0.7,
-              opacityTo: 0.2,
+              opacityFrom: isDark ? 0.45 : 0.7,
+              opacityTo: 0.1,
             }
           },
           stroke: {
             curve: 'smooth',
             width: 2.5
           },
+          grid: {
+            borderColor: gridLine(),
+            strokeDashArray: 4
+          },
           xaxis: {
-            categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+            categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+            labels: {
+              style: { colors: axisInk(), fontSize: '12px' }
+            },
+            axisBorder: { color: gridLine() },
+            axisTicks: { color: gridLine() }
           },
           yaxis: [{
             title: {
-              text: 'Pedidos Realizados'
+              text: 'Pedidos Realizados',
+              style: { color: axisInk(), fontWeight: 500 }
+            },
+            labels: {
+              style: { colors: axisInk(), fontSize: '12px' }
             }
           }, {
             opposite: true,
             title: {
-              text: 'Ingresos ($ COP)'
+              text: 'Ingresos ($ COP)',
+              style: { color: axisInk(), fontWeight: 500 }
             },
             labels: {
+              style: { colors: axisInk(), fontSize: '12px' },
               formatter: (val) => '$ ' + Number(val).toLocaleString('es-CO')
             }
           }],
           tooltip: {
+            theme: isDark ? 'dark' : 'light',
             y: [{
               formatter: function (val) {
-                return val + " pedidos"
+                return val + " pedidos";
               }
             }, {
               formatter: function (val) {
-                return "$ " + Number(val).toLocaleString('es-CO') + " COP"
+                return "$ " + Number(val).toLocaleString('es-CO') + " COP";
               }
             }]
           }
@@ -864,6 +911,7 @@ document.addEventListener('alpine:init', () => {
       }
 
       chartElement.innerHTML = '';
+      const isDark = isDarkMode();
 
       try {
         const chartData = {
@@ -871,7 +919,12 @@ document.addEventListener('alpine:init', () => {
           chart: {
             type: 'donut',
             height: 200,
-            width: '100%'
+            width: '100%',
+            background: 'transparent',
+            fontFamily: 'inherit'
+          },
+          theme: {
+            mode: isDark ? 'dark' : 'light'
           },
           labels: this.statusStats.map(stat => stat.name),
           colors: this.statusStats.map(stat => stat.color),
@@ -886,9 +939,10 @@ document.addEventListener('alpine:init', () => {
             show: false
           },
           tooltip: {
+            theme: isDark ? 'dark' : 'light',
             y: {
               formatter: function (val) {
-                return val + " pedidos"
+                return val + " pedidos";
               }
             }
           }
@@ -896,6 +950,7 @@ document.addEventListener('alpine:init', () => {
 
         const chart = new ApexCharts(chartElement, chartData);
         chart.render();
+        this.charts.status = chart;
       } catch (error) {
         console.error('Error rendering status chart:', error);
       }

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
@@ -42,7 +42,7 @@
             
             <!-- Header -->
             <header class="admin-header">
-                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+                <nav class="navbar navbar-expand-lg bg-body border-bottom">
                     <div class="container-fluid">
                         <!-- Logo/Brand -->
                         <a class="navbar-brand d-flex align-items-center" href="./index.html">
@@ -75,13 +75,13 @@
                                      x-transition:enter="transition ease-out duration-100"
                                      x-transition:enter-start="opacity-0 scale-95"
                                      x-transition:enter-end="opacity-100 scale-100"
-                                     class="position-absolute top-100 start-0 w-100 bg-white border rounded-2 shadow-lg mt-1 z-3">
+                                     class="position-absolute top-100 start-0 w-100 bg-body border border-secondary-subtle rounded-2 shadow-lg mt-1 z-3">
                                     <template x-for="result in results" :key="result.title">
-                                        <a :href="result.url" class="d-block px-3 py-2 text-decoration-none text-dark border-bottom">
+                                        <a :href="result.url" class="d-block px-3 py-2 text-decoration-none text-body border-bottom border-secondary-subtle">
                                             <div class="d-flex align-items-center">
-                                                <i class="bi bi-file-text me-2 text-muted"></i>
+                                                <i class="bi bi-file-text me-2 text-body-secondary"></i>
                                                 <span x-text="result.title"></span>
-                                                <small class="ms-auto text-muted" x-text="result.type"></small>
+                                                <small class="ms-auto text-body-secondary" x-text="result.type"></small>
                                             </div>
                                         </a>
                                     </template>
@@ -510,10 +510,10 @@
                         <!-- TAB 1: REPORTES DE VENTAS -->
                         <div x-show="activeTab === 'reports'">
                         <!-- Report Filters -->
-                        <div class="report-filter mb-4 p-3 bg-light rounded-3 border">
+                        <div class="report-filter mb-4 p-3 bg-body-tertiary rounded-3 border border-secondary-subtle">
                             <div class="row g-3 align-items-end">
                                 <div class="col-md-3">
-                                    <label class="form-label fw-medium small">Rango de Fecha</label>
+                                    <label class="form-label fw-medium small text-body">Rango de Fecha</label>
                                     <select class="form-select form-select-sm" x-model="dateRange" @change="updateDateRange()">
                                         <option value="7d">Últimos 7 días</option>
                                         <option value="30d">Últimos 30 días</option>
@@ -523,7 +523,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label fw-medium small">Tipo de Reporte</label>
+                                    <label class="form-label fw-medium small text-body">Tipo de Reporte</label>
                                     <select class="form-select form-select-sm" x-model="reportType" @change="updateReportType()">
                                         <option value="overview">Resumen Ejecutivo General</option>
                                         <option value="sales">Ventas & Pedidos PSE/Nequi</option>
@@ -533,7 +533,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label fw-medium small">Formato de Exportación</label>
+                                    <label class="form-label fw-medium small text-body">Formato de Exportación</label>
                                     <select class="form-select form-select-sm" x-model="exportFormat">
                                         <option value="pdf">Documento PDF (.pdf)</option>
                                         <option value="excel">Hoja de Cálculo Excel (.xlsx)</option>
@@ -728,11 +728,11 @@
                                             <template x-for="report in recentReports" :key="report.id">
                                                 <tr>
                                                     <td>
-                                                        <div class="fw-medium text-dark" x-text="report.name"></div>
+                                                        <div class="fw-medium text-body" x-text="report.name"></div>
                                                         <small class="text-muted font-monospace" x-text="`ID: ${report.id}`"></small>
                                                     </td>
                                                     <td>
-                                                        <span class="badge bg-light text-dark border" x-text="report.type"></span>
+                                                        <span class="badge bg-body-secondary text-body border border-secondary-subtle" x-text="report.type"></span>
                                                     </td>
                                                     <td class="small text-muted" x-text="report.dateRange"></td>
                                                     <td class="small" x-text="report.generated"></td>
@@ -786,7 +786,7 @@
                                     <div class="card h-100 border-start border-success border-4 shadow-sm">
                                         <div class="card-body p-3">
                                             <div class="text-muted small text-uppercase fw-bold">Total Facturado (Mes)</div>
-                                            <div class="fs-5 fw-bold text-dark mt-1" x-text="`$ ${dianKpis.totalInvoiced.toLocaleString('es-CO')} COP`"></div>
+                                            <div class="fs-5 fw-bold text-body mt-1" x-text="`$ ${dianKpis.totalInvoiced.toLocaleString('es-CO')} COP`"></div>
                                             <small class="text-success"><i class="bi bi-shield-check me-1"></i>Válido tributariamente</small>
                                         </div>
                                     </div>
@@ -804,7 +804,7 @@
                                     <div class="card h-100 border-start border-info border-4 shadow-sm">
                                         <div class="card-body p-3">
                                             <div class="text-muted small text-uppercase fw-bold">Facturas Emitidas</div>
-                                            <div class="fs-5 fw-bold text-dark mt-1" x-text="`${dianKpis.invoicesCount} doc. electrónicos`"></div>
+                                            <div class="fs-5 fw-bold text-body mt-1" x-text="`${dianKpis.invoicesCount} doc. electrónicos`"></div>
                                             <small class="text-muted">Resolución DIAN No. 18764</small>
                                         </div>
                                     </div>
@@ -813,7 +813,7 @@
                                     <div class="card h-100 border-start border-warning border-4 shadow-sm">
                                         <div class="card-body p-3">
                                             <div class="text-muted small text-uppercase fw-bold">Tasa Aprobación DIAN</div>
-                                            <div class="fs-5 fw-bold text-dark mt-1" x-text="`${dianKpis.dianApprovalRate}%`"></div>
+                                            <div class="fs-5 fw-bold text-body mt-1" x-text="`${dianKpis.dianApprovalRate}%`"></div>
                                             <small class="text-success"><i class="bi bi-check-all me-1"></i>Sin rechazos normativos</small>
                                         </div>
                                     </div>
@@ -826,7 +826,7 @@
                                     <div class="row g-3 align-items-center">
                                         <div class="col-md-4">
                                             <div class="input-group">
-                                                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                                                <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-search"></i></span>
                                                 <input type="text" class="form-control" placeholder="Buscar por No. Factura, CUFE, NIT o Cliente..." x-model="invoiceSearch">
                                             </div>
                                         </div>
@@ -852,10 +852,10 @@
 
                             <!-- DIAN Invoices Table -->
                             <div class="card shadow-sm">
-                                <div class="card-header bg-white py-3">
+                                <div class="card-header bg-body border-secondary-subtle py-3">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <h5 class="card-title mb-0">Documentos Electrónicos DIAN (UBL 2.1)</h5>
-                                        <span class="badge bg-primary-subtle text-primary border" x-text="`${filteredInvoices.length} facturas registradas`"></span>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle" x-text="`${filteredInvoices.length} facturas registradas`"></span>
                                     </div>
                                 </div>
                                 <div class="card-body p-0">
@@ -882,7 +882,7 @@
                                                             <small class="text-muted" x-text="inv.orderId"></small>
                                                         </td>
                                                         <td>
-                                                            <div class="fw-medium text-dark" x-text="inv.customerName"></div>
+                                                            <div class="fw-medium text-body" x-text="inv.customerName"></div>
                                                             <small class="text-muted" x-text="`${inv.customerDoc} • ${inv.customerCity}`"></small>
                                                         </td>
                                                         <td class="small text-muted" x-text="inv.issuedAt"></td>
@@ -890,7 +890,7 @@
                                                         <td class="font-monospace small text-primary" x-text="`$ ${inv.iva.toLocaleString('es-CO')}`"></td>
                                                         <td class="font-monospace fw-bold text-success" x-text="`$ ${inv.total.toLocaleString('es-CO')}`"></td>
                                                         <td>
-                                                            <span class="badge bg-light text-dark border small" x-text="inv.paymentMethod"></span>
+                                                            <span class="badge bg-body-secondary text-body border border-secondary-subtle small" x-text="inv.paymentMethod"></span>
                                                         </td>
                                                         <td>
                                                             <span class="badge" 

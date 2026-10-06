@@ -2,6 +2,7 @@ import Alpine from 'alpinejs';
 import Swal from 'sweetalert2';
 import { Modal } from 'bootstrap';
 import ApexCharts from '../utils/apex.js';
+import { categorical, accent, axisInk, gridLine, surfacePanel } from '../utils/chart-palette.js';
 import { createSearchComponent } from '../utils/search-component.js';
 import {
   getProductsCatalog,
@@ -14,6 +15,10 @@ import {
   getSuppliersList,
   saveSuppliersList
 } from '../utils/store-data.js';
+
+function isDarkMode() {
+  return document.documentElement.getAttribute('data-bs-theme') === 'dark';
+}
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('productTable', () => ({
@@ -174,6 +179,13 @@ document.addEventListener('alpine:init', () => {
         if (e.detail && Array.isArray(e.detail)) {
           this.kardexMovements = e.detail;
         }
+      });
+
+      window.addEventListener('omnistore:theme-change', () => {
+        this.destroyCharts();
+        setTimeout(() => {
+          this.initCharts();
+        }, 50);
       });
 
       // Setup bootstrap modal instance
@@ -650,16 +662,32 @@ document.addEventListener('alpine:init', () => {
       });
     },
 
+    destroyCharts() {
+      Object.keys(this.charts).forEach(key => {
+        if (this.charts[key]) {
+          try {
+            this.charts[key].destroy();
+          } catch (e) {
+            // ignore
+          }
+          this.charts[key] = null;
+        }
+      });
+      this.chartsInitialized = false;
+    },
+
     // Chart Initializations
     initCharts() {
       this.initSalesChart();
       this.initCategoryChart();
+      this.chartsInitialized = true;
     },
 
     initSalesChart() {
       const salesChart = document.getElementById('salesChart');
       if (!salesChart) return;
       salesChart.innerHTML = '';
+      const isDark = isDarkMode();
 
       try {
         const salesData = {
@@ -671,14 +699,19 @@ document.addEventListener('alpine:init', () => {
             type: 'area',
             height: 250,
             width: '100%',
-            toolbar: { show: false }
+            toolbar: { show: false },
+            background: 'transparent',
+            fontFamily: 'inherit'
           },
-          colors: ['#ff5722'],
+          theme: {
+            mode: isDark ? 'dark' : 'light'
+          },
+          colors: [accent()],
           fill: {
             type: 'gradient',
             gradient: {
               shadeIntensity: 1,
-              opacityFrom: 0.6,
+              opacityFrom: isDark ? 0.45 : 0.6,
               opacityTo: 0.1
             }
           },
@@ -686,13 +719,26 @@ document.addEventListener('alpine:init', () => {
             curve: 'smooth',
             width: 2.5
           },
+          grid: {
+            borderColor: gridLine(),
+            strokeDashArray: 4
+          },
           xaxis: {
-            categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+            categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+            labels: {
+              style: { colors: axisInk(), fontSize: '12px' }
+            },
+            axisBorder: { color: gridLine() },
+            axisTicks: { color: gridLine() }
           },
           yaxis: {
             labels: {
+              style: { colors: axisInk(), fontSize: '12px' },
               formatter: (val) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', notation: 'compact', maximumFractionDigits: 1 }).format(val)
             }
+          },
+          tooltip: {
+            theme: isDark ? 'dark' : 'light'
           }
         };
 
@@ -708,6 +754,7 @@ document.addEventListener('alpine:init', () => {
       const categoryChart = document.getElementById('categoryChart');
       if (!categoryChart) return;
       categoryChart.innerHTML = '';
+      const isDark = isDarkMode();
 
       try {
         const chartData = {
@@ -715,10 +762,15 @@ document.addEventListener('alpine:init', () => {
           chart: {
             type: 'donut',
             height: 220,
-            width: '100%'
+            width: '100%',
+            background: 'transparent',
+            fontFamily: 'inherit'
+          },
+          theme: {
+            mode: isDark ? 'dark' : 'light'
           },
           labels: this.categoryStats.length > 0 ? this.categoryStats.map(cat => cat.name) : ['Tech', 'Hogar', 'Gamer', 'Moda'],
-          colors: this.categoryStats.length > 0 ? this.categoryStats.map(cat => cat.color) : ['#2563eb', '#10b981', '#e11d48', '#f59e0b'],
+          colors: this.categoryStats.length > 0 ? this.categoryStats.map(cat => cat.color) : categorical(4),
           plotOptions: {
             pie: {
               donut: {
@@ -728,7 +780,13 @@ document.addEventListener('alpine:init', () => {
           },
           legend: {
             position: 'bottom',
-            fontSize: '11px'
+            fontSize: '11px',
+            labels: {
+              colors: axisInk()
+            }
+          },
+          tooltip: {
+            theme: isDark ? 'dark' : 'light'
           }
         };
 

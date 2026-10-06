@@ -144,4 +144,164 @@
       }
     }
   }
+
+  // Form controls & input groups
+  .form-control, .form-select {
+    background-color: var(--surface-app);
+    color: var(--ink-primary);
+    border-color: var(--bs-border-color);
+
+    &:focus {
+      background-color: var(--surface-app);
+      color: var(--ink-primary);
+      border-color: var(--bs-primary);
+      box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.15);
+    }
+
+    &::placeholder {
+      color: var(--ink-muted);
+    }
+
+    &:disabled, &[readonly] {
+      background-color: var(--surface-sunken);
+      color: var(--ink-secondary);
+    }
+  }
+
+  .input-group-text {
+    background-color: var(--surface-sunken);
+    color: var(--ink-secondary);
+    border-color: var(--bs-border-color);
+  }
+
+  // Dropdowns & menus
+  .dropdown-menu {
+    background-color: var(--surface-panel);
+    border-color: var(--bs-border-color);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+
+    .dropdown-header {
+      color: var(--ink-muted);
+    }
+
+    .dropdown-item {
+      color: var(--ink-primary);
+
+      &:hover, &:focus {
+        background-color: var(--surface-sunken);
+        color: var(--bs-primary);
+      }
+
+      &.active, &:active {
+        background-color: var(--bs-primary);
+        color: #fff;
+      }
+    }
+
+    .dropdown-divider {
+      border-top-color: var(--bs-border-color);
+    }
+  }
+
+  // Modals
+  .modal-content {
+    background-color: var(--surface-panel);
+    border-color: var(--bs-border-color);
+    color: var(--ink-primary);
+  }
+
+  .modal-header {
+    border-bottom-color: var(--bs-border-color);
+    background-color: var(--surface-panel);
+  }
+
+  .modal-footer {
+    border-top-color: var(--bs-border-color);
+    background-color: var(--surface-sunken);
+  }
+
+  // Common background utilities safety in dark mode
+  .bg-light,
+  .bg-body-tertiary {
+    background-color: var(--surface-sunken) !important;
+  }
+
+  .bg-body-secondary {
+    background-color: var(--surface-sunken) !important;
+  }
+
+  .bg-body {
+    background-color: var(--surface-panel) !important;
+  }
+
+  // Badges
+  .badge.bg-light {
+    background-color: var(--surface-sunken) !important;
+    color: var(--ink-primary) !important;
+    border-color: var(--bs-border-color) !important;
+  }
+
+  .badge.bg-body-secondary {
+    background-color: var(--surface-sunken) !important;
+    color: var(--ink-primary) !important;
+  }
+
+  // Reports and Security specific containers
+  .report-filter {
+    background: var(--surface-panel) !important;
+    border-color: var(--bs-border-color) !important;
+  }
+
+  .security-nav,
+  .settings-nav {
+    background: var(--surface-panel) !important;
+    border-color: var(--bs-border-color) !important;
+  }
+
+  .security-section,
+  .settings-section {
+    background: var(--surface-panel) !important;
+    border-color: var(--bs-border-color) !important;
+  }
+
+  .session-item {
+    background: var(--surface-sunken) !important;
+    border-color: var(--bs-border-color) !important;
+  }
+
+  // Nav pills & tabs
+  .nav-tabs {
+    border-bottom-color: var(--bs-border-color);
+
+    .nav-link {
+      color: var(--ink-secondary);
+
+      &:hover, &:focus {
+        border-color: var(--bs-border-color);
+        color: var(--ink-primary);
+      }
+
+      &.active {
+        background-color: var(--surface-panel);
+        border-color: var(--bs-border-color) var(--bs-border-color) var(--surface-panel);
+        color: var(--bs-primary);
+      }
+    }
+  }
+
+  .nav-pills {
+    .nav-link {
+      color: var(--ink-secondary);
+
+      &:hover {
+        background-color: var(--surface-sunken);
+        color: var(--ink-primary);
+      }
+
+      &.active {
+        background-color: var(--bs-primary);
+        color: #ffffff;
+      }
+    }
+  }
 }

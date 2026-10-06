@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" data-bs-theme="light">
 <head>
     <!-- Meta Tags -->
@@ -62,7 +62,7 @@
 
         <!-- Header -->
         <header class="admin-header">
-            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+            <nav class="navbar navbar-expand-lg bg-body border-bottom">
                 <div class="container-fluid">
                     <!-- Logo/Brand with OmniStore Gradient Tech Theme -->
                     <a class="navbar-brand d-flex align-items-center" href="./index.html">
@@ -95,13 +95,13 @@
                                  x-transition:enter="transition ease-out duration-100"
                                  x-transition:enter-start="opacity-0 scale-95"
                                  x-transition:enter-end="opacity-100 scale-100"
-                                 class="position-absolute top-100 start-0 w-100 bg-white border rounded-2 shadow-lg mt-1 z-3">
+                                 class="position-absolute top-100 start-0 w-100 bg-body border border-secondary-subtle rounded-2 shadow-lg mt-1 z-3">
                                 <template x-for="result in results" :key="result.title">
-                                    <a :href="result.url" class="d-block px-3 py-2 text-decoration-none text-dark border-bottom">
+                                    <a :href="result.url" class="d-block px-3 py-2 text-decoration-none text-body border-bottom border-secondary-subtle">
                                         <div class="d-flex align-items-center">
-                                            <i class="bi bi-file-text me-2 text-muted"></i>
+                                            <i class="bi bi-file-text me-2 text-body-secondary"></i>
                                             <span x-text="result.title"></span>
-                                            <small class="ms-auto text-muted" x-text="result.type"></small>
+                                            <small class="ms-auto text-body-secondary" x-text="result.type"></small>
                                         </div>
                                     </a>
                                 </template>

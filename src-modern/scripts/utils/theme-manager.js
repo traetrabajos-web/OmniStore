@@ -35,6 +35,8 @@ export class ThemeManager {
     localStorage.setItem('theme', theme);
     this.currentTheme = theme;
     this.updateThemeIcons();
+    window.dispatchEvent(new CustomEvent('omnistore:theme-change', { detail: { theme } }));
+    window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme } }));
   }
 
   toggleTheme() {

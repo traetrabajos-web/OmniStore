@@ -1,7 +1,7 @@
 import Alpine from 'alpinejs';
 import Swal from 'sweetalert2';
 import ApexCharts from '../utils/apex.js';
-import { categorical, accent, trackFill, surfacePanel } from '../utils/chart-palette.js';
+import { categorical, accent, trackFill, surfacePanel, axisInk, gridLine } from '../utils/chart-palette.js';
 import { createSearchComponent } from '../utils/search-component.js';
 import {
   getOrdersList,
@@ -10,6 +10,10 @@ import {
   getProductsCatalog,
   getUsersList
 } from '../utils/store-data.js';
+
+function isDarkMode() {
+  return document.documentElement.getAttribute('data-bs-theme') === 'dark';
+}
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('reportsComponent', () => ({
@@ -28,6 +32,12 @@ document.addEventListener('alpine:init', () => {
     invoiceSearch: '',
     invoiceFilterStatus: 'all',
     chartsInitialized: false,
+    charts: {
+      revenueTrends: null,
+      topProducts: null,
+      customerAcquisition: null,
+      regionSales: null
+    },
 
     // KPI Data in COP
     kpis: {
@@ -77,6 +87,13 @@ document.addEventListener('alpine:init', () => {
 
       window.addEventListener('omnistore:invoices-updated', () => {
         this.loadStoreData();
+      });
+
+      window.addEventListener('omnistore:theme-change', () => {
+        this.destroyCharts();
+        setTimeout(() => {
+          this.initCharts();
+        }, 50);
       });
       
       // Delay chart initialization to ensure DOM is fully ready
@@ -473,20 +490,107 @@ DOCUMENTO VALIDADO POR LA DIAN - CÓDIGO QR / FIRMA DIGITAL
       this.showNotification('Reporte eliminado del historial', 'info');
     },
 
+    destroyCharts() {
+      Object.keys(this.charts).forEach(key => {
+        if (this.charts[key]) {
+          try {
+            this.charts[key].destroy();
+          } catch (e) {
+            // ignore
+          }
+          this.charts[key] = null;
+        }
+      });
+      this.chartsInitialized = false;
+    },
+
     initCharts() {
-      if (this.chartsInitialized) return;
+      this.initRevenueTrendsChart();
       this.initTopProductsChart();
       this.initCustomerAcquisitionChart();
       this.initRegionSalesChart();
       this.chartsInitialized = true;
     },
 
+    initRevenueTrendsChart() {
+      const chartElement = document.getElementById('revenueTrendsChart');
+      if (!chartElement) return;
+      chartElement.innerHTML = '';
+
+      const isDark = isDarkMode();
+      const chartData = {
+        series: [{
+          name: 'Ingresos Totales COP',
+          data: [18500000, 24200000, 21800000, 29400000, 34100000, 31200000, 42500000]
+        }],
+        chart: {
+          type: 'area',
+          height: 320,
+          toolbar: { show: false },
+          background: 'transparent',
+          fontFamily: 'inherit'
+        },
+        theme: {
+          mode: isDark ? 'dark' : 'light'
+        },
+        colors: [accent()],
+        stroke: {
+          curve: 'smooth',
+          width: 3
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shadeIntensity: 1,
+            opacityFrom: isDark ? 0.45 : 0.6,
+            opacityTo: 0.05,
+            stops: [0, 95, 100]
+          }
+        },
+        dataLabels: { enabled: false },
+        grid: {
+          borderColor: gridLine(),
+          strokeDashArray: 4,
+          xaxis: { lines: { show: false } },
+          yaxis: { lines: { show: true } }
+        },
+        xaxis: {
+          categories: ['1 Feb', '5 Feb', '10 Feb', '15 Feb', '20 Feb', '25 Feb', 'Hoy'],
+          labels: {
+            style: { colors: axisInk(), fontSize: '12px' }
+          },
+          axisBorder: { color: gridLine() },
+          axisTicks: { color: gridLine() }
+        },
+        yaxis: {
+          labels: {
+            style: { colors: axisInk(), fontSize: '12px' },
+            formatter: (val) => '$ ' + (val / 1000000).toFixed(0) + 'M'
+          }
+        },
+        tooltip: {
+          theme: isDark ? 'dark' : 'light',
+          y: {
+            formatter: (val) => '$ ' + Number(val).toLocaleString('es-CO') + ' COP'
+          }
+        }
+      };
+
+      try {
+        const chart = new ApexCharts(chartElement, chartData);
+        chart.render();
+        this.charts.revenueTrends = chart;
+      } catch (err) {
+        console.error('Error rendering revenue trends chart:', err);
+      }
+    },
+
     initTopProductsChart() {
       const chartElement = document.getElementById('topProductsChart');
       if (!chartElement) return;
-
       chartElement.innerHTML = '';
 
+      const isDark = isDarkMode();
       try {
         const chartData = {
           series: [{
@@ -495,32 +599,50 @@ DOCUMENTO VALIDADO POR LA DIAN - CÓDIGO QR / FIRMA DIGITAL
           }],
           chart: {
             type: 'bar',
-            height: 250,
-            width: '100%',
-            toolbar: { show: false }
+            height: 220,
+            toolbar: { show: false },
+            background: 'transparent',
+            fontFamily: 'inherit'
+          },
+          theme: {
+            mode: isDark ? 'dark' : 'light'
           },
           colors: [accent()],
           plotOptions: {
             bar: {
               borderRadius: 4,
               horizontal: true,
+              barHeight: '60%'
             }
+          },
+          grid: {
+            borderColor: gridLine(),
+            strokeDashArray: 4
           },
           dataLabels: {
             enabled: false
           },
           xaxis: {
-            categories: this.topProducts.map(p => p.name.substring(0, 20)),
+            categories: this.topProducts.map(p => p.name.substring(0, 18)),
             labels: {
+              style: { colors: axisInk(), fontSize: '11px' },
               formatter: function (val) {
                 return "$ " + (val / 1000000).toFixed(0) + "M";
               }
+            },
+            axisBorder: { color: gridLine() },
+            axisTicks: { color: gridLine() }
+          },
+          yaxis: {
+            labels: {
+              style: { colors: axisInk(), fontSize: '11px' }
             }
           },
           tooltip: {
+            theme: isDark ? 'dark' : 'light',
             y: {
               formatter: function (val) {
-                return "$ " + Number(val).toLocaleString('es-CO') + " COP en ventas";
+                return "$ " + Number(val).toLocaleString('es-CO') + " COP";
               }
             }
           }
@@ -528,6 +650,7 @@ DOCUMENTO VALIDADO POR LA DIAN - CÓDIGO QR / FIRMA DIGITAL
 
         const chart = new ApexCharts(chartElement, chartData);
         chart.render();
+        this.charts.topProducts = chart;
       } catch (error) {
         console.error('Error rendering top products chart:', error);
       }
@@ -536,9 +659,9 @@ DOCUMENTO VALIDADO POR LA DIAN - CÓDIGO QR / FIRMA DIGITAL
     initCustomerAcquisitionChart() {
       const chartElement = document.getElementById('customerAcquisitionChart');
       if (!chartElement) return;
-
       chartElement.innerHTML = '';
 
+      const isDark = isDarkMode();
       try {
         const chartData = {
           series: [{
@@ -553,9 +676,14 @@ DOCUMENTO VALIDADO POR LA DIAN - CÓDIGO QR / FIRMA DIGITAL
             height: 250,
             width: '100%',
             stacked: true,
-            toolbar: { show: false }
+            toolbar: { show: false },
+            background: 'transparent',
+            fontFamily: 'inherit'
           },
-          colors: [accent(), trackFill()],
+          theme: {
+            mode: isDark ? 'dark' : 'light'
+          },
+          colors: [accent(), isDark ? '#38bdf8' : '#0ea5e9'],
           plotOptions: {
             bar: {
               horizontal: false,
@@ -563,21 +691,40 @@ DOCUMENTO VALIDADO POR LA DIAN - CÓDIGO QR / FIRMA DIGITAL
               borderRadius: 4
             }
           },
+          grid: {
+            borderColor: gridLine(),
+            strokeDashArray: 4
+          },
+          dataLabels: { enabled: false },
           xaxis: {
-            categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+            categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+            labels: {
+              style: { colors: axisInk(), fontSize: '12px' }
+            },
+            axisBorder: { color: gridLine() },
+            axisTicks: { color: gridLine() }
           },
           yaxis: {
+            labels: {
+              style: { colors: axisInk(), fontSize: '12px' }
+            },
             title: {
-              text: 'Compradores'
+              text: 'Compradores',
+              style: { color: axisInk(), fontWeight: 500 }
             }
           },
           legend: {
-            position: 'top'
+            position: 'top',
+            labels: { colors: axisInk() }
+          },
+          tooltip: {
+            theme: isDark ? 'dark' : 'light'
           }
         };
 
         const chart = new ApexCharts(chartElement, chartData);
         chart.render();
+        this.charts.customerAcquisition = chart;
       } catch (error) {
         console.error('Error rendering customer acquisition chart:', error);
       }
@@ -586,9 +733,9 @@ DOCUMENTO VALIDADO POR LA DIAN - CÓDIGO QR / FIRMA DIGITAL
     initRegionSalesChart() {
       const chartElement = document.getElementById('regionSalesChart');
       if (!chartElement) return;
-
       chartElement.innerHTML = '';
 
+      const isDark = isDarkMode();
       try {
         const chartData = {
           series: [{
@@ -599,32 +746,46 @@ DOCUMENTO VALIDADO POR LA DIAN - CÓDIGO QR / FIRMA DIGITAL
             type: 'radar',
             height: 250,
             width: '100%',
-            toolbar: { show: false }
+            toolbar: { show: false },
+            background: 'transparent',
+            fontFamily: 'inherit'
+          },
+          theme: {
+            mode: isDark ? 'dark' : 'light'
           },
           colors: [accent()],
           xaxis: {
-            categories: ['Bocagrande', 'Manga', 'Crespo', 'Centro Histórico', 'El Bosque', 'Turbaco/Mamonal']
+            categories: ['Bocagrande', 'Manga', 'Crespo', 'Centro Histórico', 'El Bosque', 'Turbaco'],
+            labels: {
+              style: { colors: [axisInk(), axisInk(), axisInk(), axisInk(), axisInk(), axisInk()], fontSize: '11px' }
+            }
           },
           yaxis: {
+            show: false,
             tickAmount: 4
           },
           markers: {
             size: 4,
             colors: [accent()],
-            strokeColor: surfacePanel(),
+            strokeColors: surfacePanel(),
             strokeWidth: 2
+          },
+          tooltip: {
+            theme: isDark ? 'dark' : 'light'
           }
         };
 
         const chart = new ApexCharts(chartElement, chartData);
         chart.render();
+        this.charts.regionSales = chart;
       } catch (error) {
         console.error('Error rendering region sales chart:', error);
       }
     },
 
     updateCharts() {
-      this.initTopProductsChart();
+      this.destroyCharts();
+      this.initCharts();
     },
 
     showNotification(message, type = 'info') {

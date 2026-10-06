@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
@@ -45,7 +45,7 @@
             
             <!-- Header -->
             <header class="admin-header">
-                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+                <nav class="navbar navbar-expand-lg bg-body border-bottom">
                     <div class="container-fluid">
                         <!-- Logo/Brand -->
                         <a class="navbar-brand d-flex align-items-center" href="./index.html">
@@ -78,13 +78,13 @@
                                      x-transition:enter="transition ease-out duration-100"
                                      x-transition:enter-start="opacity-0 scale-95"
                                      x-transition:enter-end="opacity-100 scale-100"
-                                     class="position-absolute top-100 start-0 w-100 bg-white border rounded-2 shadow-lg mt-1 z-3">
+                                     class="position-absolute top-100 start-0 w-100 bg-body border border-secondary-subtle rounded-2 shadow-lg mt-1 z-3">
                                     <template x-for="result in results" :key="result.title">
-                                        <a :href="result.url" class="d-block px-3 py-2 text-decoration-none text-dark border-bottom">
+                                        <a :href="result.url" class="d-block px-3 py-2 text-decoration-none text-body border-bottom border-secondary-subtle">
                                             <div class="d-flex align-items-center">
-                                                <i class="bi bi-file-text me-2 text-muted"></i>
+                                                <i class="bi bi-file-text me-2 text-body-secondary"></i>
                                                 <span x-text="result.title"></span>
-                                                <small class="ms-auto text-muted" x-text="result.type"></small>
+                                                <small class="ms-auto text-body-secondary" x-text="result.type"></small>
                                             </div>
                                         </a>
                                     </template>
@@ -495,9 +495,9 @@
                             
                             <!-- Security Navigation Sidebar -->
                             <div class="col-lg-3 security-sidebar" :class="{ 'show': sidebarVisible }">
-                                <nav class="security-nav nav nav-pills flex-column bg-white p-2 rounded-3 border">
+                                <nav class="security-nav nav nav-pills flex-column">
                                     <template x-for="section in sections" :key="section.id">
-                                        <a class="nav-link mb-1" 
+                                        <a class="nav-link" 
                                            :class="{ 'active': activeSection === section.id }"
                                            href="#"
                                            @click.prevent="setActiveSection(section.id)">
@@ -585,7 +585,7 @@
                                     <p class="text-muted small mb-4">Monitorea y gestiona los dispositivos conectados a tu cuenta</p>
                                     
                                     <template x-for="session in activeSessions" :key="session.id">
-                                        <div class="session-item p-3 border rounded-3 mb-3 bg-light">
+                                        <div class="session-item p-3 border border-secondary-subtle rounded-3 mb-3">
                                             <div class="d-flex justify-content-between align-items-start">
                                                 <div class="flex-grow-1">
                                                     <div class="d-flex align-items-center gap-2 mb-2">
