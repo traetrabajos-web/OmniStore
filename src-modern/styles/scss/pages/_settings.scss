@@ -2,28 +2,158 @@
 // Settings Page Styles
 // ==========================================================================
 
-// Settings page specific layout and styling
 .settings-page {
   .settings-layout {
-    @include page-layout();
+    min-height: calc(100vh - 160px);
+
+    @include media-breakpoint-up(lg) {
+      min-height: calc(100vh - 140px);
+    }
   }
 
   .settings-sidebar {
-    @include page-sidebar();
+    position: relative;
+
+    @include media-breakpoint-down(lg) {
+      margin-bottom: 1.5rem;
+    }
   }
 
   .settings-nav {
+    background-color: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius-lg, 0.75rem);
+    padding: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
     .nav-link {
-      @include page-nav-link();
+      color: var(--bs-body-color);
+      padding: 0.75rem 1rem;
+      border-radius: var(--bs-border-radius, 0.5rem);
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      transition: all 0.2s ease-in-out;
+      text-decoration: none;
+      background: transparent;
+      border: 1px solid transparent;
+
+      i {
+        font-size: 1.15rem;
+        margin-right: 0.75rem;
+        color: var(--bs-secondary-color);
+        transition: color 0.2s ease-in-out;
+        flex-shrink: 0;
+      }
+
+      &:hover, &:focus {
+        background-color: var(--bs-secondary-bg);
+        color: var(--bs-primary);
+        border-color: var(--bs-border-color);
+
+        i {
+          color: var(--bs-primary);
+        }
+      }
+
+      &.active {
+        background: linear-gradient(135deg, #ff6600, #ff8533);
+        color: #ffffff !important;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(255, 102, 0, 0.25);
+        border-color: #ff6600;
+
+        i {
+          color: #ffffff !important;
+        }
+
+        span {
+          color: #ffffff !important;
+        }
+      }
     }
   }
 
   .settings-section {
-    background: var(--bs-body-bg);
-    border-radius: var(--bs-border-radius);
-    padding: 2rem;
-    margin-bottom: 2rem;
+    background-color: var(--bs-body-bg);
+    border-radius: var(--bs-border-radius-lg, 0.75rem);
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
     border: 1px solid var(--bs-border-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  // Profile Section Specific Styling
+  .profile-hero-card {
+    background: var(--bs-secondary-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius-lg, 0.75rem);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .profile-avatar-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+
+    .profile-avatar-img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid var(--bs-primary);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      background-color: var(--bs-body-bg);
+    }
+
+    .profile-avatar-badge {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: var(--bs-primary);
+      color: #ffffff;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .preset-avatar-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    padding: 0;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &:hover, &.active {
+      border-color: var(--bs-primary);
+      transform: scale(1.1);
+      box-shadow: 0 2px 8px rgba(255, 102, 0, 0.3);
+    }
   }
 
   .setting-item {
@@ -37,221 +167,114 @@
       border-bottom: none;
     }
 
-    .setting-label {
+    .setting-info {
       flex: 1;
-      margin-right: 1rem;
+      margin-right: 1.5rem;
 
       h6 {
         margin-bottom: 0.25rem;
-        font-weight: 500;
+        font-weight: 600;
+        color: var(--bs-body-color);
       }
 
-      p {
-        margin: 0;
+      small {
         color: var(--bs-secondary-color);
-        font-size: 0.875rem;
       }
-    }
-
-    .setting-control {
-      flex-shrink: 0;
     }
   }
 
-  .settings-form {
-    .form-label {
-      font-weight: 500;
-      color: var(--bs-emphasis-color);
-    }
+  .theme-option {
+    border: 2px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius-lg, 0.75rem);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    background-color: var(--bs-body-bg);
 
-    .form-text {
-      color: var(--bs-secondary-color);
-    }
-
-    .form-control:focus,
-    .form-select:focus {
+    &:hover {
       border-color: var(--bs-primary);
-      box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.25);
+      transform: translateY(-2px);
+    }
+
+    &.selected {
+      border-color: var(--bs-primary);
+      background-color: var(--bs-primary-bg-subtle);
     }
   }
+}
 
-  .notification-settings {
-    .notification-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
-      background: var(--bs-light);
-      border: 1px solid var(--bs-border-color);
-      border-radius: var(--bs-border-radius);
-      margin-bottom: 0.75rem;
+// Dark Mode Theme Overrides for Settings Page
+[data-bs-theme="dark"] {
+  .settings-page {
+    .settings-nav {
+      background-color: var(--surface-panel, #18181b);
+      border-color: var(--bs-border-color);
 
-      .notification-info {
-        flex: 1;
+      .nav-link {
+        color: var(--ink-secondary, #a1a1aa);
 
-        .notification-title {
-          font-weight: 500;
-          margin-bottom: 0.25rem;
+        &:hover, &:focus {
+          background-color: rgba(255, 255, 255, 0.05);
+          color: var(--ink-primary, #ffffff);
         }
 
-        .notification-desc {
-          color: var(--bs-secondary-color);
-          font-size: 0.875rem;
-          margin: 0;
-        }
-      }
+        &.active {
+          background: linear-gradient(135deg, #ff6600, #ea580c);
+          color: #ffffff !important;
+          border-color: #ff6600;
 
-      .notification-toggle {
-        flex-shrink: 0;
-      }
-    }
-  }
-
-  .privacy-settings {
-    .privacy-level {
-      background: var(--bs-info-bg-subtle);
-      border: 1px solid var(--bs-info-border-subtle);
-      border-radius: var(--bs-border-radius);
-      padding: 1rem;
-      margin-bottom: 1rem;
-
-      .level-title {
-        font-weight: 600;
-        color: var(--bs-info-text-emphasis);
-        margin-bottom: 0.5rem;
-      }
-
-      .level-description {
-        color: var(--bs-info-text-emphasis);
-        margin: 0;
-        font-size: 0.875rem;
-      }
-    }
-  }
-
-  .account-settings {
-    .danger-zone {
-      background: var(--bs-danger-bg-subtle);
-      border: 1px solid var(--bs-danger-border-subtle);
-      border-radius: var(--bs-border-radius);
-      padding: 1.5rem;
-      margin-top: 2rem;
-
-      .danger-title {
-        color: var(--bs-danger-text-emphasis);
-        font-weight: 600;
-        margin-bottom: 1rem;
-      }
-
-      .danger-description {
-        color: var(--bs-danger-text-emphasis);
-        margin-bottom: 1rem;
-      }
-
-      .btn-danger {
-        background-color: var(--bs-danger);
-        border-color: var(--bs-danger);
-
-        &:hover {
-          background-color: var(--bs-danger-hover);
-          border-color: var(--bs-danger-hover);
+          i, span {
+            color: #ffffff !important;
+          }
         }
       }
     }
-  }
 
-  .save-settings-bar {
-    position: sticky;
-    bottom: 0;
-    background: var(--bs-body-bg);
-    border-top: 1px solid var(--bs-border-color);
-    padding: 1rem 0;
-    margin-top: 2rem;
-    text-align: right;
-
-    .btn {
-      @include button-hover-lift();
-    }
-  }
-
-  .settings-search {
-    margin-bottom: 1.5rem;
-
-    .form-control {
-      border-radius: 50px;
-      padding-left: 2.5rem;
+    .settings-section {
+      background-color: var(--surface-panel, #18181b);
+      border-color: var(--bs-border-color);
     }
 
-    .search-icon {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--bs-secondary-color);
+    .profile-hero-card {
+      background-color: var(--surface-sunken, #09090b);
+      border-color: var(--bs-border-color);
     }
-  }
-
-  .theme-preview {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
 
     .theme-option {
-      flex: 1;
-      border: 2px solid var(--bs-border-color);
-      border-radius: var(--bs-border-radius);
-      padding: 1rem;
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-      text-align: center;
+      background-color: var(--surface-sunken, #09090b);
+      border-color: var(--bs-border-color);
 
       &:hover {
         border-color: var(--bs-primary);
       }
+    }
 
-      &.selected {
+    .card {
+      background-color: var(--surface-panel, #18181b);
+      border-color: var(--bs-border-color);
+    }
+
+    .form-control,
+    .form-select {
+      background-color: var(--surface-sunken, #09090b);
+      border-color: var(--bs-border-color);
+      color: var(--ink-primary, #ffffff);
+
+      &:focus {
+        background-color: var(--surface-sunken, #09090b);
         border-color: var(--bs-primary);
-        background-color: var(--bs-primary-bg-subtle);
+        color: var(--ink-primary, #ffffff);
       }
 
-      .theme-name {
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-      }
-
-      .theme-colors {
-        display: flex;
-        gap: 0.25rem;
-        justify-content: center;
-
-        .color-dot {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          border: 1px solid var(--bs-border-color);
-        }
+      &::placeholder {
+        color: var(--ink-muted, #71717a);
       }
     }
+
+    .list-group-item {
+      background-color: var(--surface-panel, #18181b);
+      border-color: var(--bs-border-color);
+      color: var(--ink-primary, #ffffff);
+    }
   }
-}
-
-// CSS variables for theming
-:root {
-  --settings-bg: #{$body-bg};
-  --settings-sidebar-bg: #{$light};
-  --settings-border: #{$border-color};
-  --settings-text: #{$body-color};
-  --settings-text-muted: #{$text-muted};
-  --settings-section-bg: #{$body-bg};
-  --settings-nav-hover: #{$gray-200};
-}
-
-[data-bs-theme="dark"] {
-  --settings-bg: #{$dark-bg};
-  --settings-sidebar-bg: #{$gray-900};
-  --settings-border: #{$dark-border-color};
-  --settings-text: #{$dark-color};
-  --settings-text-muted: #{$dark-text-muted};
-  --settings-section-bg: #{$dark-bg};
-  --settings-nav-hover: #{$gray-700};
 }

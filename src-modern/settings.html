@@ -8,12 +8,11 @@
     <title>Ajustes & Configuración de Tienda - OmniStore Admin</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Configuración general, cupones, envíos y preferencias de OmniStore Colombia">
-    <meta name="keywords" content="omnistore, admin, dashboard, ajustes, configuracion, cupones, envios">
+    <meta name="description" content="Configuración general, perfil de usuario, cupones, envíos y preferencias de OmniStore Colombia">
+    <meta name="keywords" content="omnistore, admin, dashboard, ajustes, configuracion, perfil, cupones, envios">
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
-   
     
     <!-- Immediate Authentication Guard -->
     <script>
@@ -42,16 +41,16 @@
             
             <!-- Header -->
             <header class="admin-header">
-                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+                <nav class="navbar navbar-expand-lg bg-body border-bottom">
                     <div class="container-fluid">
                         <!-- Logo/Brand -->
                         <a class="navbar-brand d-flex align-items-center" href="./index.html">
-                        <div class="brand-icon me-2">
-                            <i class="bi bi-bag-check-fill"></i>
-                        </div>
-                        <span class="brand-text">OmniStore</span>
-                        <span class="admin-pill ms-2">Admin</span>
-                    </a>
+                            <div class="brand-icon me-2">
+                                <i class="bi bi-bag-check-fill"></i>
+                            </div>
+                            <span class="brand-text">OmniStore</span>
+                            <span class="admin-pill ms-2">Admin</span>
+                        </a>
 
                         <!-- Sidebar Toggle -->
                         <button class="hamburger-menu" type="button" data-sidebar-toggle aria-label="Toggle sidebar">
@@ -75,13 +74,13 @@
                                      x-transition:enter="transition ease-out duration-100"
                                      x-transition:enter-start="opacity-0 scale-95"
                                      x-transition:enter-end="opacity-100 scale-100"
-                                     class="position-absolute top-100 start-0 w-100 bg-white border rounded-2 shadow-lg mt-1 z-3">
+                                     class="position-absolute top-100 start-0 w-100 bg-body border border-secondary-subtle rounded-2 shadow-lg mt-1 z-3">
                                     <template x-for="result in results" :key="result.title">
-                                        <a :href="result.url" class="d-block px-3 py-2 text-decoration-none text-dark border-bottom">
+                                        <a :href="result.url" class="d-block px-3 py-2 text-decoration-none text-body border-bottom border-secondary-subtle">
                                             <div class="d-flex align-items-center">
-                                                <i class="bi bi-file-text me-2 text-muted"></i>
+                                                <i class="bi bi-file-text me-2 text-body-secondary"></i>
                                                 <span x-text="result.title"></span>
-                                                <small class="ms-auto text-muted" x-text="result.type"></small>
+                                                <small class="ms-auto text-body-secondary" x-text="result.type"></small>
                                             </div>
                                         </a>
                                     </template>
@@ -135,365 +134,367 @@
                                 </ul>
                             </div>
 
-                                                    <!-- User Menu -->
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary d-flex align-items-center" 
-                                    type="button" 
-                                    data-bs-toggle="dropdown" 
-                                    aria-expanded="false">
-                                <img src="./assets/images/avatar-placeholder.svg" 
-                                     alt="Avatar Administrador" 
-                                     width="24" 
-                                     height="24" 
-                                     data-user-avatar
-                                     class="rounded-circle me-2">
-                                <span class="d-none d-md-inline" data-user-name>Admin Colombia</span>
-                                <span class="badge bg-primary ms-2" data-user-role>SuperAdmin</span>
-                                <i class="bi bi-chevron-down ms-1"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="./users.html"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
-                                <li><a class="dropdown-item" href="./settings.html"><i class="bi bi-gear me-2"></i>Ajustes</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="./login.html" data-auth-logout><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
-                            </ul>
+                            <!-- User Menu -->
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary d-flex align-items-center" 
+                                        type="button" 
+                                        data-bs-toggle="dropdown" 
+                                        aria-expanded="false">
+                                    <img src="./assets/images/avatar-placeholder.svg" 
+                                         alt="Avatar Administrador" 
+                                         width="24" 
+                                         height="24" 
+                                         data-user-avatar
+                                         class="rounded-circle me-2">
+                                    <span class="d-none d-md-inline" data-user-name>Admin Colombia</span>
+                                    <span class="badge bg-primary ms-2" data-user-role>SuperAdmin</span>
+                                    <i class="bi bi-chevron-down ms-1"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="./settings.html?tab=profile"><i class="bi bi-person-badge me-2"></i>Mi Perfil</a></li>
+                                    <li><a class="dropdown-item" href="./settings.html"><i class="bi bi-gear me-2"></i>Ajustes</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" href="./login.html" data-auth-logout><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </nav>
+                </nav>
             </header>
 
-                    <!-- Sidebar -->
-        <aside class="admin-sidebar" id="admin-sidebar">
-            <div class="sidebar-content">
-                <nav class="sidebar-nav">
-                    <ul class="nav flex-column">
-                        <!-- Direct access to Marketplace Storefront -->
-                        <li class="nav-item mb-2">
-                            <a class="nav-link marketplace-nav-btn text-white fw-bold rounded-3 shadow-sm d-flex align-items-center" href="./marketplace.html">
-                                <i class="bi bi-shop fs-5"></i>
-                                <span>Ir al Marketplace</span>
-                                <i class="bi bi-box-arrow-up-right ms-auto"></i>
-                            </a>
-                        </li>
+            <!-- Sidebar -->
+            <aside class="admin-sidebar" id="admin-sidebar">
+                <div class="sidebar-content">
+                    <nav class="sidebar-nav">
+                        <ul class="nav flex-column">
+                            <!-- Direct access to Marketplace Storefront -->
+                            <li class="nav-item mb-2">
+                                <a class="nav-link marketplace-nav-btn text-white fw-bold rounded-3 shadow-sm d-flex align-items-center" href="./marketplace.html">
+                                    <i class="bi bi-shop fs-5"></i>
+                                    <span>Ir al Marketplace</span>
+                                    <i class="bi bi-box-arrow-up-right ms-auto"></i>
+                                </a>
+                            </li>
 
-                        <!-- VENTAS -->
-                        <li class="nav-item">
-                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Ventas</small>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./index.html">
-                                <i class="bi bi-speedometer2"></i>
-                                <span>Dashboard General</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#ordersSubmenu" aria-expanded="false" aria-controls="ordersSubmenu">
-                                <i class="bi bi-bag-check-fill"></i>
-                                <span>Pedidos & Ventas</span>
-                                <span class="badge bg-danger rounded-pill ms-2 me-1" style="font-size: 0.7rem;">3</span>
-                                <i class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <div class="collapse" id="ordersSubmenu">
-                                <ul class="nav nav-submenu">
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="./orders.html">
-                                            <i class="bi bi-list-ul"></i>
-                                            <span>Todos los pedidos</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="./orders.html?filter=pending">
-                                            <i class="bi bi-clock-history"></i>
-                                            <span>Pendientes de pago</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="./orders.html?filter=processing">
-                                            <i class="bi bi-box-arrow-right"></i>
-                                            <span>Por enviar</span>
-                                            <span class="badge bg-danger rounded-pill ms-auto">3</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="./orders.html?filter=refunded">
-                                            <i class="bi bi-arrow-counterclockwise"></i>
-                                            <span>Devoluciones & reembolsos</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="./orders.html?filter=abandoned">
-                                            <i class="bi bi-cart-x"></i>
-                                            <span>Carritos abandonados</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="./orders.html?tab=payments">
-                                            <i class="bi bi-credit-card"></i>
-                                            <span>Pagos & transacciones</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
+                            <!-- VENTAS -->
+                            <li class="nav-item">
+                                <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Ventas</small>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./index.html">
+                                    <i class="bi bi-speedometer2"></i>
+                                    <span>Dashboard General</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#ordersSubmenu" aria-expanded="false" aria-controls="ordersSubmenu">
+                                    <i class="bi bi-bag-check-fill"></i>
+                                    <span>Pedidos & Ventas</span>
+                                    <span class="badge bg-danger rounded-pill ms-2 me-1" style="font-size: 0.7rem;">3</span>
+                                    <i class="bi bi-chevron-down ms-auto"></i>
+                                </a>
+                                <div class="collapse" id="ordersSubmenu">
+                                    <ul class="nav nav-submenu">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="./orders.html">
+                                                <i class="bi bi-list-ul"></i>
+                                                <span>Todos los pedidos</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="./orders.html?filter=pending">
+                                                <i class="bi bi-clock-history"></i>
+                                                <span>Pendientes de pago</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="./orders.html?filter=processing">
+                                                <i class="bi bi-box-arrow-right"></i>
+                                                <span>Por enviar</span>
+                                                <span class="badge bg-danger rounded-pill ms-auto">3</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="./orders.html?filter=refunded">
+                                                <i class="bi bi-arrow-counterclockwise"></i>
+                                                <span>Devoluciones & reembolsos</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="./orders.html?filter=abandoned">
+                                                <i class="bi bi-cart-x"></i>
+                                                <span>Carritos abandonados</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="./orders.html?tab=payments">
+                                                <i class="bi bi-credit-card"></i>
+                                                <span>Pagos & transacciones</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
 
-                        <!-- CATÁLOGO -->
-                        <li class="nav-item mt-2">
-                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Catálogo</small>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#productsSubmenu" aria-expanded="false" aria-controls="productsSubmenu">
-                                <i class="bi bi-box-seam-fill"></i>
-                                <span>Catálogo de Productos</span>
-                                <span class="badge bg-success-subtle text-success border ms-2 me-1" style="font-size: 0.68rem;">En Vivo</span>
-                                <i class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <div class="collapse" id="productsSubmenu">
-                                <ul class="nav nav-submenu">
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="./products.html">
-                                            <i class="bi bi-grid-fill"></i>
-                                            <span>Todos los productos</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="./products.html?view=categories">
-                                            <i class="bi bi-tags-fill"></i>
-                                            <span>Categorías</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="./products.html?view=brands">
-                                            <i class="bi bi-patch-check-fill"></i>
-                                            <span>Marcas</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="./products.html?view=collections">
-                                            <i class="bi bi-collection-fill"></i>
-                                            <span>Colecciones</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#inventorySubmenu" aria-expanded="false" aria-controls="inventorySubmenu">
-                                <i class="bi bi-stack"></i>
-                                <span>Inventario & Stock</span>
-                                <span class="badge bg-warning-subtle text-warning-emphasis border ms-2 me-1" style="font-size: 0.7rem;">2</span>
-                                <i class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <div class="collapse" id="inventorySubmenu">
-                                <ul class="nav nav-submenu">
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="./products.html?tab=inventory">
-                                            <i class="bi bi-bar-chart-steps"></i>
-                                            <span>Niveles de stock</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="./products.html?tab=low-stock">
-                                            <i class="bi bi-exclamation-triangle-fill text-warning"></i>
-                                            <span>Alertas de stock bajo</span>
-                                            <span class="badge bg-danger rounded-pill ms-auto">2</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="./products.html?tab=movements">
-                                            <i class="bi bi-arrow-left-right"></i>
-                                            <span>Movimientos de kardex</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="./products.html?tab=suppliers">
-                                            <i class="bi bi-truck"></i>
-                                            <span>Proveedores & compras</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
+                            <!-- CATÁLOGO -->
+                            <li class="nav-item mt-2">
+                                <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Catálogo</small>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#productsSubmenu" aria-expanded="false" aria-controls="productsSubmenu">
+                                    <i class="bi bi-box-seam-fill"></i>
+                                    <span>Catálogo de Productos</span>
+                                    <span class="badge bg-success-subtle text-success border ms-2 me-1" style="font-size: 0.68rem;">En Vivo</span>
+                                    <i class="bi bi-chevron-down ms-auto"></i>
+                                </a>
+                                <div class="collapse" id="productsSubmenu">
+                                    <ul class="nav nav-submenu">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="./products.html">
+                                                <i class="bi bi-grid-fill"></i>
+                                                <span>Todos los productos</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="./products.html?view=categories">
+                                                <i class="bi bi-tags-fill"></i>
+                                                <span>Categorías</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="./products.html?view=brands">
+                                                <i class="bi bi-patch-check-fill"></i>
+                                                <span>Marcas</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="./products.html?view=collections">
+                                                <i class="bi bi-collection-fill"></i>
+                                                <span>Colecciones</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#inventorySubmenu" aria-expanded="false" aria-controls="inventorySubmenu">
+                                    <i class="bi bi-stack"></i>
+                                    <span>Inventario & Stock</span>
+                                    <span class="badge bg-warning-subtle text-warning-emphasis border ms-2 me-1" style="font-size: 0.7rem;">2</span>
+                                    <i class="bi bi-chevron-down ms-auto"></i>
+                                </a>
+                                <div class="collapse" id="inventorySubmenu">
+                                    <ul class="nav nav-submenu">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="./products.html?tab=inventory">
+                                                <i class="bi bi-bar-chart-steps"></i>
+                                                <span>Niveles de stock</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="./products.html?tab=low-stock">
+                                                <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                                                <span>Alertas de stock bajo</span>
+                                                <span class="badge bg-danger rounded-pill ms-auto">2</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="./products.html?tab=movements">
+                                                <i class="bi bi-arrow-left-right"></i>
+                                                <span>Movimientos de kardex</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="./products.html?tab=suppliers">
+                                                <i class="bi bi-truck"></i>
+                                                <span>Proveedores & compras</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
 
-                        <!-- CLIENTES -->
-                        <li class="nav-item mt-2">
-                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Clientes</small>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./users.html">
-                                <i class="bi bi-people-fill"></i>
-                                <span>Clientes & Usuarios</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./users.html?tab=reviews">
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <span>Reseñas & Calificaciones</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./help.html">
-                                <i class="bi bi-headset"></i>
-                                <span>Soporte (Tickets & FAQ)</span>
-                            </a>
-                        </li>
+                            <!-- CLIENTES -->
+                            <li class="nav-item mt-2">
+                                <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Clientes</small>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./users.html">
+                                    <i class="bi bi-people-fill"></i>
+                                    <span>Clientes & Usuarios</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./users.html?tab=reviews">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <span>Reseñas & Calificaciones</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./help.html">
+                                    <i class="bi bi-headset"></i>
+                                    <span>Soporte (Tickets & FAQ)</span>
+                                </a>
+                            </li>
 
-                        <!-- MARKETING -->
-                        <li class="nav-item mt-2">
-                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Marketing</small>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./settings.html?tab=coupons">
-                                <i class="bi bi-ticket-perforated-fill"></i>
-                                <span>Cupones & Descuentos</span>
-                                <span class="badge bg-primary-subtle text-primary border ms-auto">Activo</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./settings.html?tab=banners">
-                                <i class="bi bi-megaphone-fill"></i>
-                                <span>Promociones & Banners</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./settings.html?tab=campaigns">
-                                <i class="bi bi-send-check-fill"></i>
-                                <span>Campañas (Email / WhatsApp)</span>
-                            </a>
-                        </li>
+                            <!-- MARKETING -->
+                            <li class="nav-item mt-2">
+                                <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Marketing</small>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./settings.html?tab=coupons">
+                                    <i class="bi bi-ticket-perforated-fill"></i>
+                                    <span>Cupones & Descuentos</span>
+                                    <span class="badge bg-primary-subtle text-primary border ms-auto">Activo</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./settings.html?tab=banners">
+                                    <i class="bi bi-megaphone-fill"></i>
+                                    <span>Promociones & Banners</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./settings.html?tab=campaigns">
+                                    <i class="bi bi-send-check-fill"></i>
+                                    <span>Campañas (Email / WhatsApp)</span>
+                                </a>
+                            </li>
 
-                        <!-- LOGÍSTICA -->
-                        <li class="nav-item mt-2">
-                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Logística</small>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./orders.html?tab=shipping">
-                                <i class="bi bi-geo-alt-fill"></i>
-                                <span>Envíos & Guías</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./settings.html?tab=carriers">
-                                <i class="bi bi-truck-flatbed"></i>
-                                <span>Transportadoras</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./settings.html?tab=shipping-rates">
-                                <i class="bi bi-globe-americas"></i>
-                                <span>Zonas & Tarifas de Envío</span>
-                            </a>
-                        </li>
+                            <!-- LOGÍSTICA -->
+                            <li class="nav-item mt-2">
+                                <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Logística</small>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./orders.html?tab=shipping">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                    <span>Envíos & Guías</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./settings.html?tab=carriers">
+                                    <i class="bi bi-truck-flatbed"></i>
+                                    <span>Transportadoras</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./settings.html?tab=shipping-rates">
+                                    <i class="bi bi-globe-americas"></i>
+                                    <span>Zonas & Tarifas de Envío</span>
+                                </a>
+                            </li>
 
-                        <!-- REPORTES -->
-                        <li class="nav-item mt-2">
-                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Reportes</small>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./analytics.html">
-                                <i class="bi bi-graph-up-arrow"></i>
-                                <span>Métricas & Analytics</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./reports.html">
-                                <i class="bi bi-file-earmark-bar-graph-fill"></i>
-                                <span>Reportes de Ventas</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./reports.html?tab=invoices">
-                                <i class="bi bi-receipt"></i>
-                                <span>Facturación & Impuestos</span>
-                            </a>
-                        </li>
+                            <!-- REPORTES -->
+                            <li class="nav-item mt-2">
+                                <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Reportes</small>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./analytics.html">
+                                    <i class="bi bi-graph-up-arrow"></i>
+                                    <span>Métricas & Analytics</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./reports.html">
+                                    <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                                    <span>Reportes de Ventas</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./reports.html?tab=invoices">
+                                    <i class="bi bi-receipt"></i>
+                                    <span>Facturación & Impuestos</span>
+                                </a>
+                            </li>
 
-                        <!-- CONTENIDO -->
-                        <li class="nav-item mt-2">
-                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Contenido</small>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./settings.html?tab=pages">
-                                <i class="bi bi-file-richtext-fill"></i>
-                                <span>Páginas & Blog</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./settings.html?tab=menus">
-                                <i class="bi bi-layout-text-window-reverse"></i>
-                                <span>Menús & Footer</span>
-                            </a>
-                        </li>
+                            <!-- CONTENIDO -->
+                            <li class="nav-item mt-2">
+                                <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Contenido</small>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./settings.html?tab=pages">
+                                    <i class="bi bi-file-richtext-fill"></i>
+                                    <span>Páginas & Blog</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./settings.html?tab=menus">
+                                    <i class="bi bi-layout-text-window-reverse"></i>
+                                    <span>Menús & Footer</span>
+                                </a>
+                            </li>
 
-                        <!-- SISTEMA -->
-                        <li class="nav-item mt-2">
-                            <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Sistema</small>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./settings.html">
-                                <i class="bi bi-gear-fill"></i>
-                                <span>Ajustes de Tienda</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./users.html?tab=roles">
-                                <i class="bi bi-person-badge-fill"></i>
-                                <span>Equipo, Roles & Permisos</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./settings.html?tab=integrations">
-                                <i class="bi bi-plugin"></i>
-                                <span>Integraciones</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./settings.html?tab=notifications">
-                                <i class="bi bi-bell-fill"></i>
-                                <span>Plantillas de Notificaciones</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./security.html">
-                                <i class="bi bi-shield-lock-fill"></i>
-                                <span>Seguridad & Base de Datos</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </aside>
+                            <!-- SISTEMA -->
+                            <li class="nav-item mt-2">
+                                <small class="text-muted px-3 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Sistema</small>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./settings.html">
+                                    <i class="bi bi-gear-fill"></i>
+                                    <span>Ajustes de Tienda</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./users.html?tab=roles">
+                                    <i class="bi bi-person-badge-fill"></i>
+                                    <span>Equipo, Roles & Permisos</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./settings.html?tab=integrations">
+                                    <i class="bi bi-plugin"></i>
+                                    <span>Integraciones</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./settings.html?tab=notifications">
+                                    <i class="bi bi-bell-fill"></i>
+                                    <span>Plantillas de Notificaciones</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./security.html">
+                                    <i class="bi bi-shield-lock-fill"></i>
+                                    <span>Seguridad & Base de Datos</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </aside>
 
             <!-- Sidebar Backdrop (mobile overlay) -->
-        <div class="sidebar-backdrop" aria-hidden="true"></div>
+            <div class="sidebar-backdrop" aria-hidden="true"></div>
+
             <!-- Main Content -->
             <main id="main-content" class="admin-main">
                 <div class="container-fluid p-4 p-lg-4">
                     
-                    <!-- Page Header -->
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h1 class="h3 mb-0">Ajustes del Sistema & Tienda</h1>
-                            <p class="text-muted mb-0">Configuración general de la plataforma, moneda, apariencia y notificaciones</p>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-outline-secondary" @click="resetSettings()">
-                                <i class="bi bi-arrow-clockwise me-2"></i>Restablecer
-                            </button>
-                            <button type="button" class="btn btn-primary" @click="saveSettings()">
-                                <i class="bi bi-check-lg me-2"></i>Guardar Cambios
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Settings Container -->
+                    <!-- Settings Container with Alpine Component -->
                     <div x-data="settingsComponent" x-init="init()" class="settings-layout">
+                        
+                        <!-- Page Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                            <div>
+                                <h1 class="h3 mb-0 text-body">Ajustes & Configuración</h1>
+                                <p class="text-body-secondary mb-0">Gestiona tu perfil de usuario, parámetros de tienda, moneda y preferencias</p>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-outline-secondary" @click="resetSettings()" x-show="activeSection !== 'profile'">
+                                    <i class="bi bi-arrow-clockwise me-2"></i>Restablecer
+                                </button>
+                                <button type="button" class="btn btn-primary" @click="activeSection === 'profile' ? saveUserProfile() : saveSettings()">
+                                    <i class="bi bi-check-lg me-2"></i>Guardar Cambios
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="row g-4">
                             
                             <!-- Settings Navigation Sidebar -->
                             <div class="col-lg-3 settings-sidebar" :class="{ 'show': sidebarVisible }">
-                                <nav class="settings-nav nav nav-pills flex-column bg-white p-2 rounded-3 border">
-                                    <template x-for="section in sections" :key="section.id">
+                                <nav class="settings-nav nav nav-pills flex-column p-2 rounded-3">
+                                    <template x-for="section in visibleSections" :key="section.id">
                                         <a class="nav-link mb-1" 
                                            :class="{ 'active': activeSection === section.id }"
                                            href="#"
@@ -508,15 +509,196 @@
                             <!-- Settings Content -->
                             <div class="col-lg-9 settings-content">
                                 
-                                <!-- General Settings -->
-                                <div x-show="activeSection === 'general'" class="settings-section card p-4 border">
-                                    <h5 class="fw-bold mb-1">Ajustes Generales & Moneda</h5>
-                                    <p class="text-muted small mb-4">Configuración regional, idioma y moneda para Colombia</p>
+                                <!-- ======================================================= -->
+                                <!-- 1. MI PERFIL & CUENTA                                  -->
+                                <!-- ======================================================= -->
+                                <div x-show="activeSection === 'profile'" class="settings-section card p-4 border border-secondary-subtle">
+                                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                                        <div>
+                                            <h5 class="fw-bold mb-1 text-body">Mi Perfil & Datos de Cuenta</h5>
+                                            <p class="text-body-secondary small mb-0">Gestiona tu información personal, foto de perfil y seguridad de acceso</p>
+                                        </div>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 fs-6 rounded-pill">
+                                            <i class="bi bi-person-check-fill me-1"></i>
+                                            <span x-text="profileForm.roleLabel || 'Usuario Registrado'"></span>
+                                        </span>
+                                    </div>
+
+                                    <!-- Hero Card with Avatar Uploader & Info -->
+                                    <div class="profile-hero-card mb-4">
+                                        <div class="row align-items-center g-3">
+                                            <div class="col-auto">
+                                                <div class="profile-avatar-wrapper">
+                                                    <img :src="profileForm.avatar || './assets/images/avatar-placeholder.svg'" 
+                                                         :alt="profileForm.name" 
+                                                         class="profile-avatar-img">
+                                                    <label class="profile-avatar-badge" title="Cambiar foto de perfil">
+                                                        <i class="bi bi-camera-fill"></i>
+                                                        <input type="file" accept="image/*" class="d-none" @change="handleAvatarUpload($event)">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                                    <h4 class="fw-bold mb-0 text-body" x-text="profileForm.name || 'Usuario OmniStore'"></h4>
+                                                    <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                                        <i class="bi bi-shield-check me-1"></i>Cuenta Verificada
+                                                    </span>
+                                                </div>
+                                                <div class="text-body-secondary small mb-3 d-flex align-items-center gap-3 flex-wrap">
+                                                    <span><i class="bi bi-envelope me-1 text-primary"></i><span x-text="profileForm.email"></span></span>
+                                                    <span><i class="bi bi-telephone me-1 text-success"></i><span x-text="profileForm.phone"></span></span>
+                                                    <span><i class="bi bi-geo-alt me-1 text-danger"></i><span x-text="profileForm.city + ', ' + profileForm.department"></span></span>
+                                                </div>
+                                                <!-- Avatar Presets Quick Picker -->
+                                                <div>
+                                                    <span class="small text-body-secondary me-2">Avatares rápidos:</span>
+                                                    <div class="d-inline-flex gap-2 align-items-center">
+                                                        <template x-for="(preset, index) in avatarPresets" :key="index">
+                                                            <button type="button" 
+                                                                    class="preset-avatar-btn" 
+                                                                    :class="{ 'active': profileForm.avatar === preset }"
+                                                                    @click="selectPresetAvatar(preset)"
+                                                                    :title="'Seleccionar avatar ' + (index + 1)">
+                                                                <img :src="preset" alt="Preset">
+                                                            </button>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Personal Information Form -->
+                                    <div class="card p-3 border border-secondary-subtle bg-body mb-4">
+                                        <h6 class="fw-bold mb-3 text-body"><i class="bi bi-person-lines-fill me-2 text-primary"></i>Información Personal & Contacto</h6>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold text-body">Nombre Completo <span class="text-danger">*</span></label>
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-person"></i></span>
+                                                    <input type="text" class="form-control" placeholder="Ej: Alejandro Morales" x-model="profileForm.name">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold text-body">Correo Electrónico <span class="text-danger">*</span></label>
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-envelope"></i></span>
+                                                    <input type="email" class="form-control" placeholder="admin@omnistore.com" x-model="profileForm.email">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label small fw-semibold text-body">Teléfono / WhatsApp</label>
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-telephone"></i></span>
+                                                    <input type="tel" class="form-control" placeholder="+57 310 845 9210" x-model="profileForm.phone">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label small fw-semibold text-body">Ciudad</label>
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-geo-alt"></i></span>
+                                                    <input type="text" class="form-control" placeholder="Cartagena de Indias" x-model="profileForm.city">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label small fw-semibold text-body">Departamento / Región</label>
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-map"></i></span>
+                                                    <input type="text" class="form-control" placeholder="Bolívar" x-model="profileForm.department">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="form-label small fw-semibold text-body">Dirección de Contacto</label>
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-pin-map"></i></span>
+                                                    <input type="text" class="form-control" placeholder="Cra 3 # 7-15, Bocagrande, Cartagena" x-model="profileForm.address">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="form-label small fw-semibold text-body">Biografía / Perfil Profesional</label>
+                                                <textarea class="form-control form-control-sm" rows="2" placeholder="Breve descripción de tu rol..." x-model="profileForm.bio"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-3 text-end">
+                                            <button type="button" class="btn btn-primary btn-sm px-4" @click="saveUserProfile()" :disabled="isSavingProfile">
+                                                <i class="bi bi-check-circle me-1" x-show="!isSavingProfile"></i>
+                                                <span class="spinner-border spinner-border-sm me-1" x-show="isSavingProfile"></span>
+                                                Guardar Información Personal
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Security & Password Change Section -->
+                                    <div class="card p-3 border border-secondary-subtle bg-body mb-4">
+                                        <h6 class="fw-bold mb-3 text-body"><i class="bi bi-shield-lock-fill me-2 text-danger"></i>Seguridad & Cambio de Contraseña</h6>
+                                        <div class="row g-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label small fw-semibold text-body">Contraseña Actual</label>
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-lock"></i></span>
+                                                    <input :type="passwordForm.showCurrent ? 'text' : 'password'" class="form-control" placeholder="Contraseña actual" x-model="passwordForm.currentPassword">
+                                                    <button class="btn btn-outline-secondary" type="button" @click="passwordForm.showCurrent = !passwordForm.showCurrent">
+                                                        <i :class="passwordForm.showCurrent ? 'bi-eye-slash' : 'bi-eye'"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label small fw-semibold text-body">Nueva Contraseña</label>
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-key"></i></span>
+                                                    <input :type="passwordForm.showNew ? 'text' : 'password'" class="form-control" placeholder="Mínimo 6 caracteres" x-model="passwordForm.newPassword">
+                                                    <button class="btn btn-outline-secondary" type="button" @click="passwordForm.showNew = !passwordForm.showNew">
+                                                        <i :class="passwordForm.showNew ? 'bi-eye-slash' : 'bi-eye'"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label small fw-semibold text-body">Confirmar Contraseña</label>
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-check2-square"></i></span>
+                                                    <input :type="passwordForm.showConfirm ? 'text' : 'password'" class="form-control" placeholder="Repite la contraseña" x-model="passwordForm.confirmPassword">
+                                                    <button class="btn btn-outline-secondary" type="button" @click="passwordForm.showConfirm = !passwordForm.showConfirm">
+                                                        <i :class="passwordForm.showConfirm ? 'bi-eye-slash' : 'bi-eye'"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 text-end">
+                                            <button type="button" class="btn btn-outline-danger btn-sm px-4" @click="changeUserPassword()" :disabled="isChangingPassword">
+                                                <i class="bi bi-shield-check me-1" x-show="!isChangingPassword"></i>
+                                                <span class="spinner-border spinner-border-sm me-1" x-show="isChangingPassword"></span>
+                                                Actualizar Contraseña
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Active Session & Security Actions -->
+                                    <div class="card p-3 border border-secondary-subtle bg-body">
+                                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                            <div>
+                                                <h6 class="fw-bold mb-1 text-body"><i class="bi bi-laptop me-2 text-info"></i>Sesión Activa & Dispositivo</h6>
+                                                <p class="text-body-secondary small mb-0">Iniciado en: <strong>Navegador Web Local (Bocagrande, Cartagena)</strong> &bull; Sincronizado con Supabase</p>
+                                            </div>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" @click="triggerLogout()">
+                                                <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- ======================================================= -->
+                                <!-- 2. GENERAL SETTINGS                                     -->
+                                <!-- ======================================================= -->
+                                <div x-show="activeSection === 'general'" class="settings-section card p-4 border border-secondary-subtle">
+                                    <h5 class="fw-bold mb-1 text-body">Ajustes Generales & Moneda</h5>
+                                    <p class="text-body-secondary small mb-4">Configuración regional, idioma y moneda para Colombia</p>
                                     
-                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom">
+                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom border-secondary-subtle">
                                         <div class="setting-info">
-                                            <h6 class="mb-1">Idioma del Sistema</h6>
-                                            <small class="text-muted">Idioma principal de la interfaz administrativa y tienda</small>
+                                            <h6 class="mb-1 text-body">Idioma del Sistema</h6>
+                                            <small class="text-body-secondary">Idioma principal de la interfaz administrativa y tienda</small>
                                         </div>
                                         <select class="form-select" style="width: 200px;" x-model="settings.language">
                                             <option value="es">Español (Colombia - es-CO)</option>
@@ -524,20 +706,20 @@
                                         </select>
                                     </div>
 
-                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom">
+                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom border-secondary-subtle">
                                         <div class="setting-info">
-                                            <h6 class="mb-1">Moneda Principal</h6>
-                                            <small class="text-muted">Moneda obligatoria para precios y transacciones</small>
+                                            <h6 class="mb-1 text-body">Moneda Principal</h6>
+                                            <small class="text-body-secondary">Moneda obligatoria para precios y transacciones</small>
                                         </div>
                                         <select class="form-select" style="width: 200px;" x-model="settings.currency">
                                             <option value="COP">Peso Colombiano (COP - $)</option>
                                         </select>
                                     </div>
                                     
-                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom">
+                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom border-secondary-subtle">
                                         <div class="setting-info">
-                                            <h6 class="mb-1">Zona Horaria</h6>
-                                            <small class="text-muted">Zona horaria para registro de pedidos y reportes</small>
+                                            <h6 class="mb-1 text-body">Zona Horaria</h6>
+                                            <small class="text-body-secondary">Zona horaria para registro de pedidos y reportes</small>
                                         </div>
                                         <select class="form-select timezone-select" style="width: 200px;" x-model="settings.timezone">
                                             <option value="America/Bogota">Bogotá, Colombia (GMT-5)</option>
@@ -545,10 +727,10 @@
                                         </select>
                                     </div>
                                     
-                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom">
+                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom border-secondary-subtle">
                                         <div class="setting-info">
-                                            <h6 class="mb-1">Formato de Fecha</h6>
-                                            <small class="text-muted">Visualización estándar de fechas en tablas</small>
+                                            <h6 class="mb-1 text-body">Formato de Fecha</h6>
+                                            <small class="text-body-secondary">Visualización estándar de fechas en tablas</small>
                                         </div>
                                         <select class="form-select" style="width: 200px;" x-model="settings.dateFormat">
                                             <option value="DD/MM/YYYY">DD/MM/YYYY (Día/Mes/Año)</option>
@@ -558,8 +740,8 @@
                                     
                                     <div class="setting-item d-flex justify-content-between align-items-center py-3">
                                         <div class="setting-info">
-                                            <h6 class="mb-1">Autoguardado</h6>
-                                            <small class="text-muted">Guardar cambios automáticamente al editar formularios</small>
+                                            <h6 class="mb-1 text-body">Autoguardado</h6>
+                                            <small class="text-body-secondary">Guardar cambios automáticamente al editar formularios</small>
                                         </div>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" x-model="settings.autoSave">
@@ -567,39 +749,41 @@
                                     </div>
                                 </div>
 
-                                <!-- Appearance Settings -->
-                                <div x-show="activeSection === 'appearance'" class="settings-section card p-4 border">
-                                    <h5 class="fw-bold mb-1">Apariencia & Tema</h5>
-                                    <p class="text-muted small mb-4">Personaliza el aspecto visual del Dashboard OmniStore</p>
+                                <!-- ======================================================= -->
+                                <!-- 3. APARIENCIA & TEMA                                    -->
+                                <!-- ======================================================= -->
+                                <div x-show="activeSection === 'appearance'" class="settings-section card p-4 border border-secondary-subtle">
+                                    <h5 class="fw-bold mb-1 text-body">Apariencia & Tema</h5>
+                                    <p class="text-body-secondary small mb-4">Personaliza el aspecto visual del Dashboard OmniStore</p>
                                     
                                     <div class="mb-4">
-                                        <h6 class="mb-3">Modo de Color</h6>
+                                        <h6 class="mb-3 text-body">Modo de Color</h6>
                                         <div class="row g-3">
                                             <div class="col-md-4">
-                                                <div class="theme-option p-3 rounded-3 border text-center cursor-pointer" :class="{ 'border-primary bg-primary bg-opacity-10': settings.theme === 'light' }" @click="setTheme('light')">
+                                                <div class="theme-option p-3 rounded-3 text-center cursor-pointer" :class="{ 'selected': settings.theme === 'light' }" @click="setTheme('light')">
                                                     <i class="bi bi-sun fs-3 text-warning"></i>
-                                                    <div class="fw-bold mt-2">Claro (Light)</div>
+                                                    <div class="fw-bold mt-2 text-body">Claro (Light)</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
-                                                <div class="theme-option p-3 rounded-3 border text-center cursor-pointer" :class="{ 'border-primary bg-primary bg-opacity-10': settings.theme === 'dark' }" @click="setTheme('dark')">
+                                                <div class="theme-option p-3 rounded-3 text-center cursor-pointer" :class="{ 'selected': settings.theme === 'dark' }" @click="setTheme('dark')">
                                                     <i class="bi bi-moon-stars fs-3 text-primary"></i>
-                                                    <div class="fw-bold mt-2">Oscuro (Dark)</div>
+                                                    <div class="fw-bold mt-2 text-body">Oscuro (Dark)</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
-                                                <div class="theme-option p-3 rounded-3 border text-center cursor-pointer" :class="{ 'border-primary bg-primary bg-opacity-10': settings.theme === 'auto' }" @click="setTheme('auto')">
+                                                <div class="theme-option p-3 rounded-3 text-center cursor-pointer" :class="{ 'selected': settings.theme === 'auto' }" @click="setTheme('auto')">
                                                     <i class="bi bi-circle-half fs-3 text-secondary"></i>
-                                                    <div class="fw-bold mt-2">Automático (Sistema)</div>
+                                                    <div class="fw-bold mt-2 text-body">Automático (Sistema)</div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom">
+                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom border-secondary-subtle">
                                         <div class="setting-info">
-                                            <h6 class="mb-1">Menú Lateral Colapsado por Defecto</h6>
-                                            <small class="text-muted">Maximiza el espacio para ver tablas de pedidos y productos</small>
+                                            <h6 class="mb-1 text-body">Menú Lateral Colapsado por Defecto</h6>
+                                            <small class="text-body-secondary">Maximiza el espacio para ver tablas de pedidos y productos</small>
                                         </div>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" x-model="settings.collapsedSidebar">
@@ -608,8 +792,8 @@
                                     
                                     <div class="setting-item d-flex justify-content-between align-items-center py-3">
                                         <div class="setting-info">
-                                            <h6 class="mb-1">Animaciones Suaves</h6>
-                                            <small class="text-muted">Transiciones interactivas en gráficas y menús</small>
+                                            <h6 class="mb-1 text-body">Animaciones Suaves</h6>
+                                            <small class="text-body-secondary">Transiciones interactivas en gráficas y menús</small>
                                         </div>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" x-model="settings.animations">
@@ -617,35 +801,37 @@
                                     </div>
                                 </div>
 
-                                <!-- Notifications Settings -->
-                                <div x-show="activeSection === 'notifications'" class="settings-section card p-4 border">
-                                    <h5 class="fw-bold mb-1">Notificaciones & Alertas</h5>
-                                    <p class="text-muted small mb-4">Configura cómo y cuándo recibir alertas sobre nuevos pedidos</p>
+                                <!-- ======================================================= -->
+                                <!-- 4. NOTIFICACIONES & ALERTAS                             -->
+                                <!-- ======================================================= -->
+                                <div x-show="activeSection === 'notifications'" class="settings-section card p-4 border border-secondary-subtle">
+                                    <h5 class="fw-bold mb-1 text-body">Notificaciones & Alertas</h5>
+                                    <p class="text-body-secondary small mb-4">Configura cómo y cuándo recibir alertas sobre nuevos pedidos</p>
                                     
-                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom">
+                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom border-secondary-subtle">
                                         <div class="setting-info">
-                                            <h6 class="mb-1">Notificaciones de Escritorio</h6>
-                                            <small class="text-muted">Alertas emergentes en el navegador al entrar un pedido</small>
+                                            <h6 class="mb-1 text-body">Notificaciones de Escritorio</h6>
+                                            <small class="text-body-secondary">Alertas emergentes en el navegador al entrar un pedido</small>
                                         </div>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" x-model="settings.notifications.desktop">
                                         </div>
                                     </div>
                                     
-                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom">
+                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom border-secondary-subtle">
                                         <div class="setting-info">
-                                            <h6 class="mb-1">Notificaciones por Correo</h6>
-                                            <small class="text-muted">Enviar resumen de pagos confirmados por PSE / Tarjeta</small>
+                                            <h6 class="mb-1 text-body">Notificaciones por Correo</h6>
+                                            <small class="text-body-secondary">Enviar resumen de pagos confirmados por PSE / Tarjeta</small>
                                         </div>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" x-model="settings.notifications.email">
                                         </div>
                                     </div>
                                     
-                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom">
+                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom border-secondary-subtle">
                                         <div class="setting-info">
-                                            <h6 class="mb-1">Alertas por WhatsApp Business</h6>
-                                            <small class="text-muted">Notificar a transportadoras Servientrega / Coordinadora</small>
+                                            <h6 class="mb-1 text-body">Alertas por WhatsApp Business</h6>
+                                            <small class="text-body-secondary">Notificar a transportadoras Servientrega / Coordinadora</small>
                                         </div>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" x-model="settings.notifications.whatsappAlerts">
@@ -654,8 +840,8 @@
                                     
                                     <div class="setting-item d-flex justify-content-between align-items-center py-3">
                                         <div class="setting-info">
-                                            <h6 class="mb-1">Sonidos de Notificación</h6>
-                                            <small class="text-muted">Reproducir audio al recibir una nueva venta</small>
+                                            <h6 class="mb-1 text-body">Sonidos de Notificación</h6>
+                                            <small class="text-body-secondary">Reproducir audio al recibir una nueva venta</small>
                                         </div>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" x-model="settings.notifications.sound">
@@ -663,25 +849,27 @@
                                     </div>
                                 </div>
 
-                                <!-- Privacy Settings -->
-                                <div x-show="activeSection === 'privacy'" class="settings-section card p-4 border">
-                                    <h5 class="fw-bold mb-1">Privacidad & Seguridad de Datos</h5>
-                                    <p class="text-muted small mb-4">Cumplimiento con la ley de protección de datos (Habeas Data Colombia)</p>
+                                <!-- ======================================================= -->
+                                <!-- 5. PRIVACIDAD & HABEAS DATA                             -->
+                                <!-- ======================================================= -->
+                                <div x-show="activeSection === 'privacy'" class="settings-section card p-4 border border-secondary-subtle">
+                                    <h5 class="fw-bold mb-1 text-body">Privacidad & Seguridad de Datos</h5>
+                                    <p class="text-body-secondary small mb-4">Cumplimiento con la ley de protección de datos (Habeas Data Colombia)</p>
                                     
-                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom">
+                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom border-secondary-subtle">
                                         <div class="setting-info">
-                                            <h6 class="mb-1">Métricas de Rendimiento Internas</h6>
-                                            <small class="text-muted">Recopilar métricas anónimas para optimizar velocidad del sitio</small>
+                                            <h6 class="mb-1 text-body">Métricas de Rendimiento Internas</h6>
+                                            <small class="text-body-secondary">Recopilar métricas anónimas para optimizar velocidad del sitio</small>
                                         </div>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" x-model="settings.privacy.analytics">
                                         </div>
                                     </div>
                                     
-                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom">
+                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom border-secondary-subtle">
                                         <div class="setting-info">
-                                            <h6 class="mb-1">Registro de Auditoría y Actividad</h6>
-                                            <small class="text-muted">Mantener log de inicios de sesión y cambios de roles</small>
+                                            <h6 class="mb-1 text-body">Registro de Auditoría y Actividad</h6>
+                                            <small class="text-body-secondary">Mantener log de inicios de sesión y cambios de roles</small>
                                         </div>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" x-model="settings.privacy.activityHistory">
@@ -689,8 +877,8 @@
                                     </div>
                                     
                                     <div class="mt-4">
-                                        <h6>Exportar Configuración</h6>
-                                        <p class="small text-muted">Descargar copia de respaldo de ajustes</p>
+                                        <h6 class="text-body">Exportar Configuración</h6>
+                                        <p class="small text-body-secondary">Descargar copia de respaldo de ajustes</p>
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <button class="btn btn-outline-primary w-100" @click="exportData('json')">
@@ -706,29 +894,31 @@
                                     </div>
                                 </div>
 
-                                <!-- Storage Settings -->
-                                <div x-show="activeSection === 'storage'" class="settings-section card p-4 border">
-                                    <h5 class="fw-bold mb-1">Almacenamiento & PostgreSQL Supabase</h5>
-                                    <p class="text-muted small mb-4">Estado del almacenamiento en caché y base de datos</p>
+                                <!-- ======================================================= -->
+                                <!-- 6. ALMACENAMIENTO & BASE DE DATOS                       -->
+                                <!-- ======================================================= -->
+                                <div x-show="activeSection === 'storage'" class="settings-section card p-4 border border-secondary-subtle">
+                                    <h5 class="fw-bold mb-1 text-body">Almacenamiento & PostgreSQL Supabase</h5>
+                                    <p class="text-body-secondary small mb-4">Estado del almacenamiento en caché y base de datos</p>
                                     
                                     <div class="mb-4">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <h6 class="mb-0">Uso de Almacenamiento</h6>
-                                            <span class="text-muted small" x-text="`${storageUsed} MB de ${storageTotal} MB utilizados`"></span>
+                                            <h6 class="mb-0 text-body">Uso de Almacenamiento</h6>
+                                            <span class="text-body-secondary small" x-text="`${storageUsed} MB de ${storageTotal} MB utilizados`"></span>
                                         </div>
                                         <div class="progress" style="height: 10px;">
                                             <div class="progress-bar bg-success" :style="`width: ${storagePercentage}%`"></div>
                                         </div>
                                         <div class="d-flex justify-content-between mt-1">
-                                            <small class="text-muted">Espacio Libre: <span x-text="`${storageRemaining} MB`"></span></small>
-                                            <small class="text-muted" x-text="`${storagePercentage.toFixed(1)}% utilizado`"></small>
+                                            <small class="text-body-secondary">Espacio Libre: <span x-text="`${storageRemaining} MB`"></span></small>
+                                            <small class="text-body-secondary" x-text="`${storagePercentage.toFixed(1)}% utilizado`"></small>
                                         </div>
                                     </div>
                                     
-                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom">
+                                    <div class="setting-item d-flex justify-content-between align-items-center py-3 border-bottom border-secondary-subtle">
                                         <div class="setting-info">
-                                            <h6 class="mb-1">Limpieza Automática de Caché</h6>
-                                            <small class="text-muted">Purgar imágenes temporales y sesiones expiradas cada 15 días</small>
+                                            <h6 class="mb-1 text-body">Limpieza Automática de Caché</h6>
+                                            <small class="text-body-secondary">Purgar imágenes temporales y sesiones expiradas cada 15 días</small>
                                         </div>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" x-model="settings.storage.autoCleanup">
@@ -747,12 +937,14 @@
                                     </div>
                                 </div>
 
-                                <!-- Cupones & Descuentos -->
-                                <div x-show="activeSection === 'coupons'" class="settings-section card p-4 border">
+                                <!-- ======================================================= -->
+                                <!-- 7. CUPONES & DESCUENTOS                                 -->
+                                <!-- ======================================================= -->
+                                <div x-show="activeSection === 'coupons'" class="settings-section card p-4 border border-secondary-subtle">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div>
-                                            <h5 class="fw-bold mb-1">Cupones & Códigos de Descuento</h5>
-                                            <p class="text-muted small mb-0">Administra los cupones activos para el carrito de compras en Colombia</p>
+                                            <h5 class="fw-bold mb-1 text-body">Cupones & Códigos de Descuento</h5>
+                                            <p class="text-body-secondary small mb-0">Administra los cupones activos para el carrito de compras en Colombia</p>
                                         </div>
                                         <button type="button" class="btn btn-primary btn-sm" @click="addNewCoupon()">
                                             <i class="bi bi-plus-lg me-1"></i>Crear Cupón
@@ -776,7 +968,7 @@
                                             <tbody>
                                                 <template x-for="c in couponsList" :key="c.id">
                                                     <tr>
-                                                        <td><span class="badge bg-primary-subtle text-primary border font-monospace fs-6" x-text="c.code"></span></td>
+                                                        <td><span class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace fs-6" x-text="c.code"></span></td>
                                                         <td x-text="c.type === 'percent' ? 'Porcentaje (%)' : (c.type === 'shipping' ? 'Envío Gratis' : 'Monto Fijo')"></td>
                                                         <td class="fw-bold text-success" x-text="c.type === 'percent' ? c.value + '%' : (c.type === 'shipping' ? '100% Envío' : formatCOP(c.value))"></td>
                                                         <td x-text="formatCOP(c.minSpend)"></td>
@@ -799,12 +991,14 @@
                                     </div>
                                 </div>
 
-                                <!-- Promociones & Banners -->
-                                <div x-show="activeSection === 'banners'" class="settings-section card p-4 border">
+                                <!-- ======================================================= -->
+                                <!-- 8. PROMOCIONES & BANNERS                                -->
+                                <!-- ======================================================= -->
+                                <div x-show="activeSection === 'banners'" class="settings-section card p-4 border border-secondary-subtle">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div>
-                                            <h5 class="fw-bold mb-1">Promociones & Banners de Tienda</h5>
-                                            <p class="text-muted small mb-0">Configuración visual estilo AliExpress & Temu del marketplace</p>
+                                            <h5 class="fw-bold mb-1 text-body">Promociones & Banners de Tienda</h5>
+                                            <p class="text-body-secondary small mb-0">Configuración visual estilo marketplace</p>
                                         </div>
                                         <button type="button" class="btn btn-primary btn-sm" @click="addNewBanner()">
                                             <i class="bi bi-plus-lg me-1"></i>Nuevo Banner
@@ -814,7 +1008,7 @@
                                     <div class="row g-3">
                                         <template x-for="b in bannersList" :key="b.id">
                                             <div class="col-md-6">
-                                                <div class="card h-100 border p-3 bg-light-subtle">
+                                                <div class="card h-100 border border-secondary-subtle p-3 bg-body">
                                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                                         <span class="badge bg-warning text-dark fw-bold" x-text="b.badge"></span>
                                                         <div class="d-flex align-items-center gap-2">
@@ -826,8 +1020,8 @@
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <h6 class="fw-bold mb-1" x-text="b.title"></h6>
-                                                    <p class="small text-muted mb-2">Ubicación: <strong x-text="b.position"></strong></p>
+                                                    <h6 class="fw-bold mb-1 text-body" x-text="b.title"></h6>
+                                                    <p class="small text-body-secondary mb-2">Ubicación: <strong class="text-body" x-text="b.position"></strong></p>
                                                     <div class="small text-truncate text-primary"><i class="bi bi-link-45deg me-1"></i><span x-text="b.target"></span></div>
                                                 </div>
                                             </div>
@@ -835,12 +1029,14 @@
                                     </div>
                                 </div>
 
-                                <!-- Campañas de Marketing -->
-                                <div x-show="activeSection === 'campaigns'" class="settings-section card p-4 border">
+                                <!-- ======================================================= -->
+                                <!-- 9. CAMPAÑAS DE MARKETING                                -->
+                                <!-- ======================================================= -->
+                                <div x-show="activeSection === 'campaigns'" class="settings-section card p-4 border border-secondary-subtle">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div>
-                                            <h5 class="fw-bold mb-1">Campañas Automatizadas (Email & WhatsApp)</h5>
-                                            <p class="text-muted small mb-0">Disparadores automáticos de conversión y retención para Colombia</p>
+                                            <h5 class="fw-bold mb-1 text-body">Campañas Automatizadas (Email & WhatsApp)</h5>
+                                            <p class="text-body-secondary small mb-0">Disparadores automáticos de conversión y retención para Colombia</p>
                                         </div>
                                         <button type="button" class="btn btn-primary btn-sm" @click="addNewCampaign()">
                                             <i class="bi bi-plus-lg me-1"></i>Nueva Campaña
@@ -849,13 +1045,13 @@
 
                                     <div class="list-group">
                                         <template x-for="camp in campaignsList" :key="camp.id">
-                                            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3">
+                                            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3 border-secondary-subtle">
                                                 <div>
                                                     <div class="d-flex align-items-center gap-2 mb-1">
-                                                        <h6 class="mb-0 fw-bold" x-text="camp.name"></h6>
-                                                        <span class="badge bg-success-subtle text-success border" x-text="camp.status"></span>
+                                                        <h6 class="mb-0 fw-bold text-body" x-text="camp.name"></h6>
+                                                        <span class="badge bg-success-subtle text-success border border-success-subtle" x-text="camp.status"></span>
                                                     </div>
-                                                    <small class="text-muted">Canal: <strong class="text-body" x-text="camp.channel"></strong> &bull; Disparador: <span x-text="camp.trigger"></span></small>
+                                                    <small class="text-body-secondary">Canal: <strong class="text-body" x-text="camp.channel"></strong> &bull; Disparador: <span x-text="camp.trigger"></span></small>
                                                 </div>
                                                 <div class="text-end">
                                                     <div class="fw-bold text-primary" x-text="'Conversión: ' + camp.conversions"></div>
@@ -868,12 +1064,14 @@
                                     </div>
                                 </div>
 
-                                <!-- Transportadoras Colombia -->
-                                <div x-show="activeSection === 'carriers'" class="settings-section card p-4 border">
+                                <!-- ======================================================= -->
+                                <!-- 10. TRANSPORTADORAS COLOMBIA                            -->
+                                <!-- ======================================================= -->
+                                <div x-show="activeSection === 'carriers'" class="settings-section card p-4 border border-secondary-subtle">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div>
-                                            <h5 class="fw-bold mb-1">Transportadoras Integradas (Colombia)</h5>
-                                            <p class="text-muted small mb-0">Generación automática de guías y cálculo de fletes</p>
+                                            <h5 class="fw-bold mb-1 text-body">Transportadoras Integradas (Colombia)</h5>
+                                            <p class="text-body-secondary small mb-0">Generación automática de guías y cálculo de fletes</p>
                                         </div>
                                         <button type="button" class="btn btn-outline-primary btn-sm" @click="showNotification('Conexión con transportadoras sincronizada', 'success')">
                                             <i class="bi bi-arrow-repeat me-1"></i>Sincronizar APIs
@@ -894,10 +1092,10 @@
                                             <tbody>
                                                 <template x-for="car in carriersList" :key="car.id">
                                                     <tr>
-                                                        <td class="fw-bold"><i class="bi bi-truck me-2 text-primary"></i><span x-text="car.name"></span></td>
-                                                        <td><span class="badge bg-light text-dark border font-monospace" x-text="car.code"></span></td>
+                                                        <td class="fw-bold text-body"><i class="bi bi-truck me-2 text-primary"></i><span x-text="car.name"></span></td>
+                                                        <td><span class="badge bg-body-tertiary text-body border border-secondary-subtle font-monospace" x-text="car.code"></span></td>
                                                         <td x-text="car.coverage"></td>
-                                                        <td><span class="badge bg-success-subtle text-success border"><i class="bi bi-check-circle-fill me-1"></i><span x-text="car.status"></span></span></td>
+                                                        <td><span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-check-circle-fill me-1"></i><span x-text="car.status"></span></span></td>
                                                         <td class="text-end">
                                                             <a :href="car.trackingUrl" target="_blank" class="btn btn-sm btn-outline-secondary">
                                                                 <i class="bi bi-box-arrow-up-right me-1"></i>Portal
@@ -910,27 +1108,29 @@
                                     </div>
                                 </div>
 
-                                <!-- Zonas & Tarifas de Envío -->
-                                <div x-show="activeSection === 'shipping-rates'" class="settings-section card p-4 border">
+                                <!-- ======================================================= -->
+                                <!-- 11. ZONAS & TARIFAS DE ENVÍO                            -->
+                                <!-- ======================================================= -->
+                                <div x-show="activeSection === 'shipping-rates'" class="settings-section card p-4 border border-secondary-subtle">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div>
-                                            <h5 class="fw-bold mb-1">Zonas & Tarifas de Envío Nacional (COP)</h5>
-                                            <p class="text-muted small mb-0">Configura fletes por ciudad y reglas de envío gratis</p>
+                                            <h5 class="fw-bold mb-1 text-body">Zonas & Tarifas de Envío Nacional (COP)</h5>
+                                            <p class="text-body-secondary small mb-0">Configura fletes por ciudad y reglas de envío gratis</p>
                                         </div>
                                         <button type="button" class="btn btn-primary btn-sm" @click="saveShippingRates()">
                                             <i class="bi bi-save me-1"></i>Guardar Tarifas
                                         </button>
                                     </div>
 
-                                    <div class="p-3 mb-4 rounded border bg-primary bg-opacity-10 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                    <div class="p-3 mb-4 rounded border border-primary-subtle bg-primary-subtle bg-opacity-10 d-flex justify-content-between align-items-center flex-wrap gap-2">
                                         <div>
                                             <h6 class="fw-bold text-primary mb-1"><i class="bi bi-gift-fill me-2"></i>Regla de Envío Gratis Promocional</h6>
-                                            <small class="text-muted">Los pedidos superiores a este monto tendrán flete $ 0 COP automáticamente.</small>
+                                            <small class="text-body-secondary">Los pedidos superiores a este monto tendrán flete $ 0 COP automáticamente.</small>
                                         </div>
                                         <div class="d-flex align-items-center gap-2">
-                                            <span class="fw-bold small">Monto Mínimo:</span>
+                                            <span class="fw-bold small text-body">Monto Mínimo:</span>
                                             <input type="number" class="form-control form-control-sm text-end fw-bold" style="width: 140px;" x-model="settings.freeShippingThreshold">
-                                            <span class="small">COP</span>
+                                            <span class="small text-body">COP</span>
                                         </div>
                                     </div>
 
@@ -946,7 +1146,7 @@
                                             <tbody>
                                                 <template x-for="z in shippingZones" :key="z.id">
                                                     <tr>
-                                                        <td class="fw-bold" x-text="z.zone"></td>
+                                                        <td class="fw-bold text-body" x-text="z.zone"></td>
                                                         <td x-text="z.deliveryTime"></td>
                                                         <td>
                                                             <div class="input-group input-group-sm" style="max-width: 180px;">
@@ -962,12 +1162,14 @@
                                     </div>
                                 </div>
 
-                                <!-- Páginas Institucionales & Blog -->
-                                <div x-show="activeSection === 'pages'" class="settings-section card p-4 border">
+                                <!-- ======================================================= -->
+                                <!-- 12. PÁGINAS INSTITUCIONALES                             -->
+                                <!-- ======================================================= -->
+                                <div x-show="activeSection === 'pages'" class="settings-section card p-4 border border-secondary-subtle">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div>
-                                            <h5 class="fw-bold mb-1">Páginas Institucionales & Ley 1480 / 1581</h5>
-                                            <p class="text-muted small mb-0">Cumplimiento legal y políticas de comercio electrónico para Colombia</p>
+                                            <h5 class="fw-bold mb-1 text-body">Páginas Institucionales & Ley 1480 / 1581</h5>
+                                            <p class="text-body-secondary small mb-0">Cumplimiento legal y políticas de comercio electrónico para Colombia</p>
                                         </div>
                                         <button type="button" class="btn btn-primary btn-sm" @click="addNewPage()">
                                             <i class="bi bi-plus-lg me-1"></i>Nueva Página
@@ -976,13 +1178,13 @@
 
                                     <div class="list-group">
                                         <template x-for="p in pagesList" :key="p.id">
-                                            <div class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                            <div class="list-group-item d-flex justify-content-between align-items-center p-3 border-secondary-subtle">
                                                 <div>
-                                                    <h6 class="fw-bold mb-1" x-text="p.title"></h6>
-                                                    <small class="text-muted">Slug: <code x-text="'/' + p.slug"></code> &bull; Actualizado: <span x-text="p.updated"></span></small>
+                                                    <h6 class="fw-bold mb-1 text-body" x-text="p.title"></h6>
+                                                    <small class="text-body-secondary">Slug: <code x-text="'/' + p.slug"></code> &bull; Actualizado: <span x-text="p.updated"></span></small>
                                                 </div>
                                                 <div class="d-flex gap-2 align-items-center">
-                                                    <span class="badge bg-success-subtle text-success border" x-text="p.status"></span>
+                                                    <span class="badge bg-success-subtle text-success border border-success-subtle" x-text="p.status"></span>
                                                     <button type="button" class="btn btn-sm btn-outline-primary" @click="editPage(p)">
                                                         <i class="bi bi-pencil me-1"></i>Editar
                                                     </button>
@@ -992,60 +1194,64 @@
                                     </div>
                                 </div>
 
-                                <!-- Menús & Footer -->
-                                <div x-show="activeSection === 'menus'" class="settings-section card p-4 border">
-                                    <h5 class="fw-bold mb-1">Menús de Navegación & Footer</h5>
-                                    <p class="text-muted small mb-4">Estructura del menú superior de categorías y pie de página del Marketplace</p>
+                                <!-- ======================================================= -->
+                                <!-- 13. MENÚS & FOOTER                                      -->
+                                <!-- ======================================================= -->
+                                <div x-show="activeSection === 'menus'" class="settings-section card p-4 border border-secondary-subtle">
+                                    <h5 class="fw-bold mb-1 text-body">Menús de Navegación & Footer</h5>
+                                    <p class="text-body-secondary small mb-4">Estructura del menú superior de categorías y pie de página del Marketplace</p>
 
                                     <div class="row g-4">
                                         <div class="col-md-6">
-                                            <div class="card p-3 border">
-                                                <h6 class="fw-bold mb-3"><i class="bi bi-list-nested me-2 text-primary"></i>Menú de Categorías (Header)</h6>
+                                            <div class="card p-3 border border-secondary-subtle bg-body">
+                                                <h6 class="fw-bold mb-3 text-body"><i class="bi bi-list-nested me-2 text-primary"></i>Menú de Categorías (Header)</h6>
                                                 <ul class="list-group list-group-flush small">
-                                                    <li class="list-group-item d-flex justify-content-between align-items-center">1. Electrónica & Audio <span class="badge bg-primary">Visible</span></li>
-                                                    <li class="list-group-item d-flex justify-content-between align-items-center">2. Gamer & Computadores <span class="badge bg-primary">Visible</span></li>
-                                                    <li class="list-group-item d-flex justify-content-between align-items-center">3. Hogar & Cocina <span class="badge bg-primary">Visible</span></li>
-                                                    <li class="list-group-item d-flex justify-content-between align-items-center">4. Moda, Calzado & Belleza <span class="badge bg-primary">Visible</span></li>
-                                                    <li class="list-group-item d-flex justify-content-between align-items-center">5. Super Ofertas Temu/Ali <span class="badge bg-danger">Destacado</span></li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-body">1. Electrónica & Audio <span class="badge bg-primary">Visible</span></li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-body">2. Gamer & Computadores <span class="badge bg-primary">Visible</span></li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-body">3. Hogar & Cocina <span class="badge bg-primary">Visible</span></li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-body">4. Moda, Calzado & Belleza <span class="badge bg-primary">Visible</span></li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-body">5. Super Ofertas OmniStore <span class="badge bg-danger">Destacado</span></li>
                                                 </ul>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="card p-3 border">
-                                                <h6 class="fw-bold mb-3"><i class="bi bi-layout-text-window-reverse me-2 text-primary"></i>Enlaces del Footer</h6>
+                                            <div class="card p-3 border border-secondary-subtle bg-body">
+                                                <h6 class="fw-bold mb-3 text-body"><i class="bi bi-layout-text-window-reverse me-2 text-primary"></i>Enlaces del Footer</h6>
                                                 <ul class="list-group list-group-flush small">
-                                                    <li class="list-group-item d-flex justify-content-between align-items-center">Sobre OmniStore Colombia <i class="bi bi-check2 text-success"></i></li>
-                                                    <li class="list-group-item d-flex justify-content-between align-items-center">Rastreo de Guías Servientrega <i class="bi bi-check2 text-success"></i></li>
-                                                    <li class="list-group-item d-flex justify-content-between align-items-center">Centro de Ayuda & PQRS <i class="bi bi-check2 text-success"></i></li>
-                                                    <li class="list-group-item d-flex justify-content-between align-items-center">Superintendencia de Industria y Comercio (SIC) <i class="bi bi-check2 text-success"></i></li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-body">Sobre OmniStore Colombia <i class="bi bi-check2 text-success"></i></li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-body">Rastreo de Guías Servientrega <i class="bi bi-check2 text-success"></i></li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-body">Centro de Ayuda & PQRS <i class="bi bi-check2 text-success"></i></li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-body">Superintendencia de Industria y Comercio (SIC) <i class="bi bi-check2 text-success"></i></li>
                                                 </ul>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Integraciones del Sistema -->
-                                <div x-show="activeSection === 'integrations'" class="settings-section card p-4 border">
+                                <!-- ======================================================= -->
+                                <!-- 14. INTEGRACIONES                                       -->
+                                <!-- ======================================================= -->
+                                <div x-show="activeSection === 'integrations'" class="settings-section card p-4 border border-secondary-subtle">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div>
-                                            <h5 class="fw-bold mb-1">Integraciones & Pasarelas de Pago Colombia</h5>
-                                            <p class="text-muted small mb-0">Conexión directa con pasarelas financieras y base de datos cloud</p>
+                                            <h5 class="fw-bold mb-1 text-body">Integraciones & Pasarelas de Pago Colombia</h5>
+                                            <p class="text-body-secondary small mb-0">Conexión directa con pasarelas financieras y base de datos cloud</p>
                                         </div>
                                     </div>
 
                                     <div class="row g-3">
                                         <template x-for="item in integrationsList" :key="item.id">
                                             <div class="col-md-6">
-                                                <div class="card h-100 border p-3">
+                                                <div class="card h-100 border border-secondary-subtle p-3 bg-body">
                                                     <div class="d-flex align-items-center justify-content-between mb-2">
                                                         <div class="d-flex align-items-center gap-2">
                                                             <i :class="item.icon" class="fs-4 text-primary"></i>
-                                                            <h6 class="fw-bold mb-0" x-text="item.name"></h6>
+                                                            <h6 class="fw-bold mb-0 text-body" x-text="item.name"></h6>
                                                         </div>
-                                                        <span class="badge bg-success-subtle text-success border"><i class="bi bi-check-circle-fill me-1"></i>Activo</span>
+                                                        <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-check-circle-fill me-1"></i>Activo</span>
                                                     </div>
-                                                    <small class="text-muted mb-2 d-block" x-text="item.type"></small>
-                                                    <p class="small mb-3"><strong class="text-body">Métodos:</strong> <span class="text-muted" x-text="item.methods"></span></p>
+                                                    <small class="text-body-secondary mb-2 d-block" x-text="item.type"></small>
+                                                    <p class="small mb-3"><strong class="text-body">Métodos:</strong> <span class="text-body-secondary" x-text="item.methods"></span></p>
                                                     <div class="mt-auto d-flex justify-content-between align-items-center">
                                                         <span class="small text-success fw-medium" x-text="item.status"></span>
                                                         <button type="button" class="btn btn-sm btn-outline-primary" @click="testIntegration(item)">
@@ -1082,7 +1288,6 @@
 
         </div> <!-- /.admin-wrapper -->
     </div>
-
 
     <!-- Main App Script -->
     <script type="module" src="./scripts/main.js"></script>

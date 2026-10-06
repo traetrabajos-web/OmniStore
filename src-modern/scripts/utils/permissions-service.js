@@ -346,6 +346,11 @@ export function canAccessPage(pageName, user = getActiveSessionUser()) {
     return true;
   }
 
+  // Settings page contains user profile and account configuration accessible to all authenticated users
+  if (clean === 'settings') {
+    return true;
+  }
+
   // Find module matching page
   const mod = MODULES_PERMISSIONS_CONFIG.find(m => 
     m.pageDataAttr === clean || 

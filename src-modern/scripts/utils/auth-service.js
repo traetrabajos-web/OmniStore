@@ -4,7 +4,7 @@
 
 import Swal from 'sweetalert2';
 import { getSupabaseClient } from './supabase.js';
-import { addUser } from './store-data.js';
+import { addUser, getUsersList, saveUsersList } from './store-data.js';
 import { canAccessPage, applySidebarPermissions, hasPermission, getUserPermissions, MODULES_PERMISSIONS_CONFIG } from './permissions-service.js';
 
 const SESSION_STORAGE_KEY = 'omnistore_user_session';
@@ -490,5 +490,61 @@ export function initUserHeaderDropdown() {
       logoutUser();
     });
   });
+}
+
+/**
+ * Updates the active logged-in user session in localStorage, Central Store, and Supabase
+ * @param {object} updatedFields - Object with user fields to update (e.g. name, email, phone, city, avatar, etc.)
+ * @returns {object|null} The updated user session object
+ */
+export async function updateCurrentUserSession(updatedFields = {}) {
+  const current = getCurrentUser();
+  if (!current) return null;
+
+  const updated = {
+    ...current,
+    ...updatedFields,
+    updatedAt: new Date().toISOString()
+  };
+
+  try {
+    localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(updated));
+  } catch (e) {
+    console.warn('Could not update localStorage session:', e);
+  }
+
+  // Update in central store users list
+  try {
+    const users = getUsersList();
+    const idx = users.findIndex(u => (current.id && u.id === current.id) || (current.email && u.email && u.email.toLowerCase() === current.email.toLowerCase()));
+    if (idx !== -1) {
+      users[idx] = { ...users[idx], ...updatedFields };
+      saveUsersList(users);
+    }
+  } catch (e) {
+    console.warn('Could not update user in central store:', e);
+  }
+
+  // Sync with Supabase PostgreSQL if available
+  const supabase = getSupabaseClient();
+  if (supabase && current.id) {
+    try {
+      await supabase
+        .from('users')
+        .update(updatedFields)
+        .eq('id', current.id);
+    } catch (e) {
+      console.warn('Supabase profile sync warning:', e);
+    }
+  }
+
+  // Update DOM elements on page
+  initUserHeaderDropdown();
+
+  // Dispatch events to update all open tabs and components
+  window.dispatchEvent(new CustomEvent('omnistore:auth-changed', { detail: updated }));
+  window.dispatchEvent(new CustomEvent('omnistore:user-updated', { detail: updated }));
+
+  return updated;
 }
 
