@@ -6,6 +6,7 @@ import { categorical, accent, axisInk, gridLine, surfacePanel } from '../utils/c
 import { createSearchComponent } from '../utils/search-component.js';
 import {
   getProductsCatalog,
+  restoreFullCatalog,
   addProductToCatalog,
   updateProductInCatalog,
   deleteProductFromCatalog,
@@ -636,6 +637,30 @@ document.addEventListener('alpine:init', () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    },
+
+    reloadFullCatalog() {
+      Swal.fire({
+        title: '¿Cargar Catálogo Completo?',
+        text: 'Se cargarán todos los 44+ productos oficiales en todas las categorías (Smartphones, Laptops, Audio, Gaming, Hogar, Calzado, Ropa, Belleza y Herramientas).',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ff5722',
+        confirmButtonText: 'Sí, cargar todo el catálogo',
+        cancelButtonText: 'Cancelar'
+      }).then((res) => {
+        if (res.isConfirmed) {
+          this.products = restoreFullCatalog();
+          this.filterProducts();
+          this.calculateStats();
+          Swal.fire({
+            icon: 'success',
+            title: '¡Catálogo Completo Restaurado!',
+            text: `Se han cargado y sincronizado ${this.products.length} productos en la plataforma.`,
+            confirmButtonColor: '#ff5722'
+          });
+        }
+      });
     },
 
     importDemoProducts() {
