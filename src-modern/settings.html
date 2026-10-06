@@ -632,37 +632,54 @@
 
                                     <!-- Security & Password Change Section -->
                                     <div class="card p-3 border border-secondary-subtle bg-body mb-4">
-                                        <h6 class="fw-bold mb-3 text-body"><i class="bi bi-shield-lock-fill me-2 text-danger"></i>Seguridad & Cambio de Contraseña</h6>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h6 class="fw-bold mb-0 text-body"><i class="bi bi-shield-lock-fill me-2 text-danger"></i>Seguridad & Gestión de Contraseña</h6>
+                                            <span class="badge bg-info-subtle text-info border border-info-subtle small">
+                                                <i class="bi bi-key me-1"></i>Credencial Activa
+                                            </span>
+                                        </div>
                                         <div class="row g-3">
                                             <div class="col-md-4">
-                                                <label class="form-label small fw-semibold text-body">Contraseña Actual</label>
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <label class="form-label small fw-semibold text-body mb-0">Contraseña Actual</label>
+                                                    <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 0.65rem;">
+                                                        <i class="bi bi-check-circle me-1"></i>En Sesión
+                                                    </span>
+                                                </div>
                                                 <div class="input-group input-group-sm">
-                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-lock"></i></span>
+                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-lock text-primary"></i></span>
                                                     <input :type="passwordForm.showCurrent ? 'text' : 'password'" class="form-control" placeholder="Contraseña actual" x-model="passwordForm.currentPassword">
-                                                    <button class="btn btn-outline-secondary" type="button" @click="passwordForm.showCurrent = !passwordForm.showCurrent">
-                                                        <i :class="passwordForm.showCurrent ? 'bi-eye-slash' : 'bi-eye'"></i>
+                                                    <button class="btn btn-outline-secondary" type="button" @click="passwordForm.showCurrent = !passwordForm.showCurrent" :title="passwordForm.showCurrent ? 'Ocultar contraseña' : 'Ver contraseña actual'">
+                                                        <i :class="passwordForm.showCurrent ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
                                                     </button>
                                                 </div>
+                                                <small class="text-body-secondary" style="font-size: 0.72rem;">Clave activa del usuario logueado.</small>
                                             </div>
                                             <div class="col-md-4">
-                                                <label class="form-label small fw-semibold text-body">Nueva Contraseña</label>
+                                                <div class="mb-1">
+                                                    <label class="form-label small fw-semibold text-body mb-0">Nueva Contraseña</label>
+                                                </div>
                                                 <div class="input-group input-group-sm">
-                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-key"></i></span>
+                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-key text-warning"></i></span>
                                                     <input :type="passwordForm.showNew ? 'text' : 'password'" class="form-control" placeholder="Mínimo 6 caracteres" x-model="passwordForm.newPassword">
-                                                    <button class="btn btn-outline-secondary" type="button" @click="passwordForm.showNew = !passwordForm.showNew">
-                                                        <i :class="passwordForm.showNew ? 'bi-eye-slash' : 'bi-eye'"></i>
+                                                    <button class="btn btn-outline-secondary" type="button" @click="passwordForm.showNew = !passwordForm.showNew" :title="passwordForm.showNew ? 'Ocultar' : 'Mostrar'">
+                                                        <i :class="passwordForm.showNew ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
                                                     </button>
                                                 </div>
+                                                <small class="text-body-secondary" style="font-size: 0.72rem;">Mínimo 6 caracteres para actualizar.</small>
                                             </div>
                                             <div class="col-md-4">
-                                                <label class="form-label small fw-semibold text-body">Confirmar Contraseña</label>
+                                                <div class="mb-1">
+                                                    <label class="form-label small fw-semibold text-body mb-0">Confirmar Contraseña</label>
+                                                </div>
                                                 <div class="input-group input-group-sm">
-                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-check2-square"></i></span>
-                                                    <input :type="passwordForm.showConfirm ? 'text' : 'password'" class="form-control" placeholder="Repite la contraseña" x-model="passwordForm.confirmPassword">
-                                                    <button class="btn btn-outline-secondary" type="button" @click="passwordForm.showConfirm = !passwordForm.showConfirm">
-                                                        <i :class="passwordForm.showConfirm ? 'bi-eye-slash' : 'bi-eye'"></i>
+                                                    <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-check2-square text-success"></i></span>
+                                                    <input :type="passwordForm.showConfirm ? 'text' : 'password'" class="form-control" placeholder="Repite la nueva contraseña" x-model="passwordForm.confirmPassword">
+                                                    <button class="btn btn-outline-secondary" type="button" @click="passwordForm.showConfirm = !passwordForm.showConfirm" :title="passwordForm.showConfirm ? 'Ocultar' : 'Mostrar'">
+                                                        <i :class="passwordForm.showConfirm ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
                                                     </button>
                                                 </div>
+                                                <small class="text-body-secondary" style="font-size: 0.72rem;">Debe coincidir con la nueva contraseña.</small>
                                             </div>
                                         </div>
                                         <div class="mt-3 text-end">

@@ -1,7 +1,7 @@
 import Alpine from 'alpinejs';
 import Swal from 'sweetalert2';
 import { createSearchComponent } from '../utils/search-component.js';
-import { getCurrentUser, updateCurrentUserSession, logoutUser } from '../utils/auth-service.js';
+import { getCurrentUser, updateCurrentUserSession, logoutUser, DEMO_ACCOUNTS } from '../utils/auth-service.js';
 import { hasPermission } from '../utils/permissions-service.js';
 import {
   getStoreSettings,
@@ -234,14 +234,20 @@ document.addEventListener('alpine:init', () => {
           ? 'Super Administrador' 
           : (user.role === 'vendor' ? 'Vendedor' : (user.role === 'support' ? 'Soporte' : (user.role === 'accountant' ? 'Contabilidad' : 'Cliente')));
 
+        // Clean user name if it contains role suffix
+        let cleanName = (user.name || 'Alejandro Morales').replace(/\s*\((SuperAdmin|Store Manager|Cliente|Vendedor|Admin|Cajero\s*\d*)\)/gi, '').trim();
+
+        // Retrieve current active password
+        const activePassword = user.password || user.password_hash || (user.email === 'admin@omnistore.com' ? 'Admin*2026' : (user.role === 'vendor' ? 'Vendor*2026' : 'Cliente*2026'));
+
         this.profileForm = {
           id: user.id || null,
-          name: user.name || 'Usuario OmniStore',
+          name: cleanName,
           email: user.email || '',
           phone: user.phone || '+57 (310) 845-9210',
           city: user.city || 'Cartagena de Indias',
           department: user.department || 'Bolívar',
-          address: user.address || 'Cra 3 # 7-15, Bocagrande',
+          address: user.address || 'Cra 3 # 7-15, Bocagrande, Cartagena',
           bio: user.bio || (user.role === 'admin' ? 'Administrador principal de la plataforma OmniStore Colombia.' : 'Gestor de ventas y operaciones de tienda.'),
           role: user.role || 'admin',
           roleLabel: roleLabel,
@@ -249,6 +255,9 @@ document.addEventListener('alpine:init', () => {
           status: user.status || 'active',
           joinDate: user.joinDate || '2026-01-15'
         };
+
+        // Populate current active password in the form so it is verifiable & accessible
+        this.passwordForm.currentPassword = activePassword;
       }
     },
 
@@ -296,7 +305,8 @@ document.addEventListener('alpine:init', () => {
           department: this.profileForm.department.trim(),
           address: this.profileForm.address.trim(),
           bio: this.profileForm.bio.trim(),
-          avatar: this.profileForm.avatar
+          avatar: this.profileForm.avatar,
+          password: this.passwordForm.currentPassword || this.currentUser?.password
         });
 
         this.currentUser = updated;
@@ -322,7 +332,7 @@ document.addEventListener('alpine:init', () => {
     async changeUserPassword() {
       const { currentPassword, newPassword, confirmPassword } = this.passwordForm;
       if (!currentPassword) {
-        this.showNotification('Ingresa tu contraseña actual', 'error');
+        this.showNotification('Ingresa o verifica tu contraseña actual', 'error');
         return;
       }
       if (!newPassword || newPassword.length < 6) {
@@ -336,27 +346,43 @@ document.addEventListener('alpine:init', () => {
 
       this.isChangingPassword = true;
       try {
-        await updateCurrentUserSession({
-          password_hash: newPassword,
-          password: newPassword
+        const updated = await updateCurrentUserSession({
+          password: newPassword,
+          password_hash: newPassword
         });
 
-        this.passwordForm.currentPassword = '';
+        // Update in-memory DEMO_ACCOUNTS if matching email
+        const demo = DEMO_ACCOUNTS.find(d => d.email.toLowerCase() === this.profileForm.email.toLowerCase());
+        if (demo) {
+          demo.password = newPassword;
+        }
+
+        this.currentUser = updated;
+        this.passwordForm.currentPassword = newPassword;
         this.passwordForm.newPassword = '';
         this.passwordForm.confirmPassword = '';
 
         Swal.fire({
           icon: 'success',
-          title: 'Contraseña Actualizada',
-          text: 'Tu contraseña de acceso ha sido actualizada de forma segura.',
-          timer: 2500,
-          showConfirmButton: false,
+          title: '¡Contraseña Actualizada!',
+          html: `
+            <div class="text-start py-2">
+              <p class="mb-2 text-body">Tu contraseña de acceso ha sido cambiada y sincronizada correctamente en tu cuenta.</p>
+              <div class="p-2 rounded bg-body-tertiary border border-secondary-subtle font-monospace small text-body">
+                <strong>Nueva clave activa:</strong> ${newPassword}
+              </div>
+            </div>
+          `,
+          timer: 3500,
+          showConfirmButton: true,
+          confirmButtonColor: '#ff6600',
+          confirmButtonText: 'Entendido',
           customClass: {
             popup: 'border border-secondary-subtle shadow-lg bg-body text-body rounded-4'
           }
         });
       } catch (e) {
-        this.showNotification('Error al actualizar contraseña', 'error');
+        this.showNotification('Error al actualizar contraseña: ' + e.message, 'error');
       } finally {
         this.isChangingPassword = false;
       }

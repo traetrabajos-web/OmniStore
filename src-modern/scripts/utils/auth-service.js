@@ -20,7 +20,12 @@ export const DEMO_ACCOUNTS = [
     roleLabel: 'Super Administrador',
     avatar: './assets/images/avatar-placeholder.svg',
     defaultRedirect: './index.html',
-    badgeClass: 'bg-primary'
+    badgeClass: 'bg-primary',
+    phone: '+57 (310) 845-9210',
+    city: 'Cartagena de Indias',
+    department: 'Bolívar',
+    address: 'Cra 3 # 7-15, Bocagrande, Cartagena',
+    bio: 'Administrador principal de la plataforma OmniStore Colombia.'
   },
   {
     id: 2,
@@ -31,7 +36,12 @@ export const DEMO_ACCOUNTS = [
     roleLabel: 'Vendedor',
     avatar: './assets/images/avatar-placeholder.svg',
     defaultRedirect: './orders.html',
-    badgeClass: 'bg-info'
+    badgeClass: 'bg-info',
+    phone: '+57 (315) 720-4491',
+    city: 'Cartagena de Indias',
+    department: 'Bolívar',
+    address: 'Calle Real de Manga # 22-10, Cartagena',
+    bio: 'Gestor de ventas y despacho de pedidos en tienda.'
   },
   {
     id: 3,
@@ -42,7 +52,12 @@ export const DEMO_ACCOUNTS = [
     roleLabel: 'Cliente',
     avatar: './assets/images/avatar-placeholder.svg',
     defaultRedirect: './marketplace.html',
-    badgeClass: 'bg-success'
+    badgeClass: 'bg-success',
+    phone: '+57 (301) 450-8822',
+    city: 'Cartagena de Indias',
+    department: 'Bolívar',
+    address: 'Cra 1 # 10-25, Bocagrande, Cartagena',
+    bio: 'Cliente frecuente de compras en marketplace.'
   }
 ];
 
@@ -91,6 +106,7 @@ export async function loginUser(email, password, remember = true) {
       if (data.success && data.user) {
         const userSession = {
           ...data.user,
+          password: cleanPassword,
           loggedAt: new Date().toISOString(),
           source: 'postgresql_db'
         };
@@ -104,7 +120,6 @@ export async function loginUser(email, password, remember = true) {
     } else {
       const errData = await apiRes.json().catch(() => ({}));
       if (errData.error) {
-        // Known error from database
         return { success: false, error: errData.error };
       }
     }
@@ -128,11 +143,14 @@ export async function loginUser(email, password, remember = true) {
             id: data.id,
             name: data.name || 'Usuario OmniStore',
             email: data.email,
+            password: cleanPassword,
             role: data.role || 'customer',
             avatar: data.avatar || './assets/images/avatar-placeholder.svg',
-            phone: data.phone || '',
-            city: data.city || '',
-            country: data.country || '',
+            phone: data.phone || '+57 (310) 845-9210',
+            city: data.city || 'Cartagena de Indias',
+            department: data.department || 'Bolívar',
+            address: data.address || 'Cra 3 # 7-15, Bocagrande, Cartagena',
+            bio: data.bio || '',
             status: data.status || 'active',
             loggedAt: new Date().toISOString(),
             source: 'supabase_db'
@@ -163,8 +181,14 @@ export async function loginUser(email, password, remember = true) {
       id: demoMatch.id,
       name: demoMatch.name,
       email: demoMatch.email,
+      password: demoMatch.password,
       role: demoMatch.role,
       avatar: demoMatch.avatar,
+      phone: demoMatch.phone,
+      city: demoMatch.city,
+      department: demoMatch.department,
+      address: demoMatch.address,
+      bio: demoMatch.bio,
       loggedAt: new Date().toISOString(),
       source: 'seed_account'
     };

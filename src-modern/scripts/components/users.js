@@ -27,7 +27,7 @@ import {
 const DEMO_COLOMBIAN_USERS = [
   {
     id: 1,
-    name: 'Alejandro Morales (SuperAdmin)',
+    name: 'Alejandro Morales',
     email: 'admin@omnistore.com',
     role: 'admin',
     status: 'active',
@@ -41,7 +41,7 @@ const DEMO_COLOMBIAN_USERS = [
   },
   {
     id: 2,
-    name: 'Sofía Valenzuela (Store Manager)',
+    name: 'Sofía Valenzuela',
     email: 'vendor@omnistore.com',
     role: 'vendor',
     status: 'active',
@@ -55,7 +55,7 @@ const DEMO_COLOMBIAN_USERS = [
   },
   {
     id: 3,
-    name: 'Carlos Mendoza (Cliente)',
+    name: 'Carlos Mendoza',
     email: 'cliente@omnistore.com',
     role: 'customer',
     status: 'active',
