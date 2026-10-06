@@ -673,13 +673,13 @@
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <div class="d-flex justify-content-between">
-                                                            <p class="mb-1 small">
-                                                                <strong x-text="activity.user"></strong> 
-                                                                <span x-text="activity.action"></span>
+                                                            <p class="mb-1 small text-body">
+                                                                <strong class="text-body fw-semibold" x-text="activity.user"></strong> 
+                                                                <span class="text-body-secondary" x-text="activity.action"></span>
                                                             </p>
-                                                            <small class="text-muted" x-text="activity.time"></small>
+                                                            <small class="text-body-secondary" x-text="activity.time"></small>
                                                         </div>
-                                                        <small class="text-muted" x-text="activity.details"></small>
+                                                        <small class="text-body-secondary" x-text="activity.details"></small>
                                                     </div>
                                                 </div>
                                             </template>
@@ -912,17 +912,17 @@
                                                     <td>
                                                         <div class="d-flex align-items-center">
                                                             <img :src="user.avatar || './assets/images/avatar-placeholder.svg'" 
-                                                                 class="rounded-circle me-2 border" 
+                                                                 class="rounded-circle me-2 border border-secondary-subtle" 
                                                                  width="36" 
                                                                  height="36"
                                                                  :alt="user.name">
                                                             <div>
-                                                                <div class="fw-medium text-body" x-text="user.name"></div>
-                                                                <small class="text-muted" x-text="'ID: #' + user.id"></small>
+                                                                <div class="fw-semibold text-body user-name" x-text="user.name"></div>
+                                                                <small class="text-body-secondary" x-text="'ID: #' + user.id"></small>
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td class="text-muted font-monospace small" x-text="user.email"></td>
+                                                    <td class="text-body-secondary font-monospace small" x-text="user.email"></td>
                                                     <td>
                                                         <span class="badge" 
                                                               :class="{
@@ -936,7 +936,7 @@
                                                     </td>
                                                     <td>
                                                         <button type="button" 
-                                                                class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2"
+                                                                class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2 shadow-sm"
                                                                 @click.prevent="openPermissionsModal(user)"
                                                                 title="Configurar permisos y vistas para este usuario">
                                                             <i class="bi bi-shield-lock-fill"></i>
@@ -953,10 +953,10 @@
                                                               x-text="user.status === 'active' ? 'Activo' : user.status === 'inactive' ? 'Inactivo' : 'Pendiente'"></span>
                                                     </td>
                                                     <td>
-                                                        <div class="small fw-medium" x-text="user.phone || '+57 (310) 000-0000'"></div>
-                                                        <small class="text-muted" x-text="user.city || user.department || 'Colombia'"></small>
+                                                        <div class="small fw-semibold text-body" x-text="user.phone || '+57 (310) 000-0000'"></div>
+                                                        <small class="text-body-secondary" x-text="user.city || user.department || 'Colombia'"></small>
                                                     </td>
-                                                    <td class="small text-muted" x-text="user.lastActive || 'Reciente'"></td>
+                                                    <td class="small text-body-secondary" x-text="user.lastActive || 'Reciente'"></td>
                                                     <td class="text-end">
                                                         <div class="dropdown">
                                                             <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 

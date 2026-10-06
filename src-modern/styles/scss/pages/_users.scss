@@ -100,3 +100,46 @@
     overflow: hidden;
   }
 }
+
+// User typography and table contrast
+.user-name {
+  color: var(--bs-body-color);
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+[data-bs-theme="dark"] {
+  .user-name {
+    color: var(--ink-primary, #f4f4f5) !important;
+  }
+
+  .table tbody td {
+    color: var(--ink-primary, #f4f4f5);
+
+    .user-name, .fw-medium, .fw-semibold, .fw-bold, strong {
+      color: var(--ink-primary, #f4f4f5) !important;
+    }
+
+    small, .text-muted, .text-body-secondary {
+      color: var(--ink-secondary, #a1a1aa) !important;
+    }
+  }
+}
+
+[data-bs-theme="light"] {
+  .user-name {
+    color: #18181b !important;
+  }
+
+  .table tbody td {
+    color: #18181b;
+
+    .user-name, .fw-medium, .fw-semibold, .fw-bold, strong {
+      color: #18181b !important;
+    }
+
+    small, .text-muted, .text-body-secondary {
+      color: #52525b !important;
+    }
+  }
+}

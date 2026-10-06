@@ -11,13 +11,43 @@
 [data-bs-theme="dark"] {
   --bs-body-bg: var(--surface-app);
   --bs-body-color: var(--ink-primary);
+  --bs-body-color-rgb: 244, 244, 245;
+  --bs-heading-color: var(--ink-primary);
   --bs-secondary-color: var(--ink-secondary);
   --bs-tertiary-color: var(--ink-muted);
   --bs-border-color: #{$gray-800};
   --bs-border-color-translucent: #{$gray-700};
   --bs-emphasis-color: #{$gray-50};
+  --bs-emphasis-color-rgb: 250, 250, 250;
   --bs-secondary-bg: var(--surface-sunken);
   --bs-tertiary-bg: var(--surface-sunken);
+
+  // Text colors in dark mode
+  color: var(--ink-primary);
+
+  .text-dark {
+    color: var(--ink-primary) !important;
+  }
+
+  .text-body {
+    color: var(--ink-primary) !important;
+  }
+
+  .text-muted,
+  .text-body-secondary {
+    color: var(--ink-secondary) !important;
+  }
+
+  .text-body-tertiary {
+    color: var(--ink-muted) !important;
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  .h1, .h2, .h3, .h4, .h5, .h6,
+  .card-title, .modal-title,
+  strong, b, .fw-bold, .fw-semibold, .fw-medium {
+    color: var(--ink-primary);
+  }
 
   .admin-header .navbar {
     background-color: var(--surface-panel) !important;
@@ -31,15 +61,78 @@
   }
 
   .card {
-    // Fully opaque. The old rule used rgba(30,41,59,0.7), so every card blended
-    // with whatever sat behind it and no two cards matched.
     background-color: var(--surface-panel);
     border-color: var(--bs-border-color);
   }
 
+  .card-header {
+    border-bottom-color: var(--bs-border-color);
+  }
+
+  .card-footer {
+    border-top-color: var(--bs-border-color);
+  }
+
   // Activity feed and sunken elements in dark mode
-  .activity-feed .activity-icon {
-    background-color: #{$gray-800} !important;
-    color: var(--ink-secondary) !important;
+  .activity-feed {
+    .border-bottom {
+      border-bottom-color: var(--bs-border-color) !important;
+    }
+
+    .activity-icon {
+      background-color: #{$gray-800} !important;
+      color: var(--ink-secondary) !important;
+    }
+
+    p, span, strong {
+      color: var(--ink-primary);
+    }
+  }
+
+  // Table styles in dark mode
+  .table {
+    --bs-table-color: var(--ink-primary);
+    --bs-table-bg: transparent;
+    --bs-table-hover-color: var(--ink-primary);
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.04);
+    --bs-table-border-color: var(--bs-border-color);
+    color: var(--ink-primary);
+
+    thead th {
+      background-color: var(--surface-sunken, #09090b);
+      color: var(--ink-secondary);
+      border-bottom-color: var(--bs-border-color);
+    }
+
+    tbody {
+      tr {
+        background-color: transparent;
+        border-bottom-color: var(--bs-border-color);
+
+        td {
+          color: var(--ink-primary);
+          border-bottom-color: var(--bs-border-color);
+
+          .fw-medium, .fw-semibold, .fw-bold, strong, .user-name {
+            color: var(--ink-primary) !important;
+          }
+
+          .text-muted, small.text-muted, .text-body-secondary {
+            color: var(--ink-secondary) !important;
+          }
+        }
+      }
+    }
+
+    .table-light {
+      --bs-table-bg: var(--surface-sunken, #09090b);
+      --bs-table-color: var(--ink-secondary);
+
+      th {
+        background-color: var(--surface-sunken, #09090b);
+        color: var(--ink-secondary);
+        border-bottom-color: var(--bs-border-color);
+      }
+    }
   }
 }
