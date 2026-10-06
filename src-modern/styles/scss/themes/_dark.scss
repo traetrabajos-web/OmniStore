@@ -25,8 +25,17 @@
   // Text colors in dark mode
   color: var(--ink-primary);
 
-  .text-dark {
+  // General text-dark should be light in dark mode, UNLESS inside yellow/warning containers
+  .text-dark:not(.bg-warning):not(.badge) {
     color: var(--ink-primary) !important;
+  }
+
+  // Badges and warning containers with dark text must maintain high contrast black/dark text
+  .badge.bg-warning,
+  .bg-warning.text-dark,
+  .badge.bg-warning.text-dark,
+  .badge.bg-warning-subtle.text-dark {
+    color: #18181b !important;
   }
 
   .text-body {

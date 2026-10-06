@@ -287,6 +287,43 @@
   margin-inline: auto;
 }
 
+.auth-feature-badge {
+  background-color: var(--surface-panel);
+  border: 1px solid var(--bs-border-color);
+  color: var(--ink-primary);
+  font-size: 0.8125rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+
+  span {
+    color: var(--ink-primary);
+  }
+
+  i {
+    font-size: 0.95rem;
+  }
+}
+
+[data-bs-theme="dark"] .auth-feature-badge {
+  background-color: var(--surface-panel);
+  border-color: var(--bs-border-color);
+  color: var(--ink-primary) !important;
+
+  span {
+    color: var(--ink-primary) !important;
+  }
+}
+
+[data-bs-theme="light"] .auth-feature-badge {
+  background-color: #ffffff;
+  border-color: var(--bs-border-color);
+  color: #18181b !important;
+
+  span {
+    color: #18181b !important;
+  }
+}
+
 .auth-quote {
   font-size: 1.25rem;
   line-height: 1.5;
